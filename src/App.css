@@ -4453,16 +4453,3 @@ footer {
     padding: 4px 6px;
   }
 }
-@media (max-width: 600px) {
-  .education-title {
-    font-size: 1.1rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  .education-degree-title,
-  .education-school,
-  .education-stat-label,
-  .education-stat-value {
-    font-size: 0.98rem;
-  }
-}
