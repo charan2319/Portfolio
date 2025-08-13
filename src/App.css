@@ -4442,3 +4442,67 @@ footer {
     padding: 6px 2px;
   }
 }
+
+@media (max-width: 600px) {
+  .custom-navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 0;
+    min-height: unset;
+  }
+  .navbar-left {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .logo {
+    font-size: 1.3rem;
+    text-align: center;
+    width: 100%;
+  }
+  .navbar-menu {
+    width: 100%;
+    justify-content: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .navbar-right {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .darkmode-toggle {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    padding: 6px 12px;
+    border-radius: 12px;
+  }
+  .hero-section {
+    padding: 24px 4px 12px 4px;
+    text-align: center;
+  }
+  .hero-profile-img-wrapper {
+    margin: 0 auto 1rem auto;
+  }
+  .profile-img-hero {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+  }
+  .hero-title {
+    font-size: 1.3rem;
+    margin-top: 0.5rem;
+  }
+  .hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+}
