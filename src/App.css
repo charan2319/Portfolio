@@ -1,3 +1,21 @@
+/* Make sizing predictable */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Make images and videos responsive */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
 /* ===== GLOBAL STYLES ===== */
 body {
   margin: 0;
@@ -4209,4 +4227,26 @@ footer {
 
 .light-mode .hero-3d-bg .glow-effect {
    background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+}
+/* Extra small screens */
+@media (max-width: 400px) {
+  .hero-title { font-size: 1.3rem; }
+  .profile-img-hero { width: 80px; height: 80px; }
+  .about-title, .section-title { font-size: 1.3rem; }
+  .contact-heading { font-size: 1.3rem; }
+  .pro-projects-title { font-size: 1.1rem; }
+  .stat-number { font-size: 1.2rem; }
+  .stat-card { padding: 10px 5px; }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1600px) {
+  .about-container,
+  .pro-projects-grid,
+  .certifications-grid,
+  .achievements-grid,
+  .skills-card-grid,
+  .contact-grid {
+    max-width: 1400px;
+  }
 }
