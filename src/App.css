@@ -4444,65 +4444,26 @@ footer {
 }
 
 @media (max-width: 600px) {
-  .custom-navbar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 10px 0;
-    min-height: unset;
-  }
-  .navbar-left {
-    width: 100%;
-    display: flex;
+  .about-stats {
+    flex-direction: row;
+    gap: 6px;
     justify-content: center;
-    margin-bottom: 8px;
-  }
-  .logo {
-    font-size: 1.3rem;
-    text-align: center;
-    width: 100%;
-  }
-  .navbar-menu {
-    width: 100%;
-    justify-content: center;
-    gap: 0.8rem;
-    font-size: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 8px;
   }
-  .navbar-right {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 8px;
-  }
-  .darkmode-toggle {
-    margin: 0 auto;
-    font-size: 1.5rem;
-    padding: 6px 12px;
-    border-radius: 12px;
-  }
-  .hero-section {
-    padding: 24px 4px 12px 4px;
+  .stat-card {
+    flex: 1 1 0;
+    min-width: 60px;
+    max-width: 90px;
+    padding: 8px 2px;
+    font-size: 0.92rem;
     text-align: center;
+    word-break: break-word;
+    box-sizing: border-box;
   }
-  .hero-profile-img-wrapper {
-    margin: 0 auto 1rem auto;
-  }
-  .profile-img-hero {
-    width: 90px;
-    height: 90px;
-    margin: 0 auto;
-  }
-  .hero-title {
-    font-size: 1.3rem;
-    margin-top: 0.5rem;
-  }
-  .hero-subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-  .hero-desc {
+  .stat-number {
     font-size: 1rem;
-    margin-bottom: 1rem;
+  }
+  .stat-label {
+    font-size: 0.85rem;
   }
 }
