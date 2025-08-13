@@ -4442,3 +4442,18 @@ footer {
     padding: 6px 2px;
   }
 }
+
+
+@media (max-width: 600px) {
+  .dark-mode .navbar-menu {
+    gap: 0.8rem;
+    font-size: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .dark-mode .navbar-menu li a {
+    font-size: 0.95rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+}
