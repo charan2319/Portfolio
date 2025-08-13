@@ -4442,3 +4442,14 @@ footer {
     padding: 6px 2px;
   }
 }
+
+@media (max-width: 600px) {
+  .navbar-menu {
+    font-size: 0.95rem;
+    gap: 0.5rem;
+    padding: 0 2px;
+  }
+  .navbar-menu li a {
+    padding: 4px 6px;
+  }
+}
