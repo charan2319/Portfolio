@@ -4442,28 +4442,3 @@ footer {
     padding: 6px 2px;
   }
 }
-
-@media (max-width: 600px) {
-  .about-stats {
-    flex-direction: row;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .stat-card {
-    flex: 1 1 0;
-    min-width: 60px;
-    max-width: 90px;
-    padding: 8px 2px;
-    font-size: 0.92rem;
-    text-align: center;
-    word-break: break-word;
-    box-sizing: border-box;
-  }
-  .stat-number {
-    font-size: 1rem;
-  }
-  .stat-label {
-    font-size: 0.85rem;
-  }
-}
