@@ -4262,3 +4262,58 @@ footer {
     font-size: 1.1rem;
   }
 }
+
+@media (max-width: 600px) {
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+  }
+  .btn {
+    width: 90%;
+    justify-content: center;
+  }
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    text-align: center;
+  }
+  .about-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .stat-card {
+    padding: 12px 8px;
+    min-width: 80px;
+    font-size: 0.95rem;
+  }
+  .about-text {
+    font-size: 1rem;
+    text-align: center;
+  }
+  section, .pro-about-section, .about-container {
+    padding: 24px 4px !important;
+  }
+  .about-header {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .about-title {
+    font-size: 1.1rem;
+  }
+  .stat-number {
+    font-size: 1.1rem;
+  }
+  .stat-card {
+    padding: 8px 2px;
+  }
+}
