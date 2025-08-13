@@ -4457,3 +4457,30 @@ footer {
     border-radius: 8px;
   }
 }
+@media (max-width: 600px) {
+  .about-stats {
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1 1 0;
+    min-width: 70px;
+    max-width: 90px;
+    padding: 8px 2px;
+    font-size: 0.85rem;
+    text-align: center;
+    word-break: break-word;
+    box-sizing: border-box;
+    border-radius: 16px;
+  }
+  .stat-number {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+  }
+}
