@@ -117,7 +117,7 @@ function App() {
             Explore My Work <span className="arrow">&#8595;</span>
           </a>
           <a href="#contact" className="btn btn-outline">Contact Me</a>
-          <a href="/MARUVENI CHARAN _2022BCSE07AED315.pdf" download className="btn btn-solid">
+          <a href="/MARUVENI CHARAN.pdf" download className="btn btn-solid">
             <span className="download-icon">&#128190;</span> Download Resume
           </a>
         </div>
