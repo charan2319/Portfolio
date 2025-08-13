@@ -4466,8 +4466,8 @@ footer {
   }
   .stat-card {
     flex: 1 1 0;
-    min-width: 70px;
-    max-width: 90px;
+    min-width: 80px;
+    max-width: 100px;
     padding: 8px 2px;
     font-size: 0.85rem;
     text-align: center;
