@@ -117,7 +117,7 @@ function App() {
             Explore My Work <span className="arrow">&#8595;</span>
           </a>
           <a href="#contact" className="btn btn-outline">Contact Me</a>
-          <a href="/MARUVENI CHARAN.pdf" download className="btn btn-solid">
+          <a href="/MARUVENI%20CHARAN%20_2022BCSE07AED315.pdf" download className="btn btn-solid">
             <span className="download-icon">&#128190;</span> Download Resume
           </a>
         </div>
@@ -456,6 +456,31 @@ function App() {
               </a>
             </div>
           </div>
+
+          <div className="certification-card">
+            <div className="cert-icon">
+              <span>📱</span>
+            </div>
+            <div className="cert-content">
+              <h3 className="cert-title">App Development with Swift Certified User</h3>
+              <p className="cert-issuer">iOS Certification</p>
+              <div className="cert-meta">
+                <span className="cert-date">2025</span>
+                <span className="cert-type">iOS Development</span>
+              </div>
+              <a
+                href="/iOS_certification.pdf"
+                className="cert-download-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // open PDF in new tab — fallback if direct link is being intercepted
+                  window.open("/iOS_certification.pdf", "_blank", "noopener,noreferrer");
+                }}
+              >
+                <span className="download-icon">📄</span> View Certificate
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -540,12 +565,12 @@ function App() {
 
           <div className="pro-project-card">
             <div className="pro-project-image">
-              <img src="/medication.jpeg" alt="Medication Alert System" />
+              <img src="/unnamed-1.jpg" alt="Mymedicare" />
               <span className="pro-project-category app-dev">App Development</span>
             </div>
             <div className="pro-project-content">
               <div className="pro-project-header">
-                <h3 className="pro-project-title">Medication Alert System</h3>
+                <h3 className="pro-project-title">Mymedicare</h3>
               </div>
               <p className="pro-project-desc">
                 An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features.
@@ -567,7 +592,7 @@ function App() {
               <div className="pro-project-buttons">
                 <button 
                   className="pro-btn pro-btn-demo"
-                  onClick={() => openVideoModal("/MedicationAlertSystemDemo.mp4")}
+                  onClick={() => openVideoModal("/VIDEO-2025-11-22-23-56-57.MP4")}
                 >
                   <span className="pro-btn-icon">▶</span> Demo Video
                 </button>
