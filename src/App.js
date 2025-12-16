@@ -14,6 +14,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
   const [visibleSkills, setVisibleSkills] = useState(false);
   const [modalVideo, setModalVideo] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Parallax state for hero background
   // const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
@@ -39,6 +40,21 @@ function App() {
     }, { threshold: 0.2 });
     elements.forEach((el) => observer.observe(el));
   }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (mobileMenuOpen) {
+        const navbar = document.querySelector('.custom-navbar');
+        if (navbar && !navbar.contains(e.target)) {
+          setMobileMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [mobileMenuOpen]);
 
   // Parallax mouse movement effect
   // useEffect(() => {
@@ -68,16 +84,28 @@ function App() {
         <div className="navbar-left">
           <h2 className="logo">Maruveni Charan</h2>
         </div>
-        <ul className="navbar-menu">
-          <li><a href="#" className="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#education">Education</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#achievements">Achievements</a></li>
-          <li><a href="#contact">Contact</a></li>
+        <ul className={`navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <li><a href="#" className="active" onClick={() => setMobileMenuOpen(false)}>Home</a></li>
+          <li><a href="#about" onClick={() => setMobileMenuOpen(false)}>About</a></li>
+          <li><a href="#education" onClick={() => setMobileMenuOpen(false)}>Education</a></li>
+          <li><a href="#skills" onClick={() => setMobileMenuOpen(false)}>Skills</a></li>
+          <li><a href="#projects" onClick={() => setMobileMenuOpen(false)}>Projects</a></li>
+          <li><a href="#achievements" onClick={() => setMobileMenuOpen(false)}>Achievements</a></li>
+          <li><a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a></li>
         </ul>
+        <div className="navbar-center">
+          <h2 className="logo">Maruveni Charan</h2>
+        </div>
         <div className="navbar-right">
+          <button 
+            className={`hamburger-menu ${mobileMenuOpen ? 'active' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
           <button 
             className="darkmode-toggle"
             onClick={() => setDarkMode(!darkMode)}

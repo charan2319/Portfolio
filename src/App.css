@@ -68,6 +68,7 @@ ul {
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
+  gap: 0;
 }
 
 .dark-mode .custom-navbar {
@@ -76,8 +77,60 @@ ul {
   box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
 
+.custom-navbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 70px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  gap: 0;
+}
+
+.dark-mode .custom-navbar {
+  background: rgba(15, 23, 42, 0.95);
+  color: #f1f5f9;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+
+.navbar-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  justify-content: center;
+}
+.navbar-menu li a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
 .navbar-left {
   flex: 1;
+}
+
+.navbar-center {
+  display: none;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo {
@@ -92,26 +145,47 @@ ul {
   color: #22d3ee;
 }
 
-.navbar-menu {
+.navbar-right {
+  flex: 1;
   display: flex;
-  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
-  gap: 1.5rem;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  flex-wrap: wrap; /* allows wrapping if needed on very small screens */
-  justify-content: center;
+  gap: 8px;
 }
-.navbar-menu li a {
-  color: inherit;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  position: relative;
+
+/* Hamburger menu button - hidden by default */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  gap: 4px;
+  margin: 0;
+  order: -1;
+}
+
+.hamburger-menu span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+  transform: scaleX(0);
+}
+
+.hamburger-menu.active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 .navbar-menu li a.active {
@@ -141,6 +215,7 @@ ul {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 8px;
 }
 
 .darkmode-toggle {
@@ -870,12 +945,208 @@ footer {
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-navbar {
+    padding: 0;
+    height: 65px;
+    justify-content: center;
+  }
+  
+  .navbar-left {
+    display: none;
+  }
+  
+  .navbar-center {
+    display: flex;
+    flex: 1;
+    padding: 0;
+  }
+  
+  .logo {
+    font-size: 20px;
+  }
+  
+  .navbar-menu {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    gap: 0;
+    padding: 12px 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    justify-content: flex-start;
+  }
+  
+  .dark-mode .navbar-menu {
+    background: rgba(15, 23, 42, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .navbar-menu.mobile-open {
+    max-height: 500px;
+  }
+  
+  .navbar-menu li {
+    width: 100%;
+  }
+  
+  .navbar-menu li a {
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 0;
+    display: block;
+    transition: all 0.2s ease;
+  }
+  
+  .navbar-menu li a:hover {
+    background: rgba(14, 165, 233, 0.1);
+    padding-left: 24px;
+  }
+  
+  /* Show hamburger menu on tablet */
+  .hamburger-menu {
+    display: flex;
+    color: currentColor;
+  }
+  
+  .navbar-right {
+    position: absolute;
+    right: 0;
+    flex: none;
+    gap: 4px;
+    padding-right: 15px;
+  }
+  
+  .hamburger-menu {
+    padding: 4px;
+    position: fixed;
+    left: 15px;
+    top: 12px;
+  }
+  
+  .hamburger-menu span {
+    width: 22px;
+    height: 2.5px;
+  }
+  
+  .darkmode-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+}
+
 @media (max-width: 600px) {
-  .custom-navbar { padding: 0 10px; }
-  .navbar-menu { gap: 12px; }
+  .custom-navbar {
+    padding: 0;
+    height: 60px;
+  }
+  
+  .navbar-menu {
+    top: 60px;
+  }
+  
+  .navbar-center {
+    flex: 1;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .hamburger-menu {
+    display: flex;
+    color: currentColor;
+  }
+  
+  .hamburger-menu span {
+    width: 20px;
+    height: 2px;
+  }
+  
+  .navbar-menu li a {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+  
+  .navbar-menu li a:hover {
+    padding-left: 20px;
+  }
+  
+  .navbar-right {
+    gap: 2px;
+    padding-right: 10px;
+  }
+  
+  .hamburger-menu {
+    padding: 3px;
+  }
+  
+  .darkmode-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+  
   .hero-title { font-size: 2rem; }
   .profile-img-hero { width: 110px; height: 110px; }
   .hero-buttons { flex-direction: column; gap: 12px; }
+}
+
+@media (max-width: 450px) {
+  .custom-navbar {
+    height: 56px;
+    padding: 0;
+  }
+  
+  .navbar-menu {
+    top: 56px;
+  }
+  
+  .navbar-center {
+    flex: 1;
+  }
+  
+  .logo {
+    font-size: 16px;
+  }
+  
+  .hamburger-menu span {
+    width: 18px;
+    height: 1.8px;
+  }
+  
+  .navbar-menu li a {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+  
+  .navbar-menu li a:hover {
+    padding-left: 18px;
+  }
+  
+  .navbar-right {
+    gap: 1px;
+    padding-right: 8px;
+  }
+  
+  .hamburger-menu {
+    padding: 2px;
+  }
+  
+  .darkmode-toggle {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
 }
 
 /* ===== Custom Contact Section ===== */
