@@ -43,6 +43,7 @@ export const certificationsData = [
 ];
 
 export const achievementsData = [
-  { title: "Techathon 2025 – Alliance University", description: "Participated in a university-level hackathon, showcasing skills in data analytics and app development." },
+  { title: "Winner of Application Hackathon – E-Cell, Alliance University 2025", description: "Developed a dynamic web application named 'Stady' that provides comprehensive educational resources and collaboration tools for students." },
+  { title: "Winner of Tackathon – Smart India Hackathon, Alliance University 2025", description: "Developed 'AI-Based Internship Recommendation Engine for PM Internship Scheme' - an intelligent web application that recommends internships to students based on their skills, qualifications, and career goals." },
   { title: "Runner-up in Cultural Events", description: "Achieved 2nd place in Alliance 2.0 cultural competitions for teamwork and creativity." }
 ];

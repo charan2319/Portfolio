@@ -74,6 +74,7 @@ function App() {
           <li><a href="#education">Education</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#achievements">Achievements</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
         <div className="navbar-right">
@@ -487,38 +488,33 @@ function App() {
       {/* ===== Achievements & Participations Section ===== */}
       <section className="achievements-section fade-in" id="achievements">
         <h2 className="section-title">Achievements & Participations</h2>
+        <div className="achievements-divider"></div>
         <div className="achievements-grid">
-          <div className="achievement-card">
-            <div className="achievement-icon">
-              <span>💡</span>
-            </div>
-            <div className="achievement-content">
-              <h3 className="achievement-title">Techathon Participant</h3>
-              <p className="achievement-desc">
-                Participated in Techathon at Alliance University, collaborating with peers to solve real-world technical challenges and present innovative solutions.
-              </p>
-              <div className="achievement-meta">
-                <span className="achievement-year">2024</span>
-                <span className="achievement-category">Participation</span>
+          {achievementsData.map((achievement, index) => {
+            const getIcon = (title) => {
+              if (title.includes('Winner of Application')) return '🏆';
+              if (title.includes('Winner of Tackathon')) return '🥇';
+              if (title.includes('Techathon')) return '💡';
+              if (title.includes('Runner-up')) return '🥈';
+              return '⭐';
+            };
+            return (
+              <div key={index} className="achievement-card">
+                <div className="achievement-icon">
+                  <span>{getIcon(achievement.title)}</span>
+                </div>
+                <div className="achievement-content">
+                  <h3 className="achievement-title">{achievement.title}</h3>
+                  <p className="achievement-desc">
+                    {achievement.description}
+                  </p>
+                  <div className="achievement-meta">
+                    <span className="achievement-badge">{achievement.title.includes('Winner') ? '🎖️ Winner' : '🌟 Participant'}</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="achievement-card">
-            <div className="achievement-icon">
-              <span>🥈</span>
-            </div>
-            <div className="achievement-content">
-              <h3 className="achievement-title">Runner-up - Cultural Events</h3>
-              <p className="achievement-desc">
-                Achieved runner-up position in cultural events held during Alliance 2.0, showcasing creativity, teamwork, and leadership in a competitive environment.
-              </p>
-              <div className="achievement-meta">
-                <span className="achievement-year">2023</span>
-                <span className="achievement-category">Cultural</span>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </section>
 
