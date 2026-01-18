@@ -97,7 +97,7 @@ function App() {
           <h2 className="logo">Maruveni Charan</h2>
         </div>
         <div className="navbar-right">
-          <button 
+          <button
             className={`hamburger-menu ${mobileMenuOpen ? 'active' : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
@@ -106,7 +106,7 @@ function App() {
             <span></span>
             <span></span>
           </button>
-          <button 
+          <button
             className="darkmode-toggle"
             onClick={() => setDarkMode(!darkMode)}
             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -123,7 +123,7 @@ function App() {
         <div className="hero-3d-bg">
           {/* Clean Background */}
           <div className="clean-bg"></div>
-          
+
           {/* Subtle Glow Effects */}
           <div className="subtle-glow">
             <div className="glow-effect glow-1"></div>
@@ -146,7 +146,7 @@ function App() {
             Explore My Work <span className="arrow">&#8595;</span>
           </a>
           <a href="#contact" className="btn btn-outline">Contact Me</a>
-          <a href="/MARUVENI CHARAN _2022BCSE07AED315 2.pdf" download className="btn btn-solid">
+          <a href="/charan_app_developer.pdf" download className="btn btn-solid">
             <span className="download-icon">&#128190;</span> Download Resume
           </a>
         </div>
@@ -165,13 +165,13 @@ function App() {
           <div className="about-content">
             <div className="about-text">
               <p className="about-intro">
-                I am a passionate <span className="highlight-text">B.Tech Computer Science and Engineering</span> student from 
-                <span className="highlight-text"> Alliance University</span> with a strong academic foundation (CGPA: 8.0) and 
+                I am a passionate <span className="highlight-text">B.Tech Computer Science and Engineering</span> student from
+                <span className="highlight-text"> Alliance University</span> with a strong academic foundation (CGPA: 8.0) and
                 expertise in both <span className="highlight-text">iOS app development</span> and <span className="highlight-text">data analytics</span>.
               </p>
               <p className="about-desc">
-                My journey in technology has been driven by a deep curiosity for transforming complex data into actionable insights 
-                and building innovative applications that solve real-world problems. I specialize in Python, Swift, Firebase, 
+                My journey in technology has been driven by a deep curiosity for transforming complex data into actionable insights
+                and building innovative applications that solve real-world problems. I specialize in Python, Swift, Firebase,
                 Power BI, Excel, and MySQL, combining analytical thinking with creative problem-solving.
               </p>
             </div>
@@ -431,8 +431,8 @@ function App() {
                 <span className="cert-date">2024</span>
                 <span className="cert-type">Data Analytics</span>
               </div>
-              <a 
-                href="/data analysis with python.pdf" 
+              <a
+                href="/data analysis with python.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cert-download-btn"
@@ -441,7 +441,7 @@ function App() {
               </a>
             </div>
           </div>
-          
+
           <div className="certification-card">
             <div className="cert-icon">
               <span>📈</span>
@@ -453,8 +453,8 @@ function App() {
                 <span className="cert-date">2025</span>
                 <span className="cert-type">Data Analysis</span>
               </div>
-              <a 
-                href="/Excel.pdf" 
+              <a
+                href="/Excel.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cert-download-btn"
@@ -463,7 +463,7 @@ function App() {
               </a>
             </div>
           </div>
-          
+
           <div className="certification-card">
             <div className="cert-icon">
               <span>📊</span>
@@ -475,8 +475,8 @@ function App() {
                 <span className="cert-date">2025</span>
                 <span className="cert-type">Data Visualization</span>
               </div>
-              <a 
-                href="/Power BI for Business Professionals.pdf" 
+              <a
+                href="/Power BI for Business Professionals.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cert-download-btn"
@@ -577,7 +577,7 @@ function App() {
                 </ul>
               </div>
               <div className="pro-project-buttons">
-                <button 
+                <button
                   className="pro-btn pro-btn-demo"
                   onClick={() => openVideoModal("/1745846946389470.MP4")}
                 >
@@ -614,7 +614,7 @@ function App() {
                 </ul>
               </div>
               <div className="pro-project-buttons">
-                <button 
+                <button
                   className="pro-btn pro-btn-demo"
                   onClick={() => openVideoModal("/VIDEO-2025-11-22-23-56-57.MP4")}
                 >
@@ -649,8 +649,8 @@ function App() {
                 </ul>
               </div>
               <div className="pro-project-buttons">
-                <a 
-                  href="https://github.com/charan2319/Road-Accident-Analysis-Dashboard" 
+                <a
+                  href="https://github.com/charan2319/Road-Accident-Analysis-Dashboard"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="pro-btn pro-btn-details"
