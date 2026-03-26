@@ -475,27 +475,46 @@ function App() {
         </motion.div>
         
         <div className="skills-marquee-container">
-          <div className="premium-skills-track track-left single-track">
-            {[...Array(2)].map((_, groupIndex) => (
-              <div key={`single-group-${groupIndex}`} className="marquee-group marquee-single-anim">
-                {[
-                  { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
-                  { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
-                  { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
-                  { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
-                  { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
-                  { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
-                  { name: "Excel", src: "/Excel.jpg" },
-                  { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
-                  { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
-                ].map((skill, index) => (
-                  <div key={index} className="premium-skill-card-marquee single-row-card">
-                    <img src={skill.src} alt={skill.name} className="premium-skill-icon-img" />
-                    <span className="premium-skill-name">{skill.name}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
+          {/* Desktop: Single Row | Mobile: Two Rows */}
+          <div className="premium-skills-track">
+            {/* Row 1: Skills 1-4 (Mobile: LTR) */}
+            <div className="marquee-row-wrapper mobile-ltr">
+              {[...Array(2)].map((_, groupIndex) => (
+                <div key={`row1-group-${groupIndex}`} className="marquee-group marquee-right-anim">
+                  {[
+                    { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+                    { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
+                    { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+                    { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" }
+                  ].map((skill, index) => (
+                    <div key={index} className="premium-skill-card-marquee">
+                      <img src={skill.src} alt={skill.name} className="premium-skill-icon-img" />
+                      <span className="premium-skill-name">{skill.name}</span>
+                    </div>
+                  ))}
+                  {/* Desktop Only items to fill Row 1 if needed, but for now we keep it balanced */}
+                </div>
+              ))}
+            </div>
+
+            {/* Row 2: Skills 5-8 (Mobile: RTL) */}
+            <div className="marquee-row-wrapper mobile-rtl">
+              {[...Array(2)].map((_, groupIndex) => (
+                <div key={`row2-group-${groupIndex}`} className="marquee-group marquee-left-anim">
+                  {[
+                    { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
+                    { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
+                    { name: "Excel", src: "/Excel.jpg" },
+                    { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" }
+                  ].map((skill, index) => (
+                    <div key={index} className="premium-skill-card-marquee">
+                      <img src={skill.src} alt={skill.name} className="premium-skill-icon-img" />
+                      <span className="premium-skill-name">{skill.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
