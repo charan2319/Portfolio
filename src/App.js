@@ -319,28 +319,15 @@ function App() {
         </ul>
       </nav>
 
-      {/* ===== Floating Pill Navbar (Mobile) ===== */}
-      <div className={`mobile-floating-nav ${isNavbarVisible ? 'visible' : 'hidden'}`}>
-        {navItems.map((item) => (
-          <a 
-            key={item.id}
-            href={item.id === 'home' ? '#' : `#${item.id}`}
-            className={`mobile-nav-item ${activeSection === item.id ? 'active-mobile-link' : ''}`}
-            onClick={() => setActiveSection(item.id)}
-            aria-label={item.label}
-          >
-            {activeSection === item.id && (
-              <motion.div 
-                layoutId="mobile-pill" 
-                className="mobile-active-pill" 
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-            <i className={`${item.icon} mobile-nav-icon`} style={{ position: 'relative', zIndex: 2, marginBottom: '2px' }}></i>
-            <span className="mobile-nav-label" style={{ position: 'relative', zIndex: 2 }}>{item.label}</span>
-          </a>
-        ))}
-      </div>
+      {/* Mobile-Only Contact Button (Top Right) */}
+      <a 
+        href="#contact" 
+        className={`mobile-contact-btn mobile-only ${isNavbarVisible ? 'visible' : 'hidden'}`}
+        onClick={() => setActiveSection('contact')}
+      >
+        <i className="fas fa-envelope" style={{ marginRight: '8px' }}></i>
+        Contact
+      </a>
 
 {/* ===== Premium Split Hero Section ===== */}
       <motion.header 

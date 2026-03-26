@@ -6235,64 +6235,29 @@ section {
     display: none;
   }
   
-  .mobile-floating-nav {
-    display: flex;
+  .mobile-contact-btn {
     position: fixed;
-    bottom: 20px; /* Brining it slightly lower */
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.85); /* Slightly more solid for legibility */
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    border-radius: 40px; /* More compact radius */
-    padding: 6px 10px; /* Reduced padding */
-    z-index: 1000;
-    gap: 4px; /* Tighter gap */
-  }
-  
-  .mobile-nav-item {
-    position: relative;
-    display: flex;
-    flex-direction: column; /* Icon above label */
-    align-items: center;
-    justify-content: center;
-    padding: 6px 12px;
-    min-width: 55px; /* Consistent width but compact */
-    height: auto; /* Allow auto height for label */
-    border-radius: 20px;
-    color: #64748b;
+    top: 25px;
+    right: 25px;
+    background: #1e293b;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 2000;
     text-decoration: none;
-    transition: all 0.3s ease;
-  }
-  
-  .mobile-nav-item.active-mobile-link {
-    color: #6366f1; /* Theme indigo for active */
-  }
-  
-  .mobile-active-pill {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    height: 90%;
-    background: rgba(99, 102, 241, 0.08); /* Faint indigo background for active */
-    border-radius: 16px;
-    z-index: 1;
-  }
-  
-  .mobile-nav-icon {
-    font-size: 1rem; /* Slightly smaller icon */
-    margin-bottom: 2px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid rgba(255,255,255,0.1);
   }
 
-  .mobile-nav-label {
-    font-size: 0.65rem; /* Compact label */
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+  .mobile-contact-btn.hidden {
+    transform: translateY(-50px);
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
