@@ -1,0 +1,120 @@
+/* ===== ULTRA PREMIUM TIMELINE (Education & Experience) ===== */
+.ultra-premium-timeline {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  padding: 40px 0;
+}
+
+.ultra-premium-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 42px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(99,102,241,0.1), rgba(139,92,246,0.3) 50%, rgba(99,102,241,0.1));
+}
+
+.ultra-timeline-item {
+  position: relative;
+  padding-left: 100px;
+  margin-bottom: 50px;
+}
+
+.ultra-timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.ultra-timeline-icon {
+  position: absolute;
+  left: 20px; top: 0;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 0 0 8px rgba(255,255,255,0.8), 0 6px 16px rgba(99,102,241,0.3);
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.ultra-timeline-item:hover .ultra-timeline-icon {
+  transform: scale(1.15);
+}
+
+.ultra-timeline-content {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 20px;
+  padding: 32px 36px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
+}
+
+.ultra-timeline-item:hover .ultra-timeline-content {
+  background: #ffffff;
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(99,102,241,0.08);
+  border-color: rgba(99,102,241,0.15);
+}
+
+.ultra-timeline-year {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #6366f1;
+  margin-bottom: 12px;
+}
+
+.ultra-timeline-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.ultra-timeline-sub {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.ultra-timeline-desc {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.ultra-timeline-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px;
+}
+
+.ultra-type-badge {
+  background: linear-gradient(135deg, #3b82f6, #6366f1); color: #fff; padding: 6px 16px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+.ultra-timeline-bullets {
+  padding-left: 20px; margin: 0; color: #475569; font-size: 0.95rem; line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .ultra-premium-timeline::before { left: 24px; }
+  .ultra-timeline-icon { left: 2px; width: 40px; height: 40px; font-size: 1rem; box-shadow: 0 0 0 6px rgba(255,255,255,0.8); }
+  .ultra-timeline-item { padding-left: 60px; }
+  .ultra-timeline-header { flex-direction: column; }
+  .ultra-timeline-content { padding: 24px; }
+}
+
+/* ===== LARGER CERT CARDS ===== */
+.cert-premium-grid {
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)) !important;
+  gap: 34px !important;
+  max-width: 1200px !important;
+}
+.cert-premium-img-wrap {
+  height: 200px !important;
+}

@@ -4,12 +4,30 @@ export const skillsData = [
   { name: "MySQL", level: 80 },
   { name: "Firebase", level: 80 },
   { name: "Power BI", level: 85 },
-  { name: "Excel", level: 90 }
+  { name: "Excel", level: 90 },
+  { name: "GitHub", level: 85 }
 ];
 
 export const servicesData = [
-  { icon: "📊", title: "Data Analytics", description: "Dashboards & insights." },
-  { icon: "📱", title: "App Development", description: "iOS apps for real-world problems." }
+  { 
+    icon: "📊", 
+    title: "Data Analytics", 
+    description: "Creating interactive dashboards, performing data visualization, and generating actionable insights from complex datasets.",
+    list: ["Dashboard Creation", "Data Visualization", "Trend Analysis", "Reporting"]
+  },
+  { 
+    icon: "📱", 
+    title: "iOS App Development", 
+    description: "Building iOS applications that solve real-world problems using modern technologies and best practices.",
+    list: ["iOS Development", "Swift Programming", "Firebase Integration", "UI/UX Design"]
+  },
+  { 
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg", 
+    title: "Flutter App Development", 
+    description: "Building beautiful, natively compiled, multi-platform applications from a single codebase.",
+    list: ["Cross-platform Development", "Dart Programming", "Custom UI Animations", "API Integration"],
+    isImg: true
+  }
 ];
 
 export const educationData = [
@@ -37,9 +55,10 @@ export const projectsData = [
 ];
 
 export const certificationsData = [
-  { name: "Power BI for Business Professionals", issuer: "Infosys", year: 2025, image: "/certifications/powerbi.png" },
-  { name: "Excel Advanced", issuer: "Infosys", year: 2025, image: "/certifications/excel.png" },
-  { name: "Data Analysis with Python", issuer: "Coursera", year: 2024, image: "/certifications/python.png" }
+  { name: "Data Analysis with Python", issuer: "Coursera", year: 2024, pdf: "/python.pdf", cat: "Data Analytics" },
+  { name: "Excel", issuer: "Infosys", year: 2025, pdf: "/Excel.pdf", cat: "Data Analysis" },
+  { name: "Power BI for Business Professionals", issuer: "Infosys", year: 2025, pdf: "/powerbi.pdf", cat: "Data Visualization" },
+  { name: "App Development with Swift Certified User", issuer: "Apple", year: 2025, pdf: "/iOS_certification.pdf", cat: "iOS Development" }
 ];
 
 export const achievementsData = [

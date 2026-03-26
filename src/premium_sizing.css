@@ -1,0 +1,101 @@
+/* ===== iOS-STYLE NAVBAR PILL INDICATOR ===== */
+
+/* Desktop Nav Adjustments */
+.nav-item-wrapper {
+  position: relative;
+}
+
+.desktop-active-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.05); /* Soft pill background */
+  border-radius: 50px;
+  z-index: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03), inset 0 1px 1px rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.desktop-nav-menu a {
+  position: relative; /* ensure text sits above pill */
+}
+
+.nav-text {
+  position: relative;
+  z-index: 10;
+  transition: color 0.3s;
+}
+
+.active-link .nav-text {
+  color: #000;
+  font-weight: 700;
+}
+
+/* Mobile Nav Adjustments */
+.mobile-nav-item {
+  position: relative;
+}
+
+.mobile-active-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50px;
+  z-index: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.active-mobile-link .mobile-nav-icon,
+.active-mobile-link .mobile-nav-label {
+  color: #000 !important;
+  font-weight: 700;
+}
+
+
+/* ===== FULL SCREEN OVERVIEW (Bento Grid) ===== */
+.bento-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 5% !important;
+  box-sizing: border-box;
+}
+
+/* Slightly wider bento grid to fill the screen nicely */
+.bento-grid {
+  max-width: 1200px !important;
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+/* ===== LARGER FEATURED WORK & SERVICES CARDS ===== */
+.pro-projects-grid {
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)) !important;
+  gap: 40px !important;
+  max-width: 1250px !important;
+  margin: 0 auto;
+}
+
+.pro-services-grid {
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
+  gap: 36px !important;
+  max-width: 1200px !important;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .pro-projects-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .pro-services-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

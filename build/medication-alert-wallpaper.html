@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Alert System Wallpaper</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .medication-scene {
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect width="800" height="600" fill="%23f3e8ff"/><circle cx="200" cy="150" r="30" fill="%23fbbf24"/><circle cx="600" cy="200" r="25" fill="%23ef4444"/><circle cx="400" cy="300" r="35" fill="%2310b981"/><circle cx="300" cy="400" r="20" fill="%233b82f6"/><circle cx="500" cy="180" r="15" fill="%23f59e0b"/><circle cx="150" cy="350" r="18" fill="%23ec4899"/></svg>') center/cover;
+            position: relative;
+        }
+        
+        .tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+        
+        .pill-organizer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 8px;
+            padding: 12px;
+        }
+        
+        .pill-compartment {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pill {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .pill.red { background: #ef4444; }
+        .pill.blue { background: #3b82f6; }
+        .pill.green { background: #10b981; }
+        .pill.yellow { background: #fbbf24; }
+        .pill.purple { background: #8b5cf6; }
+        .pill.pink { background: #ec4899; }
+        
+        .scattered-pills {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .scattered-pill {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .scattered-pill.red { background: #ef4444; }
+        .scattered-pill.blue { background: #3b82f6; }
+        .scattered-pill.green { background: #10b981; }
+        .scattered-pill.yellow { background: #fbbf24; }
+        .scattered-pill.purple { background: #8b5cf6; }
+        .scattered-pill.pink { background: #ec4899; }
+        
+        .pill-1 { width: 12px; height: 12px; top: 20%; left: 15%; }
+        .pill-2 { width: 10px; height: 10px; top: 25%; right: 20%; }
+        .pill-3 { width: 14px; height: 14px; bottom: 30%; left: 25%; }
+        .pill-4 { width: 8px; height: 8px; bottom: 25%; right: 30%; }
+        .pill-5 { width: 11px; height: 11px; top: 60%; left: 10%; }
+        .pill-6 { width: 13px; height: 13px; top: 70%; right: 15%; }
+        .pill-7 { width: 9px; height: 9px; bottom: 15%; left: 40%; }
+        .pill-8 { width: 12px; height: 12px; bottom: 20%; right: 25%; }
+        
+        .compartment-pill-1 { width: 8px; height: 8px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-2 { width: 10px; height: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-3 { width: 6px; height: 6px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-4 { width: 9px; height: 9px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-5 { width: 7px; height: 7px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-6 { width: 11px; height: 11px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-7 { width: 8px; height: 8px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-8 { width: 9px; height: 9px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-9 { width: 6px; height: 6px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-10 { width: 10px; height: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-11 { width: 7px; height: 7px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .compartment-pill-12 { width: 8px; height: 8px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    </style>
+</head>
+<body>
+    <div class="medication-scene">
+        <div class="tag">App Development</div>
+        
+        <div class="pill-organizer">
+            <div class="pill-compartment">
+                <div class="pill red compartment-pill-1"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill blue compartment-pill-2"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill green compartment-pill-3"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill yellow compartment-pill-4"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill purple compartment-pill-5"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill pink compartment-pill-6"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill red compartment-pill-7"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill blue compartment-pill-8"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill green compartment-pill-9"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill yellow compartment-pill-10"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill purple compartment-pill-11"></div>
+            </div>
+            <div class="pill-compartment">
+                <div class="pill pink compartment-pill-12"></div>
+            </div>
+        </div>
+        
+        <div class="scattered-pills">
+            <div class="scattered-pill red pill-1"></div>
+            <div class="scattered-pill blue pill-2"></div>
+            <div class="scattered-pill green pill-3"></div>
+            <div class="scattered-pill yellow pill-4"></div>
+            <div class="scattered-pill purple pill-5"></div>
+            <div class="scattered-pill pink pill-6"></div>
+            <div class="scattered-pill red pill-7"></div>
+            <div class="scattered-pill blue pill-8"></div>
+        </div>
+    </div>
+</body>
+</html> 
