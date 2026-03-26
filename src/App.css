@@ -7609,3 +7609,32 @@ section {
     border-radius: 10px;
   }
 }
+
+/* ===== MOBILE SKILLS CARD OPTIMIZATION ===== */
+@media (max-width: 768px) {
+  .premium-skills-track {
+    gap: 12px !important; /* Tighter gap between rows */
+  }
+
+  .premium-skill-card-marquee {
+    width: 155px !important; /* Smaller width to fit multiple cards */
+    padding: 25px 15px !important; /* Compact padding */
+    gap: 12px !important; /* Smaller gap between icon and text */
+    border-radius: 18px !important;
+  }
+
+  .premium-skill-card-marquee .premium-skill-icon-img {
+    width: 32px !important; /* Smaller icons */
+    height: 32px !important;
+  }
+
+  .premium-skill-card-marquee .premium-skill-name {
+    font-size: 0.95rem !important; /* Smaller text */
+    letter-spacing: 0.01em !important;
+  }
+
+  .marquee-group {
+    gap: 12px !important; /* Reduced gap between cards in the same row */
+    padding-right: 12px !important;
+  }
+}
