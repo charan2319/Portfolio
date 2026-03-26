@@ -6238,51 +6238,61 @@ section {
   .mobile-floating-nav {
     display: flex;
     position: fixed;
-    bottom: 25px;
+    bottom: 20px; /* Brining it slightly lower */
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    border-radius: 60px;
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.85); /* Slightly more solid for legibility */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 40px; /* More compact radius */
+    padding: 6px 10px; /* Reduced padding */
     z-index: 1000;
-    gap: 8px;
+    gap: 4px; /* Tighter gap */
   }
   
   .mobile-nav-item {
     position: relative;
     display: flex;
+    flex-direction: column; /* Icon above label */
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    color: #475569;
+    padding: 6px 12px;
+    min-width: 55px; /* Consistent width but compact */
+    height: auto; /* Allow auto height for label */
+    border-radius: 20px;
+    color: #64748b;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
   }
   
   .mobile-nav-item.active-mobile-link {
-    color: #FAFAFA;
+    color: #6366f1; /* Theme indigo for active */
   }
   
   .mobile-active-pill {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #1e293b;
-    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    background: rgba(99, 102, 241, 0.08); /* Faint indigo background for active */
+    border-radius: 16px;
     z-index: 1;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   }
   
   .mobile-nav-icon {
-    font-size: 1.1rem;
+    font-size: 1rem; /* Slightly smaller icon */
+    margin-bottom: 2px;
+  }
+
+  .mobile-nav-label {
+    font-size: 0.65rem; /* Compact label */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 }
 
