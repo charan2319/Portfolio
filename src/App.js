@@ -11,7 +11,6 @@ import {
 } from "./data.js";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
   const [visibleSkills, setVisibleSkills] = useState(false);
   const [modalVideo, setModalVideo] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,9 +18,9 @@ function App() {
   // const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    document.body.className = darkMode ? "dark-mode" : "light-mode";
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+    document.body.className = "light-mode";
+    localStorage.removeItem("darkMode");
+  }, []);
 
   useEffect(() => {
     const skillSection = document.getElementById("skills");
@@ -105,15 +104,6 @@ function App() {
             <span></span>
             <span></span>
             <span></span>
-          </button>
-          <button
-            className="darkmode-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            <span className="toggle-icon">
-              {darkMode ? "☀️" : "🌙"}
-            </span>
           </button>
         </div>
       </nav>
