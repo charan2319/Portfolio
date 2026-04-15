@@ -14,7 +14,7 @@ import {
 } from "./data.js";
 
 
-const ProjectCard = ({ title, category, desc, tech, image, video, link, onPlayVideo }) => {
+const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -25,7 +25,9 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onPlayVi
       viewport={{ once: true, margin: "-50px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -10 }}
+      onClick={() => onClick({ title, category, desc, tech, image, video, link })}
+      style={{ cursor: 'pointer' }}
     >
       <div className="pro-project-media">
         {isHovered && video ? (
@@ -42,28 +44,13 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onPlayVi
         ) : (
           <img src={image} alt={title} className="project-img-default" style={{ opacity: isHovered && video ? 0 : 1 }} />
         )}
-        
-      </div>
-      <div className="pro-project-content">
-        <span className={`pro-project-category-text ${category.className}`}>{category.name}</span>
-        <h3 className="pro-project-title">{title}</h3>
-        <p className="pro-project-desc">{desc}</p>
-        <div className="pro-tech-tags">
-          {tech.map((t, i) => <span key={i} className="pro-tech-tag premium-tag">{t}</span>)}
+        <div className="pro-project-overlay">
+          <span className="view-details-text">Click for Full Details</span>
         </div>
-        {(link || video) && (
-          <div className="pro-project-buttons">
-            {video ? (
-              <button onClick={() => onPlayVideo && onPlayVideo(video)} className="pro-btn pro-btn-details">
-                Watch Full Video
-              </button>
-            ) : link ? (
-              <a href={link} target="_blank" rel="noopener noreferrer" className="pro-btn pro-btn-details">
-                View Project
-              </a>
-            ) : null}
-          </div>
-        )}
+      </div>
+      <div className="pro-project-content-minimal">
+        <span className={`pro-project-category-tag ${category.className}`}>{category.name}</span>
+        <h3 className="pro-project-title-minimal">{title}</h3>
       </div>
     </motion.div>
   );
@@ -166,28 +153,9 @@ function App() {
   const [modalVideo, setModalVideo] = useState(null);
   const [certViewImg, setCertViewImg] = useState(null);
 
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  useEffect(() => {
-    let scrollTimeout;
-    const handleScroll = () => {
-      // Hide navbar while scrolling
-      setIsNavbarVisible(false);
-      
-      // Clear previous timeout and set a new one to show navbar after scroll stops
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setIsNavbarVisible(true);
-      }, 300); // Wait 300ms after scroll stops to show navbar
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
+  // Parallax setup for Hero Section
 
   // Parallax setup for Hero Section
   const { scrollY } = useScroll();
@@ -272,6 +240,18 @@ function App() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [mobileMenuOpen]);
 
+  // Handle Scroll Locking for Project Detail View
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedProject]);
+
   // Parallax mouse movement effect
   // useEffect(() => {
   //   const handleMouseMove = (e) => {
@@ -295,39 +275,38 @@ function App() {
 
   return (
     <div>
-      {/* ===== Floating Glass Navbar (Desktop) ===== */}
-      <nav className={`desktop-glass-nav ${isNavbarVisible ? 'visible' : 'hidden'}`}>
-        <ul className="desktop-nav-menu">
-          {navItems.map((item) => (
-            <li key={item.id} className="nav-item-wrapper">
-              <a 
-                href={item.id === 'home' ? '#' : `#${item.id}`}
-                className={activeSection === item.id ? 'active-link' : 'inactive-link'}
-                onClick={() => setActiveSection(item.id)}
-              >
-                {activeSection === item.id && (
-                  <motion.div 
-                    layoutId="desktop-pill" 
-                    className="desktop-active-pill" 
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <span className="nav-text"><i className={`${item.icon} nav-icon-mobile-split`}></i> {item.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+      {/* ===== Universal Top Header ===== */}
+      <nav className="desktop-header">
+        <div className="header-container">
+          <div className="logo-container desktop-only">
+            <span className="header-logo">MC</span>
+          </div>
+          <ul className="desktop-nav-menu">
+            {navItems.map((item) => (
+              <li key={item.id} className={`nav-item-wrapper ${item.id === 'about' || item.id === 'achievements' ? 'desktop-only' : ''}`}>
+                <a 
+                  href={item.id === 'home' ? '#' : `#${item.id}`}
+                  className={activeSection === item.id ? 'active-link' : 'inactive-link'}
+                  onClick={() => setActiveSection(item.id)}
+                >
+                  {activeSection === item.id && (
+                    <motion.div 
+                      layoutId="desktop-pill" 
+                      className="desktop-active-pill" 
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <span className="nav-text">
+                    <i className={`${item.icon} header-item-icon`}></i>
+                    <span className="header-item-label">{item.label}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
 
-      {/* Mobile-Only Contact Button (Top Right) */}
-      <a 
-        href="#contact" 
-        className={`mobile-contact-btn mobile-only ${isNavbarVisible ? 'visible' : 'hidden'}`}
-        onClick={() => setActiveSection('contact')}
-      >
-        <i className="fas fa-envelope" style={{ marginRight: '8px' }}></i>
-        Contact
-      </a>
 
 {/* ===== Premium Split Hero Section ===== */}
       <motion.header 
@@ -381,8 +360,8 @@ function App() {
               transition={{ delay: 1.4, ease: "easeOut" }}
             >
               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#contact" className="btn btn-outline">Contact Me</motion.a>
-              <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="/charan_app_developer.pdf" download className="btn btn-solid">
-                <span className="download-icon">&#128190;</span> Download Resume
+              <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="/charan_app_developer.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-solid">
+                View Resume
               </motion.a>
             </motion.div>
           </motion.div>
@@ -413,12 +392,10 @@ function App() {
           >
             <h3>About Me</h3>
             <p>
-              I am a passionate <span className="highlight-text">B.Tech Computer Science and Engineering</span> student from
-              <span className="highlight-text"> Alliance University</span> with a strong academic foundation (CGPA: 8.1) and
-              expertise in both <span className="highlight-text">iOS app development</span> and <span className="highlight-text">data analytics</span>.
+              I am a dedicated <strong>Computer Science student</strong> at Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
             </p>
             <p>
-              Specializing in Python, Swift, Firebase, Power BI, Excel, and MySQL. Combines analytical thinking with creative problem-solving.
+              By combining technical proficiency in Python and Swift with a strategic approach to data visualization in Power BI, I build applications that are as functional as they are intuitive.
             </p>
           </motion.div>
 
@@ -434,29 +411,6 @@ function App() {
           <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             <div className="stat-number">5+</div>
             <div className="stat-label">Tech Stack</div>
-          </motion.div>
-
-          {/* Skills Box */}
-          <motion.div 
-            className="bento-box bento-skills"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            <h3>Core Expertise</h3>
-            <div className="bento-skills-flex">
-              <span className="bento-skill-tag">Python</span>
-              <span className="bento-skill-tag">Flutter</span>
-              <span className="bento-skill-tag">Swift</span>
-              <span className="bento-skill-tag">MySQL</span>
-              <span className="bento-skill-tag">Firebase</span>
-              <span className="bento-skill-tag">Power BI</span>
-              <span className="bento-skill-tag">Excel</span>
-              <span className="bento-skill-tag">GitHub</span>
-              <span className="bento-skill-tag">VS Code</span>
-              <span className="bento-skill-tag">Xcode</span>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -474,47 +428,66 @@ function App() {
           <h2 className="section-title" style={{ marginBottom: "20px" }}>Technical Skills</h2>
         </motion.div>
         
-        <div className="skills-marquee-container">
-          {/* Desktop: Single Row | Mobile: Two Rows */}
-          <div className="premium-skills-track">
-            {/* Row 1: Skills 1-4 (Mobile: LTR) */}
-            <div className="marquee-row-wrapper mobile-ltr">
-              {[...Array(2)].map((_, groupIndex) => (
-                <div key={`row1-group-${groupIndex}`} className="marquee-group marquee-right-anim">
-                  {[
-                    { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
-                    { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
-                    { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
-                    { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" }
-                  ].map((skill, index) => (
-                    <div key={index} className="premium-skill-card-marquee">
-                      <img src={skill.src} alt={skill.name} className="premium-skill-icon-img" />
-                      <span className="premium-skill-name">{skill.name}</span>
-                    </div>
-                  ))}
-                  {/* Desktop Only items to fill Row 1 if needed, but for now we keep it balanced */}
-                </div>
-              ))}
-            </div>
+        {/* Professional Grid for Laptop View */}
+        <div className="skills-grid-desktop desktop-only">
+          {[
+            { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+            { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
+            { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+            { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
+            { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
+            { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
+            { name: "Excel", src: "/Excel.jpg" },
+            { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
+            { name: "Figma", src: "/figma.png" },
+            { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
+            { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
+          ].map((skill, index) => (
+            <motion.div 
+              key={index}
+              className="professional-skill-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -5, boxShadow: "0 12px 30px rgba(0,0,0,0.1)" }}
+            >
+              <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
+              <span className="professional-skill-name">{skill.name}</span>
+            </motion.div>
+          ))}
+        </div>
 
-            {/* Row 2: Skills 5-8 (Mobile: RTL) */}
-            <div className="marquee-row-wrapper mobile-rtl">
-              {[...Array(2)].map((_, groupIndex) => (
-                <div key={`row2-group-${groupIndex}`} className="marquee-group marquee-left-anim">
-                  {[
-                    { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
-                    { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
-                    { name: "Excel", src: "/Excel.jpg" },
-                    { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" }
-                  ].map((skill, index) => (
-                    <div key={index} className="premium-skill-card-marquee">
-                      <img src={skill.src} alt={skill.name} className="premium-skill-icon-img" />
-                      <span className="premium-skill-name">{skill.name}</span>
-                    </div>
-                  ))}
+        {/* Mobile Technical Skills Section */}
+        <div className="mobile-only mobile-skills-container">
+          <div className="skills-grid-mobile">
+            {[
+              { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+              { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
+              { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+              { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
+              { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
+              { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
+              { name: "Excel", src: "/Excel.jpg" },
+              { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
+              { name: "Figma", src: "/figma.png" },
+              { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
+              { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
+            ].map((skill, index) => (
+              <motion.div 
+                key={index}
+                className="mobile-skill-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <div className="mobile-skill-icon-wrapper">
+                  <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
                 </div>
-              ))}
-            </div>
+                <span className="mobile-skill-name">{skill.name}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -532,11 +505,21 @@ function App() {
         
         <div className="pro-projects-grid">
           <ProjectCard 
+            title="Founder's Mart"
+            category={{ name: 'E-Commerce', className: 'web-dev' }}
+            desc="A full-stack e-commerce platform built for efficient product management and an optimized shopping experience."
+            tech={['React', 'Node.js', 'PostgreSQL']}
+            image="/hero.png"
+            link="http://www.ecellstore.com"
+            onClick={setSelectedProject}
+          />
+          <ProjectCard 
             title="Alliance Alumni Connect"
             category={{ name: 'App Development', className: 'app-dev' }}
             desc="A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network."
             tech={['Flutter', 'Firebase', 'Cloudinary']}
             image="/Alumni.PNG"
+            onClick={setSelectedProject}
           />
           <ProjectCard 
             title="Mymedicare"
@@ -545,7 +528,7 @@ function App() {
             tech={['Swift', 'Firebase', 'Xcode']}
             image="/unnamed-1.jpg"
             video="/VIDEO-2025-11-22-23-56-57.MP4"
-            onPlayVideo={openVideoModal}
+            onClick={setSelectedProject}
           />
           <ProjectCard 
             title="Road Accident Analysis Dashboard"
@@ -554,6 +537,7 @@ function App() {
             tech={['Power BI']}
             image="/IMG_6393.jpg"
             link="https://github.com/charan2319/Road-Accident-Analysis-Dashboard"
+            onClick={setSelectedProject}
           />
         </div>
       </section>
@@ -808,10 +792,97 @@ function App() {
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
-      <footer>
-        <p>© 2025 Maruveni Charan. All Rights Reserved.</p>
+      {/* ===== Simplified Footer ===== */}
+      <footer className="portfolio-footer">
+        <div className="footer-container">
+          <div className="footer-bottom">
+            <p>&copy; {new Date().getFullYear()} Maruveni Charan. All Rights Reserved.</p>
+          </div>
+        </div>
       </footer>
+
+      {/* ===== Project Detail Modal ===== */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div 
+            className="project-detail-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div 
+              className="project-page-view"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Internal Project Header / Navigation */}
+              <div className="project-page-nav">
+                <button className="project-back-btn" onClick={() => setSelectedProject(null)}>
+                  <i className="fas fa-arrow-left"></i>
+                  <span>Back to Portfolio</span>
+                </button>
+                <div className="project-nav-title">{selectedProject.title}</div>
+              </div>
+              
+              <div className="project-page-content">
+                <div className="project-page-container">
+                  <div className="project-page-hero">
+                    {selectedProject.video ? (
+                      <video 
+                        src={selectedProject.video} 
+                        autoPlay 
+                        muted 
+                        loop 
+                        controls 
+                        className="project-hero-media"
+                      />
+                    ) : (
+                      <img src={selectedProject.image} alt={selectedProject.title} className="project-hero-media" />
+                    )}
+                  </div>
+                  
+                  <div className="project-page-info">
+                    <div className="modal-tag-row">
+                      <span className={`pro-project-category-tag ${selectedProject.category.className}`}>
+                        {selectedProject.category.name}
+                      </span>
+                    </div>
+                    <h1 className="project-page-title">{selectedProject.title}</h1>
+                    
+                    <div className="project-page-grid-details">
+                      <div className="project-info-section">
+                        <h4 className="modal-section-title">Project Overview</h4>
+                        <p className="modal-description">{selectedProject.desc}</p>
+                      </div>
+
+                      <div className="project-info-section">
+                        <h4 className="modal-section-title">Technologies Used</h4>
+                        <div className="modal-tech-tags">
+                          {selectedProject.tech.map((t, i) => (
+                            <span key={i} className="modal-tech-tag">{t}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {selectedProject.link && (
+                        <div className="project-page-actions">
+                          <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="modal-action-btn">
+                            Visit Website <i className="fas fa-external-link-alt"></i>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

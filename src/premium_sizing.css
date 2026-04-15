@@ -92,6 +92,10 @@
 }
 
 @media (max-width: 768px) {
+  .bento-section {
+    min-height: auto !important;
+    padding: 40px 5% !important;
+  }
   .pro-projects-grid {
     grid-template-columns: 1fr !important;
   }
