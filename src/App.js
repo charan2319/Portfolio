@@ -440,6 +440,7 @@ function App() {
             { name: "Excel", src: "/Excel.jpg" },
             { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
             { name: "Figma", src: "/figma.png" },
+            { name: "Sketch", src: "/sketch.svg" },
             { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
             { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
           ].map((skill, index) => (
@@ -471,6 +472,7 @@ function App() {
               { name: "Excel", src: "/Excel.jpg" },
               { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
               { name: "Figma", src: "/figma.png" },
+              { name: "Sketch", src: "/sketch.svg" },
               { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
               { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
             ].map((skill, index) => (
@@ -607,10 +609,10 @@ function App() {
         </div>
       </section>
 
-      {/* ===== Professional Experience Section ===== */}
+      {/* ===== Internship Experience Section ===== */}
       <section className="bg-glass-section" id="experience">
         <motion.div className="section-header-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="section-title">Professional Experience</h2>
+          <h2 className="section-title">Internship Experience</h2>
         </motion.div>
         <div className="ultra-premium-timeline">
           <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>

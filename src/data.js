@@ -27,6 +27,13 @@ export const servicesData = [
     description: "Building beautiful, natively compiled, multi-platform applications from a single codebase.",
     list: ["Cross-platform Development", "Dart Programming", "Custom UI Animations", "API Integration"],
     isImg: true
+  },
+  {
+    icon: "/sketch.svg",
+    title: "UI/UX Design",
+    description: "Crafting intuitive, visually stunning user interfaces and seamless user experiences that delight and engage.",
+    list: ["Wireframing & Prototyping", "Visual Design", "User Research", "Sketch & Figma"],
+    isImg: true
   }
 ];
 
