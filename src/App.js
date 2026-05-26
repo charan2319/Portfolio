@@ -17,20 +17,29 @@ import {
 const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const handleOpen = () => onClick({ title, category, desc, tech, image, video, link });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   
   return (
     <motion.div 
       className="pro-project-card premium-card"
-      initial={{ opacity: 0, y: 60, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-      viewport={{ once: false, amount: 0.2 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ y: -10 }}
+      initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.95 }}
+      whileInView={isMobile ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: isMobile ? 0.3 : 0.6, ease: [0.25, 1, 0.5, 1] }}
+      viewport={{ once: false, amount: 0.15 }}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
       <div className="pro-project-media">
-        {isHovered && video ? (
+        {!isMobile && isHovered && video ? (
           <motion.video 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
@@ -73,7 +82,7 @@ const WordReveal = ({ text, className, delayOffset = 0 }) => {
   };
 
   return (
-    <motion.div style={{ display: "inline-block" }} className={className} variants={container} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+    <motion.div style={{ display: "inline-block" }} className={className} variants={container} initial="hidden" whileInView="visible" viewport={{ once: false }}>
       {words.map((word, index) => (
         <motion.span variants={child} key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
           {word === "Charan" || word === "Maruveni" ? (
@@ -182,6 +191,191 @@ const ServiceSlider = ({ services }) => {
         ))}
       </div>
     </div>
+  );
+};
+
+const Desktop3DServices = ({ services }) => {
+  const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isLargeDesktop = screenWidth > 1200;
+  const isMediumDesktop = screenWidth > 992;
+  
+  // Custom horizontal fan-out offsets so their bottom edges touch beautifully
+  // Custom horizontal fan-out offsets so their bottom edges touch beautifully
+  const offsetsX = isLargeDesktop 
+    ? [-300, -100, 100, 300] 
+    : isMediumDesktop 
+      ? [-280, -93, 93, 280]
+      : [-260, -87, 87, 260];
+      
+  const rotY = [0, 0, 0, 0];
+  const rotZ = [-16, -5, 5, 16]; // Bended slightly more for clearer top gaps
+  const yOffset = [24, -12, -12, 24]; // Middle cards go up, side cards go down!
+  const zOffset = [0, 0, 0, 0];
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.1,
+      }
+    }
+  };
+
+  return (
+    <motion.div 
+      className="pro-services-3d-stage desktop-only"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.25 }}
+    >
+      {services.map((service, idx) => {
+        const cardVariants = {
+          hidden: {
+            opacity: 0,
+            x: 0,
+            y: 0,
+            rotateY: 0,
+            rotateZ: 0,
+            z: -150,
+            scale: 0.82,
+          },
+          visible: {
+            opacity: 1,
+            x: offsetsX[idx],
+            y: yOffset[idx],
+            rotateY: rotY[idx],
+            rotateZ: rotZ[idx],
+            z: zOffset[idx],
+            scale: 1,
+            transition: {
+              type: "spring",
+              stiffness: 85,
+              damping: 17,
+              mass: 1.1
+            }
+          }
+        };
+
+        return (
+          <motion.div
+            key={idx}
+            className={`pro-service-card-3d service-theme-card-${idx}`}
+            variants={cardVariants}
+            style={{ transformOrigin: "bottom center" }}
+            whileHover={{
+              scale: 1.05,
+              z: 120,
+              y: -30,
+              rotateY: 0,
+              rotateZ: 0,
+              boxShadow: "0 30px 70px rgba(0, 0, 0, 0.18)",
+              transition: { type: "spring", stiffness: 120, damping: 20 }
+            }}
+          >
+            <div className="pro-service-icon-bg">
+              {service.isImg ? (
+                <img src={service.icon} alt={service.title} style={{width: "42px", height: "42px"}} />
+              ) : (
+                <span className="pro-service-icon">{service.icon}</span>
+              )}
+            </div>
+            <h3 className="pro-service-title">{service.title}</h3>
+            <p className="pro-service-desc">{service.description}</p>
+            <ul className="pro-service-list">
+              {service.list && service.list.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
+};
+
+const Mobile3DProjects = ({ onSelect }) => {
+  const offsetsX = [-84, -28, 28, 84];
+  const rotZ = [-15, -5, 5, 15];
+  const yOffset = [16, -8, -8, 16];
+  
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+      }
+    }
+  };
+
+  return (
+    <motion.div 
+      className="pro-projects-3d-stage-mobile"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.15 }}
+    >
+      {projectsList.map((proj, idx) => {
+        const cardVariants = {
+          hidden: {
+            opacity: 0,
+            x: 0,
+            y: 0,
+            rotateZ: 0,
+            scale: 0.85,
+          },
+          visible: {
+            opacity: 1,
+            x: offsetsX[idx],
+            y: yOffset[idx],
+            rotateZ: rotZ[idx],
+            scale: 1,
+            transition: {
+              type: "spring",
+              stiffness: 95,
+              damping: 17
+            }
+          }
+        };
+
+        return (
+          <motion.div
+            key={idx}
+            className={`pro-project-card-mobile-3d proj-theme-card-mobile-${idx}`}
+            variants={cardVariants}
+            style={{ transformOrigin: "bottom center" }}
+            onClick={() => onSelect(proj)}
+            whileTap={{
+              scale: 1.05,
+              rotateZ: 0,
+              z: 50,
+              transition: { duration: 0.2 }
+            }}
+          >
+            <div className="pro-project-media-mobile-3d">
+              <img src={proj.image} alt={proj.title} className="project-img-mobile-3d" />
+            </div>
+            <div className="pro-project-content-mobile-3d">
+              <div>
+                <span className={`pro-project-category-tag-mobile-3d ${proj.category.className}`}>
+                  {proj.category.name}
+                </span>
+                <h3 className="pro-project-title-mobile-3d">{proj.title}</h3>
+              </div>
+              <span className="mobile-tap-details-text">Tap to view →</span>
+            </div>
+          </motion.div>
+        );
+      })}
+    </motion.div>
   );
 };
 
@@ -470,7 +664,7 @@ function App() {
             className="bento-box bento-bio"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ delay: 0.1 }}
           >
             <h3>About Me</h3>
@@ -483,15 +677,15 @@ function App() {
           </motion.div>
 
           {/* Stats Boxes */}
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.2 }}>
             <div className="stat-number">8.1</div>
             <div className="stat-label">CGPA</div>
           </motion.div>
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.3 }}>
             <div className="stat-number">3+</div>
             <div className="stat-label">Projects</div>
           </motion.div>
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.4 }}>
             <div className="stat-number">5+</div>
             <div className="stat-label">Tech Stack</div>
           </motion.div>
@@ -526,7 +720,7 @@ function App() {
               className="professional-skill-card"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: index * 0.05 }}
               whileHover={{ y: -5, boxShadow: "0 12px 30px rgba(0,0,0,0.1)" }}
             >
@@ -558,7 +752,7 @@ function App() {
                 className="mobile-skill-card"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ delay: index * 0.05 }}
               >
                 <div className="mobile-skill-icon-wrapper">
@@ -577,7 +771,12 @@ function App() {
           <h2 className="pro-projects-title">Featured Work</h2>
         </div>
         
-        <ProjectCarousel onSelect={setSelectedProject} />
+        <div className="desktop-only">
+          <ProjectCarousel onSelect={setSelectedProject} />
+        </div>
+        <div className="mobile-only">
+          <Mobile3DProjects onSelect={setSelectedProject} />
+        </div>
       </section>
 
       {/* ===== Services I Offer Section ===== */}
@@ -585,33 +784,8 @@ function App() {
         <div className="section-header-center">
           <h2 className="section-title">Services I Offer</h2>
         </div>
-        {/* Desktop View: Grid */}
-        <div className="pro-services-grid desktop-only">
-          {servicesData.map((service, idx) => (
-            <motion.div 
-              key={idx} 
-              className="pro-service-card" 
-              initial={{ opacity: 0, y: 30 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true }} 
-              transition={{ delay: idx * 0.1 }} 
-              whileHover={{ y: -5 }}
-            >
-              <div className="pro-service-icon-bg">
-                {service.isImg ? (
-                  <img src={service.icon} alt={service.title} style={{width: "40px", height: "40px"}} />
-                ) : (
-                  <span className="pro-service-icon">{service.icon}</span>
-                )}
-              </div>
-              <h3 className="pro-service-title">{service.title}</h3>
-              <p className="pro-service-desc">{service.description}</p>
-              <ul className="pro-service-list">
-                {service.list && service.list.map((item, i) => <li key={i}>{item}</li>)}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
+        {/* Desktop View: 3D Coverflow */}
+        <Desktop3DServices services={servicesData} />
 
         {/* Mobile View: Swipable Slider */}
         <div className="mobile-only">
@@ -630,7 +804,7 @@ function App() {
             { year: '2022', title: '12th Grade', sub: 'Amaravathi Jr. College', detail: 'Percentage: 76%', icon: 'fas fa-school' },
             { year: '2020', title: '10th Grade', sub: 'PCMR EM School', detail: 'Percentage: 100%', icon: 'fas fa-award' }
           ].map((item, i) => (
-            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}>
+            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.15 }}>
               <div className="ultra-timeline-icon">
                 <i className={item.icon}></i>
               </div>
@@ -651,7 +825,7 @@ function App() {
           <h2 className="section-title">Internship Experience</h2>
         </div>
         <div className="ultra-premium-timeline">
-          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: 0.1 }}>
             <div className="ultra-timeline-icon exp-icon">
               <i className="fas fa-briefcase"></i>
             </div>
@@ -688,7 +862,7 @@ function App() {
               className="cert-premium-card"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -6 }}
             >
@@ -749,7 +923,7 @@ function App() {
               className="unified-card"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -6 }}
             >
