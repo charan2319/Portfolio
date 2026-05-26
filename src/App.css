@@ -8449,7 +8449,7 @@ section {
 
   .mobile-project-img-wrap {
     width: 100%;
-    height: 110px;
+    height: 160px;
     overflow: hidden;
     background: #f1f5f9;
   }
@@ -8462,10 +8462,10 @@ section {
   }
 
   .mobile-project-info {
-    padding: 10px 10px 12px;
+    padding: 12px 12px 14px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
   }
 
   .mobile-project-badge {
@@ -8482,10 +8482,10 @@ section {
   .mobile-project-badge.data-analytics { background: #ffedd5; color: #9a3412; }
 
   .mobile-project-name {
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 800;
     color: #0f172a;
-    line-height: 1.25;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
