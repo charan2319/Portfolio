@@ -105,16 +105,46 @@ const ServiceSlider = ({ services }) => {
           }}
         >
           {services.map((service, idx) => {
-            const isCenter = idx === index;
+            const relativeIndex = (idx - index + services.length) % services.length;
+            const isCenter = relativeIndex === 0;
+            
+            // Stacking values matching a deck-of-cards offset to the right
+            let scale = 1;
+            let opacity = 0;
+            let x = 0;
+            let zIndex = 1;
+
+            if (relativeIndex === 0) {
+              scale = 1;
+              opacity = 1;
+              x = 0;
+              zIndex = 10;
+            } else if (relativeIndex === 1) {
+              scale = 0.95;
+              opacity = 0.85;
+              x = 24; // Offset to the right side
+              zIndex = 9;
+            } else if (relativeIndex === 2) {
+              scale = 0.90;
+              opacity = 0.50;
+              x = 48; // Shifted further behind
+              zIndex = 8;
+            } else {
+              scale = 0.85;
+              opacity = 0;
+              x = 72;
+              zIndex = 1;
+            }
+
             return (
               <motion.div 
                 key={idx} 
                 className={`premium-slider-card ${isCenter ? 'active' : 'inactive'}`}
                 animate={{ 
-                  scale: isCenter ? 1.05 : 0.9,
-                  opacity: isCenter ? 1 : 0.6,
-                  x: (idx - index) * 300,
-                  zIndex: isCenter ? 10 : 1
+                  scale,
+                  opacity,
+                  x,
+                  zIndex
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
