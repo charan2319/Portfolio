@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import "./App.css";
 import "./premium_timeline.css";
@@ -16,18 +16,18 @@ import {
 
 const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const handleOpen = () => onClick({ title, category, desc, tech, image, video, link });
   
   return (
     <motion.div 
       className="pro-project-card premium-card"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      initial={{ opacity: 0, y: 60, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+      viewport={{ once: false, amount: 0.2 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover={{ y: -10 }}
-      onClick={() => onClick({ title, category, desc, tech, image, video, link })}
-      style={{ cursor: 'pointer' }}
     >
       <div className="pro-project-media">
         {isHovered && video ? (
@@ -42,15 +42,17 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick 
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
         ) : (
-          <img src={image} alt={title} className="project-img-default" style={{ opacity: isHovered && video ? 0 : 1 }} />
+          <img src={image} alt={title} className="project-img-default" />
         )}
-        <div className="pro-project-overlay">
-          <span className="view-details-text">Click for Full Details</span>
-        </div>
       </div>
       <div className="pro-project-content-minimal">
-        <span className={`pro-project-category-tag ${category.className}`}>{category.name}</span>
-        <h3 className="pro-project-title-minimal">{title}</h3>
+        <div className="pro-card-bottom-row">
+          <div className="pro-card-left">
+            <span className={`pro-project-category-tag ${category.className}`}>{category.name}</span>
+            <h3 className="pro-project-title-minimal">{title}</h3>
+          </div>
+          <button className="card-view-details-btn" onClick={handleOpen}>View Details →</button>
+        </div>
       </div>
     </motion.div>
   );
@@ -148,6 +150,28 @@ const ServiceSlider = ({ services }) => {
   );
 };
 
+const projectsList = [
+  { title: "Founder's Mart", category: { name: 'E-Commerce', className: 'web-dev' }, desc: "A full-stack e-commerce platform built for efficient product management and an optimized shopping experience.", tech: ['React', 'Node.js', 'PostgreSQL'], image: "/hero.png", link: "http://www.ecellstore.com" },
+  { title: "Alliance Alumni Connect", category: { name: 'App Development', className: 'app-dev' }, desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.", tech: ['Flutter', 'Firebase', 'Cloudinary'], image: "/Alumni.PNG" },
+  { title: "Mymedicare", category: { name: 'App Development', className: 'app-dev' }, desc: "An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features.", tech: ['Swift', 'Firebase', 'Xcode'], image: "/unnamed-1.jpg", video: "/VIDEO-2025-11-22-23-56-57.MP4" },
+  { title: "Road Accident Analysis Dashboard", category: { name: 'Data Analytics', className: 'data-analytics' }, desc: "A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety.", tech: ['Power BI'], image: "/IMG_6393.jpg", link: "https://github.com/charan2319/Road-Accident-Analysis-Dashboard" }
+];
+
+const ProjectCarousel = ({ onSelect }) => {
+  return (
+    <div className="proj-flat-stack">
+      {projectsList.map((proj, i) => (
+        <div
+          key={proj.title}
+          className={`proj-flat-slide${i === projectsList.length - 1 ? ' last' : ''}`}
+        >
+          <ProjectCard {...proj} onClick={onSelect} />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 function App() {
   const [visibleSkills, setVisibleSkills] = useState(false);
   const [modalVideo, setModalVideo] = useState(null);
@@ -164,7 +188,24 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
+  const handleNavClick = (e, id) => {
+    e.preventDefault();
+    setActiveSection(id);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    } else if (id === 'home') {
+      const wrapper = document.querySelector('.page-wrapper');
+      if (wrapper) {
+        wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
   useEffect(() => {
+    const wrapper = document.querySelector('.page-wrapper');
+    if (!wrapper) return;
+
     const handleScroll = () => {
       const sections = ['about', 'skills', 'projects', 'achievements', 'contact'];
       let current = 'home';
@@ -179,15 +220,15 @@ function App() {
         }
       }
       
-      if (window.scrollY < 150) {
+      if (wrapper.scrollTop < 150) {
         current = 'home';
       }
       
       setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    wrapper.addEventListener('scroll', handleScroll);
+    return () => wrapper.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navItems = [
@@ -274,7 +315,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="page-wrapper">
       {/* ===== Universal Top Header ===== */}
       <nav className="desktop-header">
         <div className="header-container">
@@ -287,7 +328,7 @@ function App() {
                 <a 
                   href={item.id === 'home' ? '#' : `#${item.id}`}
                   className={activeSection === item.id ? 'active-link' : 'inactive-link'}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={(e) => handleNavClick(e, item.id)}
                 >
                   {activeSection === item.id && (
                     <motion.div 
@@ -341,7 +382,7 @@ function App() {
             </h1>
             
             <h2 className="hero-subtitle" style={{ overflow: "hidden" }}>
-              <WordReveal text="Data Analyst | Flutter and iOS App Developer" delayOffset={5} />
+              <WordReveal text="Data Analyst | App Developer | UI/UX Designer" delayOffset={5} />
             </h2>
             
             <motion.p 
@@ -350,7 +391,7 @@ function App() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 1.2, ease: "easeOut" }}
             >
-              Passionate about building highly intuitive, multi-platform applications and transforming data into actionable insights through innovative technology solutions.
+              Passionate about crafting intuitive digital experiences — from designing elegant interfaces in Figma to building multi-platform apps and transforming data into actionable insights.
             </motion.p>
             
             <motion.div 
@@ -372,14 +413,9 @@ function App() {
 
       {/* ===== Bento Grid Section (About + Skills + Stats) ===== */}
       <section className="bento-section" id="about">
-        <motion.div 
-          className="bento-header"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className="bento-header">
           <h2 className="section-title">Overview</h2>
-        </motion.div>
+        </div>
         
         <div className="bento-grid">
           {/* Bio Box */}
@@ -417,16 +453,10 @@ function App() {
 
       
       {/* ===== Premium Single-Row Skills Marquee Section ===== */}
-      <section className="skills-section premium-skills" id="skills" style={{ overflow: "hidden", padding: "100px 0" }}>
-        <motion.div 
-          className="section-header-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          style={{ marginBottom: "60px" }}
-        >
+      <section className="skills-section premium-skills" id="skills" style={{ overflow: "hidden", padding: "25px 0 40px" }}>
+        <div className="section-header-center" style={{ marginBottom: "20px" }}>
           <h2 className="section-title" style={{ marginBottom: "20px" }}>Technical Skills</h2>
-        </motion.div>
+        </div>
         
         {/* Professional Grid for Laptop View */}
         <div className="skills-grid-desktop desktop-only">
@@ -496,59 +526,18 @@ function App() {
 
       {/* ===== Projects Section ===== */}
       <section className="projects-section pro-projects-section" id="projects">
-        <motion.div 
-          className="section-header-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className="section-header-center">
           <h2 className="pro-projects-title">Featured Work</h2>
-        </motion.div>
-        
-        <div className="pro-projects-grid">
-          <ProjectCard 
-            title="Founder's Mart"
-            category={{ name: 'E-Commerce', className: 'web-dev' }}
-            desc="A full-stack e-commerce platform built for efficient product management and an optimized shopping experience."
-            tech={['React', 'Node.js', 'PostgreSQL']}
-            image="/hero.png"
-            link="http://www.ecellstore.com"
-            onClick={setSelectedProject}
-          />
-          <ProjectCard 
-            title="Alliance Alumni Connect"
-            category={{ name: 'App Development', className: 'app-dev' }}
-            desc="A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network."
-            tech={['Flutter', 'Firebase', 'Cloudinary']}
-            image="/Alumni.PNG"
-            onClick={setSelectedProject}
-          />
-          <ProjectCard 
-            title="Mymedicare"
-            category={{ name: 'App Development', className: 'app-dev' }}
-            desc="An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features."
-            tech={['Swift', 'Firebase', 'Xcode']}
-            image="/unnamed-1.jpg"
-            video="/VIDEO-2025-11-22-23-56-57.MP4"
-            onClick={setSelectedProject}
-          />
-          <ProjectCard 
-            title="Road Accident Analysis Dashboard"
-            category={{ name: 'Data Analytics', className: 'data-analytics' }}
-            desc="A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety."
-            tech={['Power BI']}
-            image="/IMG_6393.jpg"
-            link="https://github.com/charan2319/Road-Accident-Analysis-Dashboard"
-            onClick={setSelectedProject}
-          />
         </div>
+        
+        <ProjectCarousel onSelect={setSelectedProject} />
       </section>
 
       {/* ===== Services I Offer Section ===== */}
       <section className="services-section" id="services">
-        <motion.div className="section-header-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div className="section-header-center">
           <h2 className="section-title">Services I Offer</h2>
-        </motion.div>
+        </div>
         {/* Desktop View: Grid */}
         <div className="pro-services-grid desktop-only">
           {servicesData.map((service, idx) => (
@@ -585,9 +574,9 @@ function App() {
 
       {/* ===== Education Journey Section ===== */}
       <section className="bg-glass-section" id="education">
-        <motion.div className="section-header-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div className="section-header-center">
           <h2 className="section-title">Education Journey</h2>
-        </motion.div>
+        </div>
         <div className="ultra-premium-timeline">
           {[
             { year: '2022 – 2026', title: 'B.Tech — Computer Science & Engineering', sub: 'Alliance University', detail: 'CGPA: 8.1', icon: 'fas fa-graduation-cap' },
@@ -611,9 +600,9 @@ function App() {
 
       {/* ===== Internship Experience Section ===== */}
       <section className="bg-glass-section" id="experience">
-        <motion.div className="section-header-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div className="section-header-center">
           <h2 className="section-title">Internship Experience</h2>
-        </motion.div>
+        </div>
         <div className="ultra-premium-timeline">
           <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
             <div className="ultra-timeline-icon exp-icon">
@@ -642,9 +631,9 @@ function App() {
 
       {/* ===== Certifications Section ===== */}
       <section className="bg-glass-section" id="certifications">
-        <motion.div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '60px' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
           <h2 className="section-title">Certifications</h2>
-        </motion.div>
+        </div>
         <div className="cert-premium-grid">
           {certificationsData.map((cert, i) => (
             <motion.div
@@ -684,9 +673,9 @@ function App() {
 
       {/* ===== Achievements Section ===== */}
       <section className="bg-glass-section" id="achievements">
-        <motion.div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '60px' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
           <h2 className="section-title">Achievements</h2>
-        </motion.div>
+        </div>
         <div className="unified-premium-grid">
           {[
             {
@@ -747,18 +736,21 @@ function App() {
 
       {/* ===== Contact Section ===== */}
       <section className="contact-section custom-contact-section fade-in" id="contact">
-        <h2 className="contact-heading">Get In Touch</h2>
-        <div className="contact-divider"></div>
-        <p className="contact-subtitle">
-          I'm always open to discussing new opportunities, projects, or just having a chat about technology and data analytics.
-        </p>
         <div className="contact-grid">
-          {/* Left: Let's Connect */}
-          <div className="contact-left">
-            <h3 className="contact-left-title">Let's Connect</h3>
-            <p className="contact-left-desc">
-              Whether you're looking for a data analyst to help with your next project, interested in collaborating on an app development venture, or just want to connect with a fellow tech enthusiast, I'd love to hear from you.
+          {/* Left Column: Text & Headers */}
+          <div className="contact-left-text">
+            <h2 className="contact-heading">Get In Touch</h2>
+            <div className="contact-divider"></div>
+            <p className="contact-subtitle">
+              I'm always open to discussing new opportunities, creative UI/UX design projects, or mobile app development ventures.
             </p>
+            <p className="contact-desc-detail">
+              Whether you're looking for a skilled UI/UX Designer or an App Developer to bring your product ideas to life, interested in collaborating on a creative venture, or just want to connect, I'd love to hear from you.
+            </p>
+          </div>
+
+          {/* Right Column: Card with Info */}
+          <div className="contact-right-card">
             <div className="contact-info-cards">
               <div className="contact-info-card">
                 <span className="contact-info-icon email-icon">📧</span>
@@ -792,16 +784,16 @@ function App() {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* ===== Simplified Footer ===== */}
-      <footer className="portfolio-footer">
-        <div className="footer-container">
-          <div className="footer-bottom">
-            <p>&copy; {new Date().getFullYear()} Maruveni Charan. All Rights Reserved.</p>
+        {/* ===== Simplified Footer Integrated Inside Contact Section ===== */}
+        <footer className="portfolio-footer">
+          <div className="footer-container">
+            <div className="footer-bottom">
+              <p>&copy; {new Date().getFullYear()} Maruveni Charan. All Rights Reserved.</p>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </section>
 
       {/* ===== Project Detail Modal ===== */}
       <AnimatePresence>
