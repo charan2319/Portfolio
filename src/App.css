@@ -14,6 +14,7 @@ html, body {
 .page-wrapper {
   height: 100vh;
   overflow-y: scroll;
+  overflow-x: hidden; /* Prevent horizontal scroll globally */
   scroll-snap-type: y mandatory;
   scroll-padding-top: 72px;
   scrollbar-width: none;
@@ -82,7 +83,15 @@ body {
   /* Disable aggressive scroll-snap on mobile to prevent sticking and skipping */
   .page-wrapper {
     scroll-snap-type: none !important;
+    overflow-x: hidden !important; /* Lock side swiping on mobile */
   }
+  
+  /* Prevent horizontal/lateral shift entirely on core containers */
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+  
   .hero-section,
   .bento-section,
   .skills-section,
@@ -92,6 +101,8 @@ body {
   .contact-section {
     scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important; /* Force no horizontal scroll on mobile layouts */
   }
 }
 
