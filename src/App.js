@@ -302,79 +302,43 @@ const Desktop3DServices = ({ services }) => {
 };
 
 const Mobile3DProjects = ({ onSelect }) => {
-  const offsetsX = [-84, -28, 28, 84];
-  const rotZ = [-15, -5, 5, 15];
-  const yOffset = [16, -8, -8, 16];
-  
   const containerVariants = {
     hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.08,
-      }
-    }
+    visible: { transition: { staggerChildren: 0.1 } }
+  };
+  const cardVariants = {
+    hidden: { opacity: 0, y: 24, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 16 } }
   };
 
   return (
-    <motion.div 
-      className="pro-projects-3d-stage-mobile"
+    <motion.div
+      className="mobile-projects-grid"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.15 }}
+      viewport={{ once: false, amount: 0.1 }}
     >
-      {projectsList.map((proj, idx) => {
-        const cardVariants = {
-          hidden: {
-            opacity: 0,
-            x: 0,
-            y: 0,
-            rotateZ: 0,
-            scale: 0.85,
-          },
-          visible: {
-            opacity: 1,
-            x: offsetsX[idx],
-            y: yOffset[idx],
-            rotateZ: rotZ[idx],
-            scale: 1,
-            transition: {
-              type: "spring",
-              stiffness: 95,
-              damping: 17
-            }
-          }
-        };
-
-        return (
-          <motion.div
-            key={idx}
-            className={`pro-project-card-mobile-3d proj-theme-card-mobile-${idx}`}
-            variants={cardVariants}
-            style={{ transformOrigin: "bottom center" }}
-            onClick={() => onSelect(proj)}
-            whileTap={{
-              scale: 1.05,
-              rotateZ: 0,
-              z: 50,
-              transition: { duration: 0.2 }
-            }}
-          >
-            <div className="pro-project-media-mobile-3d">
-              <img src={proj.image} alt={proj.title} className="project-img-mobile-3d" />
-            </div>
-            <div className="pro-project-content-mobile-3d">
-              <div>
-                <span className={`pro-project-category-tag-mobile-3d ${proj.category.className}`}>
-                  {proj.category.name}
-                </span>
-                <h3 className="pro-project-title-mobile-3d">{proj.title}</h3>
-              </div>
-              <span className="mobile-tap-details-text">Tap to view →</span>
-            </div>
-          </motion.div>
-        );
-      })}
+      {projectsList.map((proj, idx) => (
+        <motion.div
+          key={idx}
+          className={`mobile-project-card proj-theme-card-mobile-${idx}`}
+          variants={cardVariants}
+          onClick={() => onSelect(proj)}
+          whileTap={{ scale: 0.97 }}
+        >
+          <div className="mobile-project-img-wrap">
+            <img src={proj.image} alt={proj.title} className="mobile-project-img" />
+          </div>
+          <div className="mobile-project-info">
+            <span className={`mobile-project-badge ${proj.category.className}`}>
+              {proj.category.name}
+            </span>
+            <h3 className="mobile-project-name">{proj.title}</h3>
+            <span className="mobile-tap-hint">Tap to view →</span>
+          </div>
+        </motion.div>
+      ))}
     </motion.div>
   );
 };
