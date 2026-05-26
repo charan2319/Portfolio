@@ -95,15 +95,7 @@ const ServiceSlider = ({ services }) => {
   return (
     <div className="premium-mobile-slider">
       <div className="slider-track-outer">
-        <motion.div 
-          className="slider-track-inner"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={(e, { offset, velocity }) => {
-            if (offset.x < -50) handleNext();
-            else if (offset.x > 50) handlePrev();
-          }}
-        >
+        <div className="slider-track-inner">
           {services.map((service, idx) => {
             const relativeIndex = (idx - index + services.length) % services.length;
             const isCenter = relativeIndex === 0;
@@ -120,19 +112,25 @@ const ServiceSlider = ({ services }) => {
               x = 0;
               zIndex = 10;
             } else if (relativeIndex === 1) {
-              scale = 0.95;
-              opacity = 0.85;
-              x = 24; // Offset to the right side
+              scale = 0.92;      // Smaller card size
+              opacity = 0.95;    // Highly visible!
+              x = 35;            // Offset to the right side so it peeks out clearly
               zIndex = 9;
             } else if (relativeIndex === 2) {
-              scale = 0.90;
-              opacity = 0.50;
-              x = 48; // Shifted further behind
+              scale = 0.84;      // Even smaller card size
+              opacity = 0.60;    // Moderately visible
+              x = 70;            // Offset further to the right to be clearly visible
               zIndex = 8;
-            } else {
-              scale = 0.85;
+            } else if (relativeIndex === services.length - 1) {
+              // The card that was just active exits to the left side
+              scale = 0.90;
               opacity = 0;
-              x = 72;
+              x = -400;          // Exit left animation
+              zIndex = 12;       // Keeps it on top during swipe exit
+            } else {
+              scale = 0.80;
+              opacity = 0;
+              x = 100;
               zIndex = 1;
             }
 
@@ -140,6 +138,13 @@ const ServiceSlider = ({ services }) => {
               <motion.div 
                 key={idx} 
                 className={`premium-slider-card ${isCenter ? 'active' : 'inactive'}`}
+                drag={isCenter ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.7}
+                onDragEnd={(e, { offset, velocity }) => {
+                  if (offset.x < -60) handleNext();
+                  else if (offset.x > 60) handlePrev();
+                }}
                 animate={{ 
                   scale,
                   opacity,
@@ -165,7 +170,7 @@ const ServiceSlider = ({ services }) => {
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
       <div className="premium-dots">
         {services.map((_, i) => (
@@ -221,13 +226,25 @@ function App() {
   const handleNavClick = (e, id) => {
     e.preventDefault();
     setActiveSection(id);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    } else if (id === 'home') {
-      const wrapper = document.querySelector('.page-wrapper');
-      if (wrapper) {
-        wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const wrapper = document.querySelector('.page-wrapper');
+    if (!wrapper) return;
+
+    if (id === 'home') {
+      wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        // Determine header height offset based on responsive screen widths
+        const headerOffset = window.innerWidth <= 768 ? 60 : 72;
+        const targetScrollTop = wrapper.scrollTop + elementRect.top - wrapperRect.top - headerOffset;
+        
+        wrapper.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth'
+        });
       }
     }
   };
