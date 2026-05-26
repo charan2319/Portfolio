@@ -8499,3 +8499,71 @@ section {
     color: #6366f1;
   }
 }
+
+/* ===== MOBILE: GET IN TOUCH SECTION FIXES ===== */
+@media (max-width: 768px) {
+
+  /* Proper side padding — no more edge-to-edge text */
+  .contact-section {
+    padding: 32px 20px 24px !important;
+  }
+
+  /* Center the title */
+  .contact-left-text .contact-heading {
+    text-align: center !important;
+    font-size: 2rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Center the divider under the title */
+  .contact-left-text .contact-divider {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Center and constrain the left text block — no extra height */
+  .contact-left-text {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    text-align: center !important;
+    height: auto !important;
+    min-height: 0 !important;
+    flex: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Kill bottom margins on paragraphs — they cause the gap */
+  .contact-left-text .contact-subtitle {
+    text-align: center !important;
+    margin-bottom: 8px !important;
+    font-size: 1rem !important;
+  }
+
+  .contact-left-text .contact-desc-detail {
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    font-size: 0.92rem !important;
+  }
+
+  /* Absolute minimum gap between text block and card */
+  .contact-grid {
+    gap: 12px !important;
+    align-items: stretch !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Right card fits within screen with proper insets */
+  .contact-right-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 22px 16px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    flex: none !important;
+  }
+}
