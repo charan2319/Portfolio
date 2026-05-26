@@ -78,6 +78,21 @@ body {
   .desktop-only {
     display: none !important;
   }
+  
+  /* Disable aggressive scroll-snap on mobile to prevent sticking and skipping */
+  .page-wrapper {
+    scroll-snap-type: none !important;
+  }
+  .hero-section,
+  .bento-section,
+  .skills-section,
+  .pro-projects-section,
+  .services-section,
+  .bg-glass-section,
+  .contact-section {
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+  }
 }
 
 .light-mode {
