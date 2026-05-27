@@ -444,25 +444,33 @@ function App() {
       
       setActiveSection(current);
 
-      // Synchronize "Featured Work" title and previous cards scroll with the last project card
-      const lastCard = wrapper.querySelector('.proj-flat-slide.last');
-      const title = wrapper.querySelector('.pro-projects-section .section-header-center');
-      const otherSlides = wrapper.querySelectorAll('.proj-flat-slide:not(.last)');
-      
-      if (lastCard && title) {
-        const lastCardRect = lastCard.getBoundingClientRect();
-        const stickyTop = 180; // matches .proj-flat-slide { top: 180px }
-        if (lastCardRect.top < stickyTop) {
-          const offset = stickyTop - lastCardRect.top;
-          title.style.transform = `translateY(${-offset}px)`;
-          otherSlides.forEach(slide => {
-            slide.style.transform = `translateY(${-offset}px)`;
-          });
-        } else {
+      // Synchronize "Featured Work" title and previous cards scroll with the last project card (Desktop only)
+      if (window.innerWidth > 768) {
+        const lastCard = wrapper.querySelector('.proj-flat-slide.last');
+        const title = wrapper.querySelector('.pro-projects-section .section-header-center');
+        const otherSlides = wrapper.querySelectorAll('.proj-flat-slide:not(.last)');
+        
+        if (lastCard && title) {
+          const lastCardRect = lastCard.getBoundingClientRect();
+          const stickyTop = 180; // matches .proj-flat-slide { top: 180px }
+          if (lastCardRect.top < stickyTop) {
+            const offset = stickyTop - lastCardRect.top;
+            title.style.transform = `translateY(${-offset}px)`;
+            otherSlides.forEach(slide => {
+              slide.style.transform = `translateY(${-offset}px)`;
+            });
+          } else {
+            title.style.transform = 'translateY(0px)';
+            otherSlides.forEach(slide => {
+              slide.style.transform = 'translateY(0px)';
+            });
+          }
+        }
+      } else {
+        // Reset transform on mobile devices to ensure visibility
+        const title = wrapper.querySelector('.pro-projects-section .section-header-center');
+        if (title) {
           title.style.transform = 'translateY(0px)';
-          otherSlides.forEach(slide => {
-            slide.style.transform = 'translateY(0px)';
-          });
         }
       }
     };
