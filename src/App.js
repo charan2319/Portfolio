@@ -14,7 +14,7 @@ import {
 } from "./data.js";
 
 
-const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick }) => {
+const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick, disableAnimation }) => {
   const [isHovered, setIsHovered] = useState(false);
   const handleOpen = () => onClick({ title, category, desc, tech, image, video, link });
   const [isMobile, setIsMobile] = useState(false);
@@ -31,10 +31,10 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick 
   return (
     <motion.div 
       className="pro-project-card premium-card"
-      initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.95 }}
-      whileInView={isMobile ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: isMobile ? 0.3 : 0.6, ease: [0.25, 1, 0.5, 1] }}
-      viewport={{ once: false, amount: 0.15 }}
+      initial={disableAnimation ? { opacity: 1, y: 0, scale: 1 } : (isMobile ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.95 })}
+      whileInView={disableAnimation ? { opacity: 1, y: 0, scale: 1 } : (isMobile ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 })}
+      transition={disableAnimation ? { duration: 0 } : { duration: isMobile ? 0.3 : 0.6, ease: [0.25, 1, 0.5, 1] }}
+      viewport={disableAnimation ? undefined : { once: false, amount: 0.15 }}
       onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
@@ -67,30 +67,26 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick 
   );
 };
 
-// Word Reveal Component
+// Word Reveal Component — simplified to a single fade-in (no per-word stagger blink)
 const WordReveal = ({ text, className, delayOffset = 0 }) => {
   const words = text.split(" ");
-  
-  const container = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: delayOffset * 0.1 } },
-  };
-
-  const child = {
-    visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 12, stiffness: 100 } },
-    hidden: { opacity: 0, y: 20 },
-  };
 
   return (
-    <motion.div style={{ display: "inline-block" }} className={className} variants={container} initial="hidden" whileInView="visible" viewport={{ once: false }}>
+    <motion.div
+      style={{ display: "inline-block" }}
+      className={className}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: delayOffset * 0.05, ease: "easeOut" }}
+    >
       {words.map((word, index) => (
-        <motion.span variants={child} key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
+        <span key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
           {word === "Charan" || word === "Maruveni" ? (
             <span className="hero-gradient">{word}</span>
           ) : (
             word
           )}
-        </motion.span>
+        </span>
       ))}
     </motion.div>
   );
@@ -353,14 +349,31 @@ const projectsList = [
 const ProjectCarousel = ({ onSelect }) => {
   return (
     <div className="proj-flat-stack">
-      {projectsList.map((proj, i) => (
-        <div
-          key={proj.title}
-          className={`proj-flat-slide${i === projectsList.length - 1 ? ' last' : ''}`}
-        >
-          <ProjectCard {...proj} onClick={onSelect} />
-        </div>
-      ))}
+      {projectsList.map((proj, i) => {
+        const isLast = i === projectsList.length - 1;
+        return (
+          <div
+            key={proj.title}
+            className={`proj-flat-slide${isLast ? ' last' : ''}`}
+          >
+            {isLast ? (
+              <div style={{ height: "100%", width: "100%" }}>
+                <ProjectCard {...proj} onClick={onSelect} disableAnimation={true} />
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <ProjectCard {...proj} onClick={onSelect} />
+              </motion.div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -430,6 +443,28 @@ function App() {
       }
       
       setActiveSection(current);
+
+      // Synchronize "Featured Work" title and previous cards scroll with the last project card
+      const lastCard = wrapper.querySelector('.proj-flat-slide.last');
+      const title = wrapper.querySelector('.pro-projects-section .section-header-center');
+      const otherSlides = wrapper.querySelectorAll('.proj-flat-slide:not(.last)');
+      
+      if (lastCard && title) {
+        const lastCardRect = lastCard.getBoundingClientRect();
+        const stickyTop = 180; // matches .proj-flat-slide { top: 180px }
+        if (lastCardRect.top < stickyTop) {
+          const offset = stickyTop - lastCardRect.top;
+          title.style.transform = `translateY(${-offset}px)`;
+          otherSlides.forEach(slide => {
+            slide.style.transform = `translateY(${-offset}px)`;
+          });
+        } else {
+          title.style.transform = 'translateY(0px)';
+          otherSlides.forEach(slide => {
+            slide.style.transform = 'translateY(0px)';
+          });
+        }
+      }
     };
 
     wrapper.addEventListener('scroll', handleScroll);
@@ -622,15 +657,15 @@ function App() {
           <h2 className="section-title">Overview</h2>
         </div>
         
-        <div className="bento-grid">
+        <motion.div
+          className="bento-grid"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           {/* Bio Box */}
-          <motion.div 
-            className="bento-box bento-bio"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.1 }}
-          >
+          <div className="bento-box bento-bio">
             <h3>About Me</h3>
             <p>
               I am a dedicated <strong>Computer Science student</strong> at Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
@@ -638,22 +673,22 @@ function App() {
             <p>
               By combining technical proficiency in Python and Swift with a strategic approach to data visualization in Power BI, I build applications that are as functional as they are intuitive.
             </p>
-          </motion.div>
+          </div>
 
           {/* Stats Boxes */}
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.2 }}>
+          <div className="bento-box bento-stat">
             <div className="stat-number">8.1</div>
             <div className="stat-label">CGPA</div>
-          </motion.div>
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.3 }}>
+          </div>
+          <div className="bento-box bento-stat">
             <div className="stat-number">3+</div>
             <div className="stat-label">Projects</div>
-          </motion.div>
-          <motion.div className="bento-box bento-stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.4 }}>
+          </div>
+          <div className="bento-box bento-stat">
             <div className="stat-number">5+</div>
             <div className="stat-label">Tech Stack</div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </section>
 
       
@@ -664,7 +699,13 @@ function App() {
         </div>
         
         {/* Professional Grid for Laptop View */}
-        <div className="skills-grid-desktop desktop-only">
+        <motion.div
+          className="skills-grid-desktop desktop-only"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           {[
             { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
             { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -679,24 +720,25 @@ function App() {
             { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
             { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
           ].map((skill, index) => (
-            <motion.div 
+            <div
               key={index}
               className="professional-skill-card"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ y: -5, boxShadow: "0 12px 30px rgba(0,0,0,0.1)" }}
             >
               <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
               <span className="professional-skill-name">{skill.name}</span>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Mobile Technical Skills Section */}
         <div className="mobile-only mobile-skills-container">
-          <div className="skills-grid-mobile">
+          <motion.div
+            className="skills-grid-mobile"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             {[
               { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
               { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -711,21 +753,17 @@ function App() {
               { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
               { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
             ].map((skill, index) => (
-              <motion.div 
+              <div
                 key={index}
                 className="mobile-skill-card"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: false }}
-                transition={{ delay: index * 0.05 }}
               >
                 <div className="mobile-skill-icon-wrapper">
                   <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
                 </div>
                 <span className="mobile-skill-name">{skill.name}</span>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -819,15 +857,17 @@ function App() {
         <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
           <h2 className="section-title">Certifications</h2>
         </div>
-        <div className="cert-premium-grid">
+        <motion.div
+          className="cert-premium-grid"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           {certificationsData.map((cert, i) => (
             <motion.div
               key={i}
               className="cert-premium-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: i * 0.1 }}
               whileHover={{ y: -6 }}
             >
               <div className="cert-premium-img-wrap cert-pdf-wrap">
@@ -853,7 +893,7 @@ function App() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* ===== Achievements Section ===== */}
@@ -861,7 +901,13 @@ function App() {
         <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
           <h2 className="section-title">Achievements</h2>
         </div>
-        <div className="unified-premium-grid">
+        <motion.div
+          className="unified-premium-grid"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           {[
             {
               badge: "Winner",
@@ -885,10 +931,6 @@ function App() {
             <motion.div
               key={i}
               className="unified-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: i * 0.1 }}
               whileHover={{ y: -6 }}
             >
               <div className="unified-card-top">
@@ -901,7 +943,7 @@ function App() {
               <div className="unified-desc">{ach.desc}</div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
 
@@ -969,15 +1011,6 @@ function App() {
             </div>
           </div>
         </div>
-
-        {/* ===== Simplified Footer Integrated Inside Contact Section ===== */}
-        <footer className="portfolio-footer">
-          <div className="footer-container">
-            <div className="footer-bottom">
-              <p>&copy; {new Date().getFullYear()} Maruveni Charan. All Rights Reserved.</p>
-            </div>
-          </div>
-        </footer>
       </section>
 
       {/* ===== Project Detail Modal ===== */}

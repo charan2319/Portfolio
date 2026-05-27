@@ -1,6 +1,6 @@
 /* ===== ULTRA PREMIUM TIMELINE (Education & Experience) ===== */
 .ultra-premium-timeline {
-  max-width: 900px;
+  max-width: 750px;
   margin: 0 auto;
   position: relative;
   padding: 20px 0;
@@ -16,8 +16,8 @@
 
 .ultra-timeline-item {
   position: relative;
-  padding-left: 100px;
-  margin-bottom: 50px;
+  padding-left: 85px;
+  margin-bottom: 30px;
 }
 
 .ultra-timeline-item:last-child {
@@ -46,8 +46,8 @@
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 20px;
-  padding: 32px 36px;
+  border-radius: 16px;
+  padding: 24px 28px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.03);
   transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
 }
@@ -70,10 +70,10 @@
 
 .ultra-timeline-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .ultra-timeline-sub {
@@ -109,12 +109,3 @@
   .ultra-timeline-content { padding: 24px; }
 }
 
-/* ===== LARGER CERT CARDS ===== */
-.cert-premium-grid {
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)) !important;
-  gap: 34px !important;
-  max-width: 1200px !important;
-}
-.cert-premium-img-wrap {
-  height: 200px !important;
-}
