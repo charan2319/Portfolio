@@ -109,6 +109,116 @@ const ScrollRevealTitle = ({ children, className, style }) => {
   );
 };
 
+// Reusable Animation Variants for premium transitions
+const bentoContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const bentoItemVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 1, 0.5, 1]
+    }
+  }
+};
+
+const skillsContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.04
+    }
+  }
+};
+
+const skillCardVariants = {
+  hidden: { opacity: 0, scale: 0.8, rotate: -3 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 1, 0.5, 1]
+    }
+  }
+};
+
+const certContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const certItemVariants = {
+  hidden: { opacity: 0, scale: 0.9, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 1, 0.5, 1]
+    }
+  }
+};
+
+const achievementContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const achievementCardVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 40,
+    clipPath: "inset(100% 0px 0px 0px)"
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0% 0px 0px 0px)",
+    transition: {
+      duration: 0.7,
+      ease: [0.25, 1, 0.5, 1]
+    }
+  }
+};
+
+const contactContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const contactCardVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] }
+  }
+};
+
 const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick, disableAnimation }) => {
   const [isHovered, setIsHovered] = useState(false);
   const handleOpen = () => onClick({ title, category, desc, tech, image, video, link });
@@ -162,32 +272,32 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick,
   );
 };
 
-// Word Reveal Component — simplified to a single fade-in (no per-word stagger blink)
+// Word Reveal Component — staggered word-by-word entrance for a premium feel
 const WordReveal = ({ text, className, delayOffset = 0 }) => {
   const words = text.split(" ");
 
   return (
-    <motion.div
-      style={{ display: "inline-block" }}
-      className={className}
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: delayOffset * 0.05, ease: "easeOut" }}
-    >
-      {text === "Maruveni Charan" ? (
-        <span className="hero-gradient">{text}</span>
-      ) : (
-        words.map((word, index) => (
-          <span key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
-            {word === "Charan" || word === "Maruveni" ? (
-              <span className="hero-gradient">{word}</span>
-            ) : (
-              word
-            )}
-          </span>
-        ))
-      )}
-    </motion.div>
+    <div className={className} style={{ display: "inline" }}>
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          style={{ display: "inline-block", marginRight: "0.25em" }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: (delayOffset + index) * 0.08,
+            ease: [0.25, 1, 0.5, 1]
+          }}
+        >
+          {word === "Charan" || word === "Maruveni" ? (
+            <span className="hero-gradient">{word}</span>
+          ) : (
+            word
+          )}
+        </motion.span>
+      ))}
+    </div>
   );
 };
 const ServiceSlider = ({ services }) => {
@@ -435,16 +545,19 @@ const ProjectSlider = ({ onSelect }) => {
 
   const slideVariants = {
     enter: (direction) => ({
-      x: direction > 0 ? 100 : -100,
-      opacity: 0
+      x: direction > 0 ? 120 : -120,
+      opacity: 0,
+      scale: 0.96
     }),
     center: {
       x: 0,
-      opacity: 1
+      opacity: 1,
+      scale: 1
     },
     exit: (direction) => ({
-      x: direction < 0 ? 100 : -100,
-      opacity: 0
+      x: direction < 0 ? 120 : -120,
+      opacity: 0,
+      scale: 0.96
     })
   };
 
@@ -463,7 +576,7 @@ const ProjectSlider = ({ onSelect }) => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.35, ease: "easeOut" }}
+            transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
@@ -729,9 +842,9 @@ function App() {
         <div className="hero-content-wrapper">
           <motion.div
             className="hero-left-image"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+            initial={{ scale: 0.9, opacity: 0, filter: "blur(10px)" }}
+            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.2, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           >
             <img src="/IMG_5281.jpg" alt="Maruveni Charan" className="profile-img-full" />
           </motion.div>
@@ -750,7 +863,7 @@ function App() {
               className="hero-desc"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 1.2, ease: "easeOut" }}
+              transition={{ delay: 1.4, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
             >
               Passionate about crafting intuitive digital experiences — from designing elegant interfaces in Figma to building multi-platform apps and transforming data into actionable insights.
             </motion.p>
@@ -759,7 +872,7 @@ function App() {
               className="hero-buttons"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 1.4, ease: "easeOut" }}
+              transition={{ delay: 1.6, type: "spring", stiffness: 100, damping: 15 }}
             >
               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#contact" className="btn btn-outline">Contact Me</motion.a>
               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="/charan_app_developer.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-solid">
@@ -778,9 +891,15 @@ function App() {
           <ScrollRevealTitle className="section-title">Overview</ScrollRevealTitle>
         </div>
 
-        <div className="bento-grid">
+        <motion.div
+          className="bento-grid"
+          variants={bentoContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+        >
           {/* Bio Box */}
-          <div className="bento-box bento-bio">
+          <motion.div className="bento-box bento-bio" variants={bentoItemVariants}>
             <h3>About Me</h3>
             <p>
               I am a dedicated <strong>Computer Science graduate</strong> from Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
@@ -788,40 +907,52 @@ function App() {
             <p>
               By combining technical proficiency in Python and Swift with a strategic approach to data visualization in Power BI, I build applications that are as functional as they are intuitive.
             </p>
-          </div>
+          </motion.div>
 
           {/* Stats Boxes */}
-          <div className="bento-box bento-stat">
+          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
             <div className="stat-number">
               <AnimatedCounter value="8.1" isDecimal={true} />
             </div>
             <div className="stat-label">CGPA</div>
-          </div>
-          <div className="bento-box bento-stat">
+          </motion.div>
+          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
             <div className="stat-number">
               <AnimatedCounter value="4" suffix="+" />
             </div>
             <div className="stat-label">Projects</div>
-          </div>
-          <div className="bento-box bento-stat">
+          </motion.div>
+          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
             <div className="stat-number">
               <AnimatedCounter value="10" suffix="+" />
             </div>
             <div className="stat-label">Tech Stack</div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
 
       {/* ===== Premium Single-Row Skills Marquee Section ===== */}
       <section className="skills-section premium-skills" id="skills" style={{ overflow: "hidden", padding: "25px 0 40px" }}>
         {/* Large card wrapping all skills inside it */}
-        <div className="skills-outer-card">
+        <motion.div
+          className="skills-outer-card"
+          initial={{ scale: 0.95, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
+        >
           <div className="section-header-center" style={{ marginBottom: "30px" }}>
             <ScrollRevealTitle className="section-title">Technical Skills</ScrollRevealTitle>
           </div>
           {/* Professional Grid for Laptop View */}
-          <div className="skills-grid-desktop desktop-only">
+          <motion.div
+            className="skills-grid-desktop desktop-only"
+            variants={skillsContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+          >
             {[
               { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
               { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -839,22 +970,23 @@ function App() {
               <motion.div
                 key={index}
                 className="professional-skill-card"
+                variants={skillCardVariants}
                 whileHover={{ y: -5, scale: 1.03, boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}
               >
                 <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
                 <span className="professional-skill-name">{skill.name}</span>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Mobile Technical Skills Section */}
           <div className="mobile-only mobile-skills-container">
             <motion.div
               className="skills-grid-mobile"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              variants={skillsContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
             >
               {[
                 { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
@@ -870,19 +1002,20 @@ function App() {
                 { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
                 { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
               ].map((skill, index) => (
-                <div
+                <motion.div
                   key={index}
                   className="mobile-skill-card"
+                  variants={skillCardVariants}
                 >
                   <div className="mobile-skill-icon-wrapper">
                     <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
                   </div>
                   <span className="mobile-skill-name">{skill.name}</span>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ===== Projects Section ===== */}
@@ -919,7 +1052,7 @@ function App() {
             { year: '2022', title: '12th Grade', sub: 'Amaravathi Jr. College', detail: 'Percentage: 76%', icon: 'fas fa-school' },
             { year: '2020', title: '10th Grade', sub: 'PCMR EM School', detail: 'Percentage: 100%', icon: 'fas fa-award' }
           ].map((item, i) => (
-            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.15 }}>
+            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.12, ease: [0.25, 1, 0.5, 1] }}>
               <div className="ultra-timeline-icon">
                 <i className={item.icon}></i>
               </div>
@@ -940,7 +1073,7 @@ function App() {
           <ScrollRevealTitle className="section-title">Internship Experience</ScrollRevealTitle>
         </div>
         <div className="ultra-premium-timeline">
-          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: 0.1 }}>
+          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}>
             <div className="ultra-timeline-icon exp-icon">
               <i className="fas fa-briefcase"></i>
             </div>
@@ -974,15 +1107,16 @@ function App() {
         </div>
         <motion.div
           className="cert-bento-grid"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.15 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          variants={certContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
         >
           {certificationsData.map((cert, i) => (
             <motion.div
               key={i}
               className={`cert-bento-item cert-bento-item-${i}`}
+              variants={certItemVariants}
               whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             >
@@ -1016,10 +1150,10 @@ function App() {
         </div>
         <motion.div
           className="unified-premium-grid"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          variants={achievementContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
         >
           {[
             {
@@ -1044,6 +1178,7 @@ function App() {
             <motion.div
               key={i}
               className="unified-card"
+              variants={achievementCardVariants}
               whileHover={{ y: -6 }}
             >
               <div className="unified-card-top">
@@ -1075,10 +1210,16 @@ function App() {
       </div>
 
       {/* ===== Contact Section ===== */}
-      <section className="contact-section custom-contact-section fade-in" id="contact">
+      <section className="contact-section custom-contact-section" id="contact" style={{ overflow: "hidden" }}>
         <div className="contact-grid">
           {/* Left Column: Text & Headers */}
-          <div className="contact-left-text">
+          <motion.div
+            className="contact-left-text"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+          >
             <ScrollRevealTitle className="contact-heading">Get In Touch</ScrollRevealTitle>
             <div className="contact-divider"></div>
             <p className="contact-subtitle">
@@ -1087,35 +1228,47 @@ function App() {
             <p className="contact-desc-detail">
               Whether you're looking for a skilled UI/UX Designer or an App Developer to bring your product ideas to life, interested in collaborating on a creative venture, or just want to connect, I'd love to hear from you.
             </p>
-          </div>
+          </motion.div>
 
           {/* Right Column: Card with Info */}
-          <div className="contact-right-card">
-            <div className="contact-info-cards">
-              <div className="contact-info-card">
+          <motion.div
+            className="contact-right-card"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+          >
+            <motion.div
+              className="contact-info-cards"
+              variants={contactContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
+            >
+              <motion.div className="contact-info-card" variants={contactCardVariants}>
                 <span className="contact-info-icon email-icon">📧</span>
                 <div>
                   <div className="contact-info-label">Email</div>
                   <div className="contact-info-value">charanm2319@gmail.com</div>
                 </div>
-              </div>
-              <div className="contact-info-card">
+              </motion.div>
+              <motion.div className="contact-info-card" variants={contactCardVariants}>
                 <span className="contact-info-icon phone-icon">📞</span>
                 <div>
                   <div className="contact-info-label">Phone</div>
                   <div className="contact-info-value">+91 8639839229</div>
                 </div>
-              </div>
-              <div className="contact-info-card">
+              </motion.div>
+              <motion.div className="contact-info-card" variants={contactCardVariants}>
                 <span className="contact-info-icon location-icon">📍</span>
                 <div>
                   <div className="contact-info-label">Location</div>
                   <div className="contact-info-value">Bengaluru, Karnataka, India</div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
