@@ -10279,3 +10279,38 @@ section {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =============================================================
+   MOBILE OVERRIDES (<= 768px)
+   Must be placed at the absolute end to override tablet rules.
+   ============================================================= */
+@media (max-width: 768px) {
+  .skills-outer-card {
+    padding: 24px 12px 35px 12px !important;
+  }
+
+  .skills-grid-mobile {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .mobile-skill-card {
+    padding: 12px 4px !important;
+    border-radius: 16px !important;
+  }
+
+  .mobile-skill-icon-wrapper {
+    width: 48px !important;
+    height: 48px !important;
+    padding: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .mobile-skill-name {
+    font-size: 0.78rem !important;
+  }
+}
