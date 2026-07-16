@@ -70,7 +70,12 @@ const ScrollRevealTitle = ({ children, className, style }) => {
       observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            setIsInView(entry.isIntersecting);
+            if (entry.isIntersecting) {
+              setIsInView(true);
+              if (observer) {
+                observer.disconnect();
+              }
+            }
           });
         },
         { 
@@ -162,14 +167,25 @@ const certContainerVariants = {
   }
 };
 
-const certItemVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
+const certLeftCardVariants = {
+  hidden: { opacity: 0, x: -80 },
   visible: {
     opacity: 1,
-    scale: 1,
-    y: 0,
+    x: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.85,
+      ease: [0.25, 1, 0.5, 1]
+    }
+  }
+};
+
+const certRightCardVariants = {
+  hidden: { opacity: 0, x: 80 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.85,
       ease: [0.25, 1, 0.5, 1]
     }
   }
@@ -187,25 +203,37 @@ const achievementContainerVariants = {
 const achievementCardVariants = {
   hidden: { 
     opacity: 0, 
-    y: 40,
-    clipPath: "inset(100% 0px 0px 0px)"
+    y: 30
   },
   visible: {
     opacity: 1,
     y: 0,
-    clipPath: "inset(0% 0px 0px 0px)",
     transition: {
-      duration: 0.7,
+      duration: 0.6,
       ease: [0.25, 1, 0.5, 1]
     }
   }
 };
 
-const contactContainerVariants = {
-  hidden: {},
+const contactLeftVariants = {
+  hidden: { opacity: 0, x: -50 },
   visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
+  }
+};
+
+const contactContainerVariants = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
     transition: {
-      staggerChildren: 0.1
+      duration: 0.8,
+      ease: [0.25, 1, 0.5, 1],
+      staggerChildren: 0.1,
+      delayChildren: 0.15
     }
   }
 };
@@ -216,6 +244,27 @@ const contactCardVariants = {
     opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] }
+  }
+};
+
+const footerContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const footerItemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.25, 1, 0.5, 1]
+    }
   }
 };
 
@@ -283,7 +332,8 @@ const WordReveal = ({ text, className, delayOffset = 0 }) => {
           key={index}
           style={{ display: "inline-block", marginRight: "0.25em" }}
           initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{
             duration: 0.5,
             delay: (delayOffset + index) * 0.08,
@@ -827,7 +877,8 @@ function App() {
       <motion.header
         className="hero-section custom-hero split-hero"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
         transition={{ duration: 1 }}
       >
         <div className="hero-3d-bg">
@@ -842,8 +893,9 @@ function App() {
         <div className="hero-content-wrapper">
           <motion.div
             className="hero-left-image"
-            initial={{ scale: 0.9, opacity: 0, filter: "blur(10px)" }}
-            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           >
             <img src="/IMG_5281.jpg" alt="Maruveni Charan" className="profile-img-full" />
@@ -862,7 +914,8 @@ function App() {
             <motion.p
               className="hero-desc"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ delay: 1.4, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
             >
               Passionate about crafting intuitive digital experiences — from designing elegant interfaces in Figma to building multi-platform apps and transforming data into actionable insights.
@@ -871,7 +924,8 @@ function App() {
             <motion.div
               className="hero-buttons"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ delay: 1.6, type: "spring", stiffness: 100, damping: 15 }}
             >
               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#contact" className="btn btn-outline">Contact Me</motion.a>
@@ -946,13 +1000,7 @@ function App() {
             <ScrollRevealTitle className="section-title">Technical Skills</ScrollRevealTitle>
           </div>
           {/* Professional Grid for Laptop View */}
-          <motion.div
-            className="skills-grid-desktop desktop-only"
-            variants={skillsContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-          >
+          <div className="skills-grid-desktop desktop-only">
             {[
               { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
               { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -970,24 +1018,17 @@ function App() {
               <motion.div
                 key={index}
                 className="professional-skill-card"
-                variants={skillCardVariants}
                 whileHover={{ y: -5, scale: 1.03, boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}
               >
                 <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
                 <span className="professional-skill-name">{skill.name}</span>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Mobile Technical Skills Section */}
           <div className="mobile-only mobile-skills-container">
-            <motion.div
-              className="skills-grid-mobile"
-              variants={skillsContainerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-            >
+            <div className="skills-grid-mobile">
               {[
                 { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
                 { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -1002,18 +1043,17 @@ function App() {
                 { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
                 { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
               ].map((skill, index) => (
-                <motion.div
+                <div
                   key={index}
                   className="mobile-skill-card"
-                  variants={skillCardVariants}
                 >
                   <div className="mobile-skill-icon-wrapper">
                     <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
                   </div>
                   <span className="mobile-skill-name">{skill.name}</span>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </section>
@@ -1052,7 +1092,7 @@ function App() {
             { year: '2022', title: '12th Grade', sub: 'Amaravathi Jr. College', detail: 'Percentage: 76%', icon: 'fas fa-school' },
             { year: '2020', title: '10th Grade', sub: 'PCMR EM School', detail: 'Percentage: 100%', icon: 'fas fa-award' }
           ].map((item, i) => (
-            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.12, ease: [0.25, 1, 0.5, 1] }}>
+            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.12, ease: [0.25, 1, 0.5, 1] }}>
               <div className="ultra-timeline-icon">
                 <i className={item.icon}></i>
               </div>
@@ -1073,7 +1113,7 @@ function App() {
           <ScrollRevealTitle className="section-title">Internship Experience</ScrollRevealTitle>
         </div>
         <div className="ultra-premium-timeline">
-          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}>
+          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}>
             <div className="ultra-timeline-icon exp-icon">
               <i className="fas fa-briefcase"></i>
             </div>
@@ -1110,15 +1150,18 @@ function App() {
           variants={certContainerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
+          viewport={{ once: false, amount: 0.15 }}
         >
           {certificationsData.map((cert, i) => (
             <motion.div
               key={i}
               className={`cert-bento-item cert-bento-item-${i}`}
-              variants={certItemVariants}
-              whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              variants={i === 0 ? certLeftCardVariants : certRightCardVariants}
+              whileHover={{ 
+                y: -4, 
+                boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+                transition: { type: 'spring', stiffness: 300, damping: 25 }
+              }}
             >
               <div className="cert-bento-media-wrap">
                 <img src={cert.image} alt={cert.name} className="cert-bento-img" />
@@ -1179,7 +1222,11 @@ function App() {
               key={i}
               className="unified-card"
               variants={achievementCardVariants}
-              whileHover={{ y: -6 }}
+              whileHover={{ 
+                y: -6, 
+                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.08)",
+                transition: { type: "spring", stiffness: 300, damping: 25 }
+              }}
             >
               <div className="unified-card-top">
                 <span className="unified-badge highlight-badge">
@@ -1210,15 +1257,15 @@ function App() {
       </div>
 
       {/* ===== Contact Section ===== */}
-      <section className="contact-section custom-contact-section" id="contact" style={{ overflow: "hidden" }}>
+      <section className="contact-section custom-contact-section fade-in" id="contact" style={{ overflow: "hidden" }}>
         <div className="contact-grid">
           {/* Left Column: Text & Headers */}
           <motion.div
             className="contact-left-text"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={contactLeftVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           >
             <ScrollRevealTitle className="contact-heading">Get In Touch</ScrollRevealTitle>
             <div className="contact-divider"></div>
@@ -1233,18 +1280,12 @@ function App() {
           {/* Right Column: Card with Info */}
           <motion.div
             className="contact-right-card"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={contactContainerVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           >
-            <motion.div
-              className="contact-info-cards"
-              variants={contactContainerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-            >
+            <div className="contact-info-cards">
               <motion.div className="contact-info-card" variants={contactCardVariants}>
                 <span className="contact-info-icon email-icon">📧</span>
                 <div>
@@ -1266,7 +1307,7 @@ function App() {
                   <div className="contact-info-value">Bengaluru, Karnataka, India</div>
                 </div>
               </motion.div>
-            </motion.div>
+            </div>
 
           </motion.div>
         </div>
@@ -1274,36 +1315,31 @@ function App() {
 
       {/* ===== Premium Mega Footer ===== */}
       <footer className="mega-footer">
-        <div className="mega-footer-inner">
+        <motion.div
+          className="mega-footer-inner"
+          variants={footerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.15 }}
+        >
           {/* Giant Name */}
-          <div className="mega-footer-name-wrap">
+          <motion.div className="mega-footer-name-wrap" variants={footerItemVariants}>
             <h2 className="mega-footer-name">
               {["C", "H", "A", "R", "A", "N"].map((letter, index) => (
-                <motion.span
+                <span
                   key={index}
                   style={{ display: "inline-block" }}
-                  initial={{ opacity: 0, y: 70, scale: 0.8 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: false, amount: 0.3 }}
-                  transition={{
-                    duration: 0.7,
-                    delay: index * 0.08,
-                    ease: [0.34, 1.56, 0.64, 1] // Custom elastic spring ease for bounce
-                  }}
                 >
                   {letter}
-                </motion.span>
+                </span>
               ))}
             </h2>
-          </div>
+          </motion.div>
 
           {/* Tagline */}
           <motion.p
             className="mega-footer-tagline"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={footerItemVariants}
           >
             Data Analyst · App Developer · UI/UX Designer
           </motion.p>
@@ -1311,10 +1347,7 @@ function App() {
           {/* Navigation Links */}
           <motion.div
             className="mega-footer-nav"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
+            variants={footerItemVariants}
           >
             <a href="#" onClick={(e) => handleNavClick(e, 'home')}>Home</a>
             <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>About</a>
@@ -1327,10 +1360,7 @@ function App() {
           {/* Social Icons */}
           <motion.div
             className="mega-footer-socials"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: 0.45 }}
+            variants={footerItemVariants}
           >
             <a href="https://linkedin.com/in/maruveni-charan-631766281" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <i className="fab fa-linkedin-in"></i>
@@ -1353,7 +1383,7 @@ function App() {
           <div className="mega-footer-bottom">
             <p>© {new Date().getFullYear()} Maruveni Charan. All rights reserved.</p>
           </div>
-        </div>
+        </motion.div>
       </footer>
 
       {/* ===== Project Detail Modal ===== */}

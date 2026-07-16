@@ -6531,6 +6531,9 @@ section {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   object-fit: cover;
   transition: transform 0.4s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 .profile-img-full:hover {
@@ -6804,12 +6807,11 @@ section {
   box-sizing: border-box;
 
   /* Height constraints to fill screen snaps */
-  height: calc(100vh - 90px);
-  min-height: 640px;
-  max-height: 710px;
+  min-height: calc(100vh - 90px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-bottom: 45px;
 }
 
 .skills-grid-desktop {
@@ -8244,15 +8246,13 @@ section {
   border-radius: 20px;
   padding: 48px 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
 .unified-card:hover {
-  transform: translateY(-8px);
   background: #ffffff;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   border-color: rgba(99, 102, 241, 0.1);
 }
 
@@ -8985,13 +8985,11 @@ section {
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .cert-bento-item:hover {
   background: #ffffff;
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
   border-color: rgba(99, 102, 241, 0.15);
 }
 
