@@ -38,34 +38,43 @@ export const servicesData = [
 ];
 
 export const educationData = [
-  { title: "B.Tech CSE", institution: "Alliance University", year: "2026", details: "CGPA: 8.0" },
-  { title: "12th Grade", institution: "Amaravathi Jr. College", year: "2022", details: "76%" },
-  { title: "10th Grade", institution: "PCMR EM School", year: "2020", details: "GPA: 10.0" }
+  { title: "B.Tech — Computer Science & Engineering", institution: "Alliance University, Bengaluru", year: "Sep 2022 - May 2026", details: "CGPA: 8.1" },
+  { title: "12th Grade (Intermediate)", institution: "Amaravathi jr. college, Anantapur", year: "June 2022", details: "Percentage: 76%" },
+  { title: "10th Grade (SSC)", institution: "PCMR EM School, Nagaluru", year: "June 2020", details: "Percentage: 100%" }
 ];
 
 export const experienceData = [
-  { title: "iOS App Development Intern", subtitle: "Alliance University", date: "Jan–Jun 2025", description: "Developed apps using Swift, Firebase, Xcode." }
+  { 
+    title: "iOS App Development Intern", 
+    subtitle: "Alliance University", 
+    date: "Feb 2026 – Apr 2026", 
+    description: "Completed hands-on training in iOS development using Swift and Xcode. Built mobile applications with UI/UX design principles. Integrated Firebase for backend and real-time data handling. Developed functional prototypes and improved app performance." 
+  }
 ];
 
 export const projectsData = [
   {
-    title: "StudyQuerk",
-    description: "An educational resource-sharing platform to help students collaborate and grow.",
-    video: "/videos/studyquerk.mp4",
-    thumbnail: "/images/studyquerk-thumb.jpg"
+    title: "Mymedicare",
+    description: "Developed a healthcare mobile application with medication reminders and remote consultation features. Integrated Firebase for user authentication and real-time data storage.",
+    tech: ["Swift", "Firebase", "Cloudinary"]
   },
   {
-    title: "Medication Alert System",
-    description: "A reminder system to notify patients for timely medication intake using real-time notifications.",
-    thumbnail: "/images/medication-alert.jpg"
+    title: "Velish",
+    description: "Built a digital food ordering application for universities, replacing manual and paper-based systems. Enabled seamless order placement, tracking, and backend data management.",
+    tech: ["Flutter", "PostgreSQL", "Node.js", "AWS S3"]
+  },
+  {
+    title: "Road Accident Analysis Dashboard",
+    description: "Built an interactive Power BI dashboard to analyze accident trends and safety KPIs. Identified high-risk locations, time patterns, and contributing factors. Enabled data-driven decision making through visual insights and reports.",
+    tech: ["Power BI"]
   }
 ];
 
 export const certificationsData = [
-  { name: "Data Analysis with Python", issuer: "Coursera", year: 2024, pdf: "/python.pdf", cat: "Data Analytics" },
-  { name: "Excel", issuer: "Infosys", year: 2025, pdf: "/Excel.pdf", cat: "Data Analysis" },
-  { name: "Power BI for Business Professionals", issuer: "Infosys", year: 2025, pdf: "/powerbi.pdf", cat: "Data Visualization" },
-  { name: "App Development with Swift Certified User", issuer: "Apple", year: 2025, pdf: "/iOS_certification.pdf", cat: "iOS Development" }
+  { name: "App Development with Swift Certified User", issuer: "Apple", year: 2025, pdf: "/iOS_certification.pdf", cat: "iOS Development", image: "/swift_cert.png" },
+  { name: "Excel", issuer: "Infosys", year: 2025, pdf: "/Excel.pdf", cat: "Data Analysis", image: "/Excel.jpg" },
+  { name: "Power BI for Business Professionals", issuer: "Infosys", year: 2025, pdf: "/powerbi.pdf", cat: "Data Visualization", image: "/powerbi_cert.png" },
+  { name: "Data Analysis with Python", issuer: "Coursera", year: 2024, pdf: "/python.pdf", cat: "Data Analytics", image: "/python_cert.png" }
 ];
 
 export const achievementsData = [

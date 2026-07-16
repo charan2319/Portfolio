@@ -14,6 +14,101 @@ import {
 } from "./data.js";
 
 
+const AnimatedCounter = ({ value, duration = 1500, isDecimal = false, suffix = "" }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    let startTimestamp = null;
+    let animationFrameId;
+    const targetValue = parseFloat(value);
+
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const currentVal = progress * targetValue;
+      setCount(isDecimal ? parseFloat(currentVal.toFixed(1)) : Math.floor(currentVal));
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          startTimestamp = null;
+          animationFrameId = requestAnimationFrame(step);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+          setCount(0);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+    };
+  }, [value, duration, isDecimal]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
+
+const ScrollRevealTitle = ({ children, className, style }) => {
+  const [isInView, setIsInView] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    let observer = null;
+    const timer = setTimeout(() => {
+      const scrollContainer = document.querySelector('.page-wrapper');
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            setIsInView(entry.isIntersecting);
+          });
+        },
+        { 
+          root: scrollContainer || null,
+          threshold: 0.05,
+          rootMargin: "0px 0px -40px 0px"
+        }
+      );
+
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, []);
+
+  return (
+    <motion.h2
+      ref={ref}
+      className={className}
+      style={style}
+      animate={{
+        opacity: isInView ? 1 : 0,
+        y: isInView ? 0 : 35
+      }}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.h2>
+  );
+};
+
 const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick, disableAnimation }) => {
   const [isHovered, setIsHovered] = useState(false);
   const handleOpen = () => onClick({ title, category, desc, tech, image, video, link });
@@ -27,9 +122,9 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick,
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-  
+
   return (
-    <motion.div 
+    <motion.div
       className="pro-project-card premium-card"
       initial={disableAnimation ? { opacity: 1, y: 0, scale: 1 } : (isMobile ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.95 })}
       whileInView={disableAnimation ? { opacity: 1, y: 0, scale: 1 } : (isMobile ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 })}
@@ -40,13 +135,13 @@ const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick,
     >
       <div className="pro-project-media">
         {!isMobile && isHovered && video ? (
-          <motion.video 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            src={video} 
-            autoPlay 
-            muted 
-            loop 
+          <motion.video
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            src={video}
+            autoPlay
+            muted
+            loop
             className="project-video-hover"
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
@@ -79,15 +174,19 @@ const WordReveal = ({ text, className, delayOffset = 0 }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: delayOffset * 0.05, ease: "easeOut" }}
     >
-      {words.map((word, index) => (
-        <span key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
-          {word === "Charan" || word === "Maruveni" ? (
-            <span className="hero-gradient">{word}</span>
-          ) : (
-            word
-          )}
-        </span>
-      ))}
+      {text === "Maruveni Charan" ? (
+        <span className="hero-gradient">{text}</span>
+      ) : (
+        words.map((word, index) => (
+          <span key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
+            {word === "Charan" || word === "Maruveni" ? (
+              <span className="hero-gradient">{word}</span>
+            ) : (
+              word
+            )}
+          </span>
+        ))
+      )}
     </motion.div>
   );
 };
@@ -104,7 +203,7 @@ const ServiceSlider = ({ services }) => {
           {services.map((service, idx) => {
             const relativeIndex = (idx - index + services.length) % services.length;
             const isCenter = relativeIndex === 0;
-            
+
             // Stacking values matching a deck-of-cards offset to the right
             let scale = 1;
             let opacity = 0;
@@ -140,8 +239,8 @@ const ServiceSlider = ({ services }) => {
             }
 
             return (
-              <motion.div 
-                key={idx} 
+              <motion.div
+                key={idx}
                 className={`premium-slider-card ${isCenter ? 'active' : 'inactive'}`}
                 drag={isCenter ? "x" : false}
                 dragConstraints={{ left: 0, right: 0 }}
@@ -150,7 +249,7 @@ const ServiceSlider = ({ services }) => {
                   if (offset.x < -60) handleNext();
                   else if (offset.x > 60) handlePrev();
                 }}
-                animate={{ 
+                animate={{
                   scale,
                   opacity,
                   x,
@@ -160,7 +259,7 @@ const ServiceSlider = ({ services }) => {
               >
                 <div className="pro-service-icon-bg">
                   {service.isImg ? (
-                    <img src={service.icon} alt={service.title} style={{width: "45px", height: "45px"}} />
+                    <img src={service.icon} alt={service.title} style={{ width: "45px", height: "45px" }} />
                   ) : (
                     <span className="pro-service-icon">{service.icon}</span>
                   )}
@@ -179,8 +278,8 @@ const ServiceSlider = ({ services }) => {
       </div>
       <div className="premium-dots">
         {services.map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className={`premium-dot ${i === index ? 'active' : ''}`}
             onClick={() => setIndex(i)}
           />
@@ -201,15 +300,15 @@ const Desktop3DServices = ({ services }) => {
 
   const isLargeDesktop = screenWidth > 1200;
   const isMediumDesktop = screenWidth > 992;
-  
+
   // Custom horizontal fan-out offsets so their bottom edges touch beautifully
   // Custom horizontal fan-out offsets so their bottom edges touch beautifully
-  const offsetsX = isLargeDesktop 
-    ? [-300, -100, 100, 300] 
-    : isMediumDesktop 
+  const offsetsX = isLargeDesktop
+    ? [-300, -100, 100, 300]
+    : isMediumDesktop
       ? [-280, -93, 93, 280]
       : [-260, -87, 87, 260];
-      
+
   const rotY = [0, 0, 0, 0];
   const rotZ = [-16, -5, 5, 16]; // Bended slightly more for clearer top gaps
   const yOffset = [24, -12, -12, 24]; // Middle cards go up, side cards go down!
@@ -225,7 +324,7 @@ const Desktop3DServices = ({ services }) => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="pro-services-3d-stage desktop-only"
       variants={containerVariants}
       initial="hidden"
@@ -278,7 +377,7 @@ const Desktop3DServices = ({ services }) => {
           >
             <div className="pro-service-icon-bg">
               {service.isImg ? (
-                <img src={service.icon} alt={service.title} style={{width: "42px", height: "42px"}} />
+                <img src={service.icon} alt={service.title} style={{ width: "42px", height: "42px" }} />
               ) : (
                 <span className="pro-service-icon">{service.icon}</span>
               )}
@@ -297,48 +396,6 @@ const Desktop3DServices = ({ services }) => {
   );
 };
 
-const Mobile3DProjects = ({ onSelect }) => {
-  const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1 } }
-  };
-  const cardVariants = {
-    hidden: { opacity: 0, y: 24, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 16 } }
-  };
-
-  return (
-    <motion.div
-      className="mobile-projects-grid"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.1 }}
-    >
-      {projectsList.map((proj, idx) => (
-        <motion.div
-          key={idx}
-          className={`mobile-project-card proj-theme-card-mobile-${idx}`}
-          variants={cardVariants}
-          onClick={() => onSelect(proj)}
-          whileTap={{ scale: 0.97 }}
-        >
-          <div className="mobile-project-img-wrap">
-            <img src={proj.image} alt={proj.title} className="mobile-project-img" />
-          </div>
-          <div className="mobile-project-info">
-            <span className={`mobile-project-badge ${proj.category.className}`}>
-              {proj.category.name}
-            </span>
-            <h3 className="mobile-project-name">{proj.title}</h3>
-            <span className="mobile-tap-hint">Tap to view →</span>
-          </div>
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-};
-
 const projectsList = [
   { title: "Founder's Mart", category: { name: 'E-Commerce', className: 'web-dev' }, desc: "A full-stack e-commerce platform built for efficient product management and an optimized shopping experience.", tech: ['React', 'Node.js', 'PostgreSQL'], image: "/hero.png", link: "http://www.ecellstore.com" },
   { title: "Alliance Alumni Connect", category: { name: 'App Development', className: 'app-dev' }, desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.", tech: ['Flutter', 'Firebase', 'Cloudinary'], image: "/Alumni.PNG" },
@@ -346,34 +403,118 @@ const projectsList = [
   { title: "Road Accident Analysis Dashboard", category: { name: 'Data Analytics', className: 'data-analytics' }, desc: "A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety.", tech: ['Power BI'], image: "/IMG_6393.jpg", link: "https://github.com/charan2319/Road-Accident-Analysis-Dashboard" }
 ];
 
-const ProjectCarousel = ({ onSelect }) => {
+const ProjectSlider = ({ onSelect }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const nextProject = () => {
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % projectsList.length);
+  };
+
+  const prevProject = () => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + projectsList.length) % projectsList.length);
+  };
+
+  const selectProject = (idx) => {
+    setDirection(idx > currentIndex ? 1 : -1);
+    setCurrentIndex(idx);
+  };
+
+  const activeProject = projectsList[currentIndex];
+
+  const handleDragEnd = (event, info) => {
+    const swipeThreshold = 50;
+    if (info.offset.x < -swipeThreshold) {
+      nextProject();
+    } else if (info.offset.x > swipeThreshold) {
+      prevProject();
+    }
+  };
+
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 100 : -100,
+      opacity: 0
+    }),
+    center: {
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction) => ({
+      x: direction < 0 ? 100 : -100,
+      opacity: 0
+    })
+  };
+
   return (
-    <div className="proj-flat-stack">
-      {projectsList.map((proj, i) => {
-        const isLast = i === projectsList.length - 1;
-        return (
-          <div
-            key={proj.title}
-            className={`proj-flat-slide${isLast ? ' last' : ''}`}
+    <div className="project-slider-container">
+      <div className="project-slider-wrapper">
+        <button className="slider-arrow prev-arrow" onClick={prevProject} aria-label="Previous Project">
+          <i className="fas fa-chevron-left"></i>
+        </button>
+
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            className="single-project-card"
           >
-            {isLast ? (
-              <div style={{ height: "100%", width: "100%" }}>
-                <ProjectCard {...proj} onClick={onSelect} disableAnimation={true} />
+            <div className="project-card-media-panel">
+              {activeProject.video ? (
+                <div className="project-video-wrapper">
+                  <video
+                    src={activeProject.video}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="project-slider-video"
+                  />
+                  <div className="video-ambient-glow"></div>
+                </div>
+              ) : (
+                <img src={activeProject.image} alt={activeProject.title} className="project-slider-image" />
+              )}
+            </div>
+
+            <div className="project-card-info-panel">
+              <h3 className="project-slider-title">{activeProject.title}</h3>
+              
+              <div className="project-slider-actions">
+                <button className="btn-slider-primary" onClick={() => onSelect(activeProject)}>
+                  View Details
+                </button>
               </div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.3 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <ProjectCard {...proj} onClick={onSelect} />
-              </motion.div>
-            )}
-          </div>
-        );
-      })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <button className="slider-arrow next-arrow" onClick={nextProject} aria-label="Next Project">
+          <i className="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div className="slider-dots">
+        {projectsList.map((_, idx) => (
+          <button
+            key={idx}
+            className={`slider-dot ${idx === currentIndex ? 'active' : ''}`}
+            onClick={() => selectProject(idx)}
+            aria-label={`Go to project ${idx + 1}`}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -397,7 +538,7 @@ function App() {
   const handleNavClick = (e, id) => {
     e.preventDefault();
     setActiveSection(id);
-    
+
     const wrapper = document.querySelector('.page-wrapper');
     if (!wrapper) return;
 
@@ -409,9 +550,9 @@ function App() {
         const wrapperRect = wrapper.getBoundingClientRect();
         const elementRect = element.getBoundingClientRect();
         // Determine header height offset based on responsive screen widths
-        const headerOffset = window.innerWidth <= 768 ? 60 : 72;
+        const headerOffset = window.innerWidth <= 768 ? 60 : 0;
         const targetScrollTop = wrapper.scrollTop + elementRect.top - wrapperRect.top - headerOffset;
-        
+
         wrapper.scrollTo({
           top: targetScrollTop,
           behavior: 'smooth'
@@ -427,7 +568,7 @@ function App() {
     const handleScroll = () => {
       const sections = ['about', 'skills', 'projects', 'achievements', 'contact'];
       let current = 'home';
-      
+
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
@@ -437,42 +578,14 @@ function App() {
           }
         }
       }
-      
+
       if (wrapper.scrollTop < 150) {
         current = 'home';
       }
-      
+
       setActiveSection(current);
 
-      // Synchronize "Featured Work" title and previous cards scroll with the last project card (Desktop only)
-      if (window.innerWidth > 768) {
-        const lastCard = wrapper.querySelector('.proj-flat-slide.last');
-        const title = wrapper.querySelector('.pro-projects-section .section-header-center');
-        const otherSlides = wrapper.querySelectorAll('.proj-flat-slide:not(.last)');
-        
-        if (lastCard && title) {
-          const lastCardRect = lastCard.getBoundingClientRect();
-          const stickyTop = 180; // matches .proj-flat-slide { top: 180px }
-          if (lastCardRect.top < stickyTop) {
-            const offset = stickyTop - lastCardRect.top;
-            title.style.transform = `translateY(${-offset}px)`;
-            otherSlides.forEach(slide => {
-              slide.style.transform = `translateY(${-offset}px)`;
-            });
-          } else {
-            title.style.transform = 'translateY(0px)';
-            otherSlides.forEach(slide => {
-              slide.style.transform = 'translateY(0px)';
-            });
-          }
-        }
-      } else {
-        // Reset transform on mobile devices to ensure visibility
-        const title = wrapper.querySelector('.pro-projects-section .section-header-center');
-        if (title) {
-          title.style.transform = 'translateY(0px)';
-        }
-      }
+
     };
 
     wrapper.addEventListener('scroll', handleScroll);
@@ -573,15 +686,15 @@ function App() {
           <ul className="desktop-nav-menu">
             {navItems.map((item) => (
               <li key={item.id} className={`nav-item-wrapper ${item.id === 'about' || item.id === 'achievements' ? 'desktop-only' : ''}`}>
-                <a 
+                <a
                   href={item.id === 'home' ? '#' : `#${item.id}`}
                   className={activeSection === item.id ? 'active-link' : 'inactive-link'}
                   onClick={(e) => handleNavClick(e, item.id)}
                 >
                   {activeSection === item.id && (
-                    <motion.div 
-                      layoutId="desktop-pill" 
-                      className="desktop-active-pill" 
+                    <motion.div
+                      layoutId="desktop-pill"
+                      className="desktop-active-pill"
                       transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -597,8 +710,8 @@ function App() {
       </nav>
 
 
-{/* ===== Premium Split Hero Section ===== */}
-      <motion.header 
+      {/* ===== Premium Split Hero Section ===== */}
+      <motion.header
         className="hero-section custom-hero split-hero"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -612,9 +725,9 @@ function App() {
             <div className="glow-effect glow-3"></div>
           </div>
         </div>
-        
+
         <div className="hero-content-wrapper">
-          <motion.div 
+          <motion.div
             className="hero-left-image"
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -622,18 +735,18 @@ function App() {
           >
             <img src="/IMG_5281.jpg" alt="Maruveni Charan" className="profile-img-full" />
           </motion.div>
-          
+
           <motion.div className="hero-right-text" style={{ y: heroTextY }}>
             <h1 className="hero-title" style={{ overflow: "hidden" }}>
               <WordReveal text="Hi, I'm" delayOffset={0} /> <br className="mobile-break" />
               <WordReveal text="Maruveni Charan" delayOffset={2} />
             </h1>
-            
+
             <h2 className="hero-subtitle" style={{ overflow: "hidden" }}>
               <WordReveal text="Data Analyst | App Developer | UI/UX Designer" delayOffset={5} />
             </h2>
-            
-            <motion.p 
+
+            <motion.p
               className="hero-desc"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -641,8 +754,8 @@ function App() {
             >
               Passionate about crafting intuitive digital experiences — from designing elegant interfaces in Figma to building multi-platform apps and transforming data into actionable insights.
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               className="hero-buttons"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -655,28 +768,22 @@ function App() {
             </motion.div>
           </motion.div>
         </div>
-        
+
 
       </motion.header>
 
       {/* ===== Bento Grid Section (About + Skills + Stats) ===== */}
       <section className="bento-section" id="about">
         <div className="bento-header">
-          <h2 className="section-title">Overview</h2>
+          <ScrollRevealTitle className="section-title">Overview</ScrollRevealTitle>
         </div>
-        
-        <motion.div
-          className="bento-grid"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
+
+        <div className="bento-grid">
           {/* Bio Box */}
           <div className="bento-box bento-bio">
             <h3>About Me</h3>
             <p>
-              I am a dedicated <strong>Computer Science student</strong> at Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
+              I am a dedicated <strong>Computer Science graduate</strong> from Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
             </p>
             <p>
               By combining technical proficiency in Python and Swift with a strategic approach to data visualization in Power BI, I build applications that are as functional as they are intuitive.
@@ -685,68 +792,36 @@ function App() {
 
           {/* Stats Boxes */}
           <div className="bento-box bento-stat">
-            <div className="stat-number">8.1</div>
+            <div className="stat-number">
+              <AnimatedCounter value="8.1" isDecimal={true} />
+            </div>
             <div className="stat-label">CGPA</div>
           </div>
           <div className="bento-box bento-stat">
-            <div className="stat-number">3+</div>
+            <div className="stat-number">
+              <AnimatedCounter value="4" suffix="+" />
+            </div>
             <div className="stat-label">Projects</div>
           </div>
           <div className="bento-box bento-stat">
-            <div className="stat-number">5+</div>
+            <div className="stat-number">
+              <AnimatedCounter value="10" suffix="+" />
+            </div>
             <div className="stat-label">Tech Stack</div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      
+
       {/* ===== Premium Single-Row Skills Marquee Section ===== */}
       <section className="skills-section premium-skills" id="skills" style={{ overflow: "hidden", padding: "25px 0 40px" }}>
-        <div className="section-header-center" style={{ marginBottom: "20px" }}>
-          <h2 className="section-title" style={{ marginBottom: "20px" }}>Technical Skills</h2>
-        </div>
-        
-        {/* Professional Grid for Laptop View */}
-        <motion.div
-          className="skills-grid-desktop desktop-only"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          {[
-            { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
-            { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
-            { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
-            { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
-            { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
-            { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
-            { name: "Excel", src: "/Excel.jpg" },
-            { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
-            { name: "Figma", src: "/figma.png" },
-            { name: "Sketch", src: "/sketch.svg" },
-            { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
-            { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
-          ].map((skill, index) => (
-            <div
-              key={index}
-              className="professional-skill-card"
-            >
-              <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
-              <span className="professional-skill-name">{skill.name}</span>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Mobile Technical Skills Section */}
-        <div className="mobile-only mobile-skills-container">
-          <motion.div
-            className="skills-grid-mobile"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
+        {/* Large card wrapping all skills inside it */}
+        <div className="skills-outer-card">
+          <div className="section-header-center" style={{ marginBottom: "30px" }}>
+            <ScrollRevealTitle className="section-title">Technical Skills</ScrollRevealTitle>
+          </div>
+          {/* Professional Grid for Laptop View */}
+          <div className="skills-grid-desktop desktop-only">
             {[
               { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
               { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -761,38 +836,68 @@ function App() {
               { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
               { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
             ].map((skill, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="mobile-skill-card"
+                className="professional-skill-card"
+                whileHover={{ y: -5, scale: 1.03, boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}
               >
-                <div className="mobile-skill-icon-wrapper">
-                  <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
-                </div>
-                <span className="mobile-skill-name">{skill.name}</span>
-              </div>
+                <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
+                <span className="professional-skill-name">{skill.name}</span>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
+
+          {/* Mobile Technical Skills Section */}
+          <div className="mobile-only mobile-skills-container">
+            <motion.div
+              className="skills-grid-mobile"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              {[
+                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
+                { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
+                { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+                { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
+                { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
+                { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
+                { name: "Excel", src: "/Excel.jpg" },
+                { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
+                { name: "Figma", src: "/figma.png" },
+                { name: "Sketch", src: "/sketch.svg" },
+                { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
+                { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
+              ].map((skill, index) => (
+                <div
+                  key={index}
+                  className="mobile-skill-card"
+                >
+                  <div className="mobile-skill-icon-wrapper">
+                    <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
+                  </div>
+                  <span className="mobile-skill-name">{skill.name}</span>
+                </div>
+              ))}
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ===== Projects Section ===== */}
       <section className="projects-section pro-projects-section" id="projects">
         <div className="section-header-center">
-          <h2 className="pro-projects-title">Featured Work</h2>
+          <ScrollRevealTitle className="pro-projects-title">Featured Work</ScrollRevealTitle>
         </div>
-        
-        <div className="desktop-only">
-          <ProjectCarousel onSelect={setSelectedProject} />
-        </div>
-        <div className="mobile-only">
-          <Mobile3DProjects onSelect={setSelectedProject} />
-        </div>
+
+        <ProjectSlider onSelect={setSelectedProject} />
       </section>
 
       {/* ===== Services I Offer Section ===== */}
       <section className="services-section" id="services">
         <div className="section-header-center">
-          <h2 className="section-title">Services I Offer</h2>
+          <ScrollRevealTitle className="section-title">Services I Offer</ScrollRevealTitle>
         </div>
         {/* Desktop View: 3D Coverflow */}
         <Desktop3DServices services={servicesData} />
@@ -806,7 +911,7 @@ function App() {
       {/* ===== Education Journey Section ===== */}
       <section className="bg-glass-section" id="education">
         <div className="section-header-center">
-          <h2 className="section-title">Education Journey</h2>
+          <ScrollRevealTitle className="section-title">Education Journey</ScrollRevealTitle>
         </div>
         <div className="ultra-premium-timeline">
           {[
@@ -832,7 +937,7 @@ function App() {
       {/* ===== Internship Experience Section ===== */}
       <section className="bg-glass-section" id="experience">
         <div className="section-header-center">
-          <h2 className="section-title">Internship Experience</h2>
+          <ScrollRevealTitle className="section-title">Internship Experience</ScrollRevealTitle>
         </div>
         <div className="ultra-premium-timeline">
           <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: 0.1 }}>
@@ -842,17 +947,19 @@ function App() {
             <div className="ultra-timeline-content">
               <div className="ultra-timeline-header">
                 <div>
-                  <div className="ultra-timeline-year">Jan 2025 – Jun 2025</div>
-                  <h3 className="ultra-timeline-title">Centre of Excellence — iOS App Development</h3>
+                  <div className="ultra-timeline-year">Feb 2026 – Apr 2026</div>
+                  <h3 className="ultra-timeline-title">iOS App Development</h3>
                   <div className="ultra-timeline-sub">Alliance University &nbsp;·&nbsp; Internship</div>
                 </div>
                 <span className="ultra-type-badge">Internship</span>
               </div>
               <ul className="ultra-timeline-bullets">
-                <li>Focused on iOS app development using Swift, Firebase, and Xcode.</li>
-                <li>Built expertise in mobile app architecture, UI design, and backend integration.</li>
+                <li>Completed hands-on training in iOS development using Swift and Xcode.</li>
+                <li>Built mobile applications with UI/UX design principles.</li>
+                <li>Integrated Firebase for backend and real-time data handling.</li>
+                <li>Developed functional prototypes and improved app performance.</li>
               </ul>
-              <div className="pro-tech-tags" style={{marginTop: '16px'}}>
+              <div className="pro-tech-tags" style={{ marginTop: '16px' }}>
                 <span>Swift</span><span>Firebase</span><span>Xcode</span>
               </div>
             </div>
@@ -862,11 +969,11 @@ function App() {
 
       {/* ===== Certifications Section ===== */}
       <section className="bg-glass-section" id="certifications">
-        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
-          <h2 className="section-title">Certifications</h2>
+        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '24px' }}>
+          <ScrollRevealTitle className="section-title">Certifications</ScrollRevealTitle>
         </div>
         <motion.div
-          className="cert-premium-grid"
+          className="cert-bento-grid"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.15 }}
@@ -875,28 +982,26 @@ function App() {
           {certificationsData.map((cert, i) => (
             <motion.div
               key={i}
-              className="cert-premium-card"
-              whileHover={{ y: -6 }}
+              className={`cert-bento-item cert-bento-item-${i}`}
+              whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             >
-              <div className="cert-premium-img-wrap cert-pdf-wrap">
-                <div className="cert-pdf-icon">
-                  <i className="fas fa-file-pdf"></i>
-                </div>
+              <div className="cert-bento-media-wrap">
+                <img src={cert.image} alt={cert.name} className="cert-bento-img" />
               </div>
-              <div className="cert-premium-body">
-                <span className="cert-cat-badge">{cert.cat}</span>
-                <h4 className="cert-premium-title">{cert.name}</h4>
-                <div className="cert-premium-meta">
-                  <span className="cert-issuer">{cert.issuer}</span>
-                  <span className="cert-year">{cert.year}</span>
+              <div className="cert-bento-body">
+                <h3 className="cert-bento-title">{cert.name}</h3>
+                <div className="cert-bento-meta">
+                  <span className="cert-bento-issuer">{cert.issuer}</span>
+                  <span className="cert-bento-year">{cert.year}</span>
                 </div>
                 <motion.button
-                  className="cert-view-btn"
+                  className="cert-bento-btn"
                   onClick={() => window.open(cert.pdf, '_blank')}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  View Certification &#8594;
+                  View Certificate →
                 </motion.button>
               </div>
             </motion.div>
@@ -907,7 +1012,7 @@ function App() {
       {/* ===== Achievements Section ===== */}
       <section className="bg-glass-section" id="achievements">
         <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
-          <h2 className="section-title">Achievements</h2>
+          <ScrollRevealTitle className="section-title">Achievements</ScrollRevealTitle>
         </div>
         <motion.div
           className="unified-premium-grid"
@@ -943,7 +1048,7 @@ function App() {
             >
               <div className="unified-card-top">
                 <span className="unified-badge highlight-badge">
-                  <i className="fas fa-trophy" style={{marginRight: '6px'}}></i> {ach.badge}
+                  <i className="fas fa-trophy" style={{ marginRight: '6px' }}></i> {ach.badge}
                 </span>
               </div>
               <h3 className="unified-title">{ach.title}</h3>
@@ -974,7 +1079,7 @@ function App() {
         <div className="contact-grid">
           {/* Left Column: Text & Headers */}
           <div className="contact-left-text">
-            <h2 className="contact-heading">Get In Touch</h2>
+            <ScrollRevealTitle className="contact-heading">Get In Touch</ScrollRevealTitle>
             <div className="contact-divider"></div>
             <p className="contact-subtitle">
               I'm always open to discussing new opportunities, creative UI/UX design projects, or mobile app development ventures.
@@ -1009,29 +1114,106 @@ function App() {
                 </div>
               </div>
             </div>
-            <div className="contact-social">
-              <div className="contact-social-label">Follow Me</div>
-              <div className="contact-social-icons">
-                <a href="https://linkedin.com/in/maruveni-charan-631766281" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fab fa-linkedin-in"></i></a>
-                <a href="https://github.com/charan2319" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fab fa-github"></i></a>
-                <a href="https://www.hackerrank.com/profile/charanm2319" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fab fa-hackerrank"></i></a>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
 
+      {/* ===== Premium Mega Footer ===== */}
+      <footer className="mega-footer">
+        <div className="mega-footer-inner">
+          {/* Giant Name */}
+          <div className="mega-footer-name-wrap">
+            <h2 className="mega-footer-name">
+              {["C", "H", "A", "R", "A", "N"].map((letter, index) => (
+                <motion.span
+                  key={index}
+                  style={{ display: "inline-block" }}
+                  initial={{ opacity: 0, y: 70, scale: 0.8 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{
+                    duration: 0.7,
+                    delay: index * 0.08,
+                    ease: [0.34, 1.56, 0.64, 1] // Custom elastic spring ease for bounce
+                  }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </h2>
+          </div>
+
+          {/* Tagline */}
+          <motion.p
+            className="mega-footer-tagline"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Data Analyst · App Developer · UI/UX Designer
+          </motion.p>
+
+          {/* Navigation Links */}
+          <motion.div
+            className="mega-footer-nav"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+          >
+            <a href="#" onClick={(e) => handleNavClick(e, 'home')}>Home</a>
+            <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>About</a>
+            <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}>Skills</a>
+            <a href="#projects" onClick={(e) => handleNavClick(e, 'projects')}>Projects</a>
+            <a href="#achievements" onClick={(e) => handleNavClick(e, 'achievements')}>Achievements</a>
+            <a href="#contact" onClick={(e) => handleNavClick(e, 'contact')}>Contact</a>
+          </motion.div>
+
+          {/* Social Icons */}
+          <motion.div
+            className="mega-footer-socials"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.45 }}
+          >
+            <a href="https://linkedin.com/in/maruveni-charan-631766281" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i className="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/charan2319" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i className="fab fa-github"></i>
+            </a>
+            <a href="https://www.hackerrank.com/profile/charanm2319" target="_blank" rel="noopener noreferrer" aria-label="HackerRank">
+              <i className="fab fa-hackerrank"></i>
+            </a>
+            <a href="mailto:charanm2319@gmail.com" aria-label="Email">
+              <i className="fas fa-envelope"></i>
+            </a>
+          </motion.div>
+
+          {/* Divider */}
+          <div className="mega-footer-divider"></div>
+
+          {/* Copyright Bar */}
+          <div className="mega-footer-bottom">
+            <p>© {new Date().getFullYear()} Maruveni Charan. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
       {/* ===== Project Detail Modal ===== */}
       <AnimatePresence>
         {selectedProject && (
-          <motion.div 
+          <motion.div
             className="project-detail-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedProject(null)}
           >
-            <motion.div 
+            <motion.div
               className="project-page-view"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -1047,24 +1229,24 @@ function App() {
                 </button>
                 <div className="project-nav-title">{selectedProject.title}</div>
               </div>
-              
+
               <div className="project-page-content">
                 <div className="project-page-container">
                   <div className="project-page-hero">
                     {selectedProject.video ? (
-                      <video 
-                        src={selectedProject.video} 
-                        autoPlay 
-                        muted 
-                        loop 
-                        controls 
+                      <video
+                        src={selectedProject.video}
+                        autoPlay
+                        muted
+                        loop
+                        controls
                         className="project-hero-media"
                       />
                     ) : (
                       <img src={selectedProject.image} alt={selectedProject.title} className="project-hero-media" />
                     )}
                   </div>
-                  
+
                   <div className="project-page-info">
                     <div className="modal-tag-row">
                       <span className={`pro-project-category-tag ${selectedProject.category.className}`}>
@@ -1072,7 +1254,7 @@ function App() {
                       </span>
                     </div>
                     <h1 className="project-page-title">{selectedProject.title}</h1>
-                    
+
                     <div className="project-page-grid-details">
                       <div className="project-info-section">
                         <h4 className="modal-section-title">Project Overview</h4>
