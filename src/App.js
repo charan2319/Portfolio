@@ -249,11 +249,7 @@ const contactCardVariants = {
 
 const footerContainerVariants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08
-    }
-  }
+  visible: {}
 };
 
 const footerItemVariants = {
@@ -266,6 +262,25 @@ const footerItemVariants = {
       ease: [0.25, 1, 0.5, 1]
     }
   }
+};
+
+const footerNameWrapVariants = {
+  hidden: {},
+  visible: {}
+};
+
+const letterVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: (index) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      opacity: { duration: 0.4, ease: "easeOut" },
+      y: { duration: 1.4, ease: [0.25, 1, 0.5, 1], delay: index * 0.12 },
+      scale: { duration: 1.2, ease: [0.25, 1, 0.5, 1], delay: index * 0.12 }
+    }
+  })
 };
 
 const ProjectCard = ({ title, category, desc, tech, image, video, link, onClick, disableAnimation }) => {
@@ -1320,18 +1335,26 @@ function App() {
           variants={footerContainerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.15 }}
+          viewport={{ once: false, amount: 0.01 }}
         >
           {/* Giant Name */}
-          <motion.div className="mega-footer-name-wrap" variants={footerItemVariants}>
+          <motion.div className="mega-footer-name-wrap" variants={footerNameWrapVariants}>
             <h2 className="mega-footer-name">
               {["C", "H", "A", "R", "A", "N"].map((letter, index) => (
-                <span
+                <motion.span
                   key={index}
-                  style={{ display: "inline-block" }}
+                  custom={index}
+                  variants={letterVariants}
+                  whileHover={{
+                    y: -15,
+                    scale: 1.1,
+                    rotate: 5,
+                    transition: { type: "spring", stiffness: 300, damping: 10 }
+                  }}
+                  style={{ display: "inline-block", cursor: "pointer" }}
                 >
                   {letter}
-                </span>
+                </motion.span>
               ))}
             </h2>
           </motion.div>

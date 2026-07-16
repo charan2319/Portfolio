@@ -9436,11 +9436,10 @@ section {
 }
 
 .mega-footer-name span {
-  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .mega-footer-name span:hover {
-  transform: translateY(-15px) scale(1.1) rotate(5deg);
   -webkit-text-fill-color: #ffffff;
   text-shadow: 0 10px 30px rgba(99, 102, 241, 0.6);
 }
