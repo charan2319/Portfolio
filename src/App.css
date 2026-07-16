@@ -8371,19 +8371,17 @@ section {
 @media (max-width: 768px) {
   .premium-mobile-slider {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: visible;
-    /* Prevent clipping of scaled cards */
-    padding: 20px 0;
+    padding: 5px 0;
   }
 
   .slider-track-outer {
     width: 100%;
-    height: 600px;
-    /* Increased height to prevent clipping */
+    height: 580px;
     position: relative;
     display: flex;
     justify-content: center;
@@ -8403,12 +8401,10 @@ section {
 
   .premium-slider-card {
     position: absolute;
-    width: 290px;
+    width: 340px;
     min-height: 460px;
-    /* Slightly taller for "long" feel */
     background: #ffffff;
     border-radius: 36px;
-    /* Smoother corners */
     padding: 40px 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.03);
@@ -9379,8 +9375,9 @@ section {
   text-align: center;
   position: relative;
   overflow: hidden;
-  scroll-snap-align: start;
+  scroll-snap-align: end;
   scroll-snap-stop: always;
+  margin: 0;
 }
 
 /* Subtle radial glow behind the name */
@@ -9952,5 +9949,324 @@ section {
     height: auto;
     min-height: auto;
     max-height: none;
+  }
+}
+
+/* =============================================================
+   TABLET PORTRAIT MODE (769px – 1024px)
+   Renders the mobile-like layout for tablets held vertically.
+   Must come LAST in the file to override base !important rules.
+   ============================================================= */
+@media (max-width: 1024px) {
+
+  /* --- 1. Swap mobile / desktop visibility --- */
+  .mobile-only {
+    display: block !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* --- 2. Disable scroll-snap (same as mobile) --- */
+  .page-wrapper {
+    scroll-snap-type: none !important;
+    overflow-x: hidden !important;
+  }
+
+  .hero-section,
+  .bento-section,
+  .skills-section,
+  .pro-projects-section,
+  .services-section,
+  .bg-glass-section,
+  .contact-section {
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+    min-height: auto !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .mega-footer {
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+  }
+
+  /* --- 3. Bento section auto-height --- */
+  .bento-section {
+    min-height: auto !important;
+    padding: 40px 5% !important;
+  }
+
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-bio {
+    grid-column: span 2;
+  }
+
+  .bento-skills {
+    grid-column: span 2;
+  }
+
+  /* --- 4. Skills outer card — remove fixed height constraints --- */
+  .skills-outer-card {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding: 30px 24px 45px !important;
+  }
+
+  /* --- 5. Mobile skill card styles (not defined outside 768px) --- */
+  .mobile-skills-container {
+    width: 100%;
+    padding: 10px 0 40px 0;
+    display: flex !important;
+    justify-content: center;
+  }
+
+  .skills-grid-mobile {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 18px;
+    padding: 0 20px;
+    width: 100%;
+    max-width: 650px;
+    justify-items: center;
+  }
+
+  .mobile-skill-card {
+    width: 100%;
+    aspect-ratio: 1 / 1.05;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 22px;
+    padding: 18px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+  }
+
+  .mobile-skill-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .mobile-skill-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .mobile-skill-name {
+    font-size: 0.88rem;
+    font-weight: 850;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  /* --- 6. Services slider (mobile slider styles for tablet) --- */
+  .premium-mobile-slider {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: visible;
+    padding: 5px 0;
+  }
+
+  .slider-track-outer {
+    width: 100%;
+    height: 580px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .slider-track-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .premium-slider-card {
+    position: absolute;
+    width: 380px;
+    min-height: 480px;
+    background: #ffffff;
+    border-radius: 36px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .premium-slider-card.active {
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+  }
+
+  .premium-slider-card .pro-service-icon-bg {
+    width: 65px;
+    height: 65px;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .premium-slider-card .pro-service-desc,
+  .premium-slider-card .pro-service-list li {
+    color: #4b5563;
+    font-size: 0.95rem;
+  }
+
+  .premium-dots {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .premium-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .premium-dot.active {
+    background: #6366f1;
+    transform: scale(1.3);
+    width: 20px;
+    border-radius: 10px;
+  }
+
+  /* --- 7. Contact section — stacked --- */
+  .contact-section {
+    padding: 40px 5% !important;
+  }
+
+  .contact-grid {
+    gap: 30px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .contact-left-text {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    text-align: center !important;
+    flex: none !important;
+  }
+
+  .contact-left-text .contact-heading {
+    text-align: center !important;
+  }
+
+  .contact-left-text .contact-subtitle,
+  .contact-left-text .contact-desc-detail {
+    text-align: center !important;
+  }
+
+  .contact-left-text .contact-divider {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .contact-right-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* --- 8. Achievements grid — single column --- */
+  .unified-premium-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  .unified-card {
+    padding: 36px 28px;
+  }
+
+  /* --- 9. Cert bento grid — 2-column for tablet --- */
+  .cert-bento-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: auto !important;
+    height: auto !important;
+  }
+
+  .cert-bento-item {
+    grid-column: span 1 !important;
+    grid-row: auto !important;
+  }
+
+  .cert-bento-item-0 .cert-bento-media-wrap {
+    height: 200px;
+  }
+
+  /* --- 10. Header nav — tighter spacing for narrower width --- */
+  .desktop-header {
+    height: 60px;
+  }
+
+  .header-container {
+    padding: 0 20px;
+    justify-content: center !important;
+  }
+
+  .logo-container.desktop-only {
+    display: none !important;
+  }
+
+  .desktop-nav-menu {
+    gap: 4px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-item-wrapper a {
+    padding: 8px 14px;
+    font-size: 0.88rem;
+  }
+
+  /* --- 11. bg-glass-section auto-height --- */
+  .bg-glass-section {
+    min-height: auto !important;
+    padding: 45px 5%;
+  }
+
+  /* --- 12. Pro projects grid --- */
+  .pro-projects-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pro-services-grid {
+    grid-template-columns: 1fr !important;
   }
 }
