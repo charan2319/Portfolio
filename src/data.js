@@ -25,7 +25,7 @@ export const servicesData = [
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg", 
     title: "Flutter App Development", 
     description: "Building beautiful, natively compiled, multi-platform applications from a single codebase.",
-    list: ["Cross-platform Development", "Dart Programming", "Custom UI Animations", "API Integration"],
+    list: ["Cross-platform Development", "Dart Programming", "API Integration"],
     isImg: true
   },
   {

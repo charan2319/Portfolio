@@ -14,36 +14,48 @@ import {
 } from "./data.js";
 
 
-const AnimatedCounter = ({ value, duration = 1500, isDecimal = false, suffix = "" }) => {
-  const [count, setCount] = useState(0);
+const AnimatedCounter = ({ value, duration = 900, isDecimal = false, suffix = "" }) => {
+  const [count, setCount] = useState(isDecimal ? "0.0" : "0");
+  const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
+    const targetValue = parseFloat(value);
     let startTimestamp = null;
     let animationFrameId;
-    const targetValue = parseFloat(value);
+
+    // Smooth cubic ease-out for a natural, premium deceleration
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const currentVal = progress * targetValue;
-      setCount(isDecimal ? parseFloat(currentVal.toFixed(1)) : Math.floor(currentVal));
+      const elapsed = timestamp - startTimestamp;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutCubic(progress);
+      const currentVal = easedProgress * targetValue;
+
+      if (isDecimal) {
+        setCount(currentVal.toFixed(1));
+      } else {
+        setCount(Math.round(currentVal).toString());
+      }
+
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(step);
+      } else {
+        setCount(isDecimal ? targetValue.toFixed(1) : targetValue.toString());
       }
     };
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
           startTimestamp = null;
           animationFrameId = requestAnimationFrame(step);
-        } else {
-          cancelAnimationFrame(animationFrameId);
-          setCount(0);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 }
     );
 
     if (ref.current) {
@@ -54,9 +66,13 @@ const AnimatedCounter = ({ value, duration = 1500, isDecimal = false, suffix = "
       cancelAnimationFrame(animationFrameId);
       observer.disconnect();
     };
-  }, [value, duration, isDecimal]);
+  }, [value, duration, isDecimal, hasAnimated]);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+  return (
+    <span ref={ref} style={{ fontVariantNumeric: "tabular-nums", display: "inline-block" }}>
+      {count}{suffix}
+    </span>
+  );
 };
 
 const ScrollRevealTitle = ({ children, className, style }) => {

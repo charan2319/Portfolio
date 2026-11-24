@@ -8524,8 +8524,13 @@ section {
 }
 
 /* Bulletproof text visibility across all 3D cards */
-.pro-service-card-3d .pro-service-title {
+.pro-service-card-3d .pro-service-title,
+.premium-slider-card .pro-service-title,
+.pro-service-title {
   color: #0f172a !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em;
 }
 
 .pro-service-card-3d .pro-service-desc {
@@ -10855,6 +10860,7 @@ section {
   line-height: 1;
   margin-bottom: 6px;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .mc-stat-label {
