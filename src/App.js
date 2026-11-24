@@ -14,59 +14,70 @@ import {
 } from "./data.js";
 
 
-const AnimatedCounter = ({ value, duration = 900, isDecimal = false, suffix = "" }) => {
-  const [count, setCount] = useState(isDecimal ? "0.0" : "0");
-  const [hasAnimated, setHasAnimated] = useState(false);
+const AnimatedCounter = ({ value, duration = 1000, isDecimal = false, suffix = "" }) => {
+  const targetValue = parseFloat(value) || 0;
+  const [count, setCount] = useState("0");
   const ref = useRef(null);
+  const animatedRef = useRef(false);
 
   useEffect(() => {
-    const targetValue = parseFloat(value);
-    let startTimestamp = null;
     let animationFrameId;
-
-    // Smooth cubic ease-out for a natural, premium deceleration
+    let startTimestamp = null;
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const elapsed = timestamp - startTimestamp;
-      const progress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutCubic(progress);
-      const currentVal = easedProgress * targetValue;
+    const runCounter = () => {
+      if (animatedRef.current) return;
+      animatedRef.current = true;
 
-      if (isDecimal) {
-        setCount(currentVal.toFixed(1));
-      } else {
-        setCount(Math.round(currentVal).toString());
-      }
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const elapsed = timestamp - startTimestamp;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        const currentVal = easedProgress * targetValue;
 
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(step);
-      } else {
-        setCount(isDecimal ? targetValue.toFixed(1) : targetValue.toString());
+        if (progress < 1) {
+          setCount(isDecimal ? currentVal.toFixed(1) : Math.round(currentVal).toString());
+          animationFrameId = requestAnimationFrame(step);
+        } else {
+          setCount(isDecimal ? targetValue.toFixed(1) : targetValue.toString());
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    const checkVisibility = () => {
+      if (animatedRef.current || !ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (rect.top <= vh * 0.95 && rect.bottom >= 0) {
+        runCounter();
       }
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          startTimestamp = null;
-          animationFrameId = requestAnimationFrame(step);
-        }
-      },
-      { threshold: 0.15 }
-    );
+    // Check immediately on mount
+    checkVisibility();
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    // Listen to scroll events on both wrapper and window
+    const wrapper = document.querySelector('.page-wrapper') || window;
+    wrapper.addEventListener('scroll', checkVisibility, { passive: true });
+    window.addEventListener('scroll', checkVisibility, { passive: true });
+
+    // Fallback: If not triggered within 400ms, start animation so it NEVER gets stuck at 0
+    const fallbackTimer = setTimeout(() => {
+      if (!animatedRef.current) {
+        runCounter();
+      }
+    }, 400);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      observer.disconnect();
+      clearTimeout(fallbackTimer);
+      wrapper.removeEventListener('scroll', checkVisibility);
+      window.removeEventListener('scroll', checkVisibility);
     };
-  }, [value, duration, isDecimal, hasAnimated]);
+  }, [targetValue, duration, isDecimal]);
 
   return (
     <span ref={ref} style={{ fontVariantNumeric: "tabular-nums", display: "inline-block" }}>
@@ -757,6 +768,368 @@ const ProjectSlider = ({ onSelect }) => {
   );
 };
 
+/* ===== Zigzag Education Curved Timeline Component ===== */
+const EducationZigzagTimeline = () => {
+  const containerRef = useRef(null);
+  const pathRef = useRef(null);
+  const cardRefs = [useRef(null), useRef(null), useRef(null)];
+  const entryCoordsRef = useRef({ pExp: null, p0: null });
+
+  const [pathD, setPathD] = useState("");
+  const [orbPos, setOrbPos] = useState({ x: 0, y: 0 });
+  const [activeStep, setActiveStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [totalLength, setTotalLength] = useState(0);
+
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
+  const rafIdRef = useRef(null);
+
+  const cards = [
+    {
+      id: "btech",
+      side: "left",
+      year: "2022 — 2026",
+      degree: (
+        <>
+          B.Tech — Computer Science<br />
+          & Engineering
+        </>
+      ),
+      institution: "Alliance University",
+      grade: "8.3 CGPA",
+    },
+    {
+      id: "grade12",
+      side: "right",
+      year: "2022",
+      degree: "12th Grade",
+      institution: "Amaravathi Jr. College",
+      grade: "76%",
+    },
+    {
+      id: "grade10",
+      side: "left",
+      year: "2020",
+      degree: "10th Grade",
+      institution: "PCMR EM School",
+      grade: "100%",
+    },
+  ];
+
+  // Recalculate curved SVG path connecting cards with a rounded wave crest
+  const updateSvgPath = () => {
+    if (
+      !containerRef.current ||
+      !cardRefs[0].current ||
+      !cardRefs[1].current ||
+      !cardRefs[2].current
+    ) return;
+
+    const cRect = containerRef.current.getBoundingClientRect();
+    const r0 = cardRefs[0].current.getBoundingClientRect();
+    const r1 = cardRefs[1].current.getBoundingClientRect();
+    const r2 = cardRefs[2].current.getBoundingClientRect();
+
+    // Card 0 (Left): anchor at middle of right border
+    const p0 = {
+      x: r0.right - cRect.left,
+      y: r0.top + r0.height / 2 - cRect.top,
+    };
+    // Card 1 (Right): anchor at middle of left border
+    const p1 = {
+      x: r1.left - cRect.left,
+      y: r1.top + r1.height / 2 - cRect.top,
+    };
+    // Card 2 (Left): anchor at middle of right border
+    const p2 = {
+      x: r2.right - cRect.left,
+      y: r2.top + r2.height / 2 - cRect.top,
+    };
+
+    // Store Experience divider coordinates for floating entrance without drawing a connecting line
+    const expDiv = document.querySelector(".mc-experience-divider");
+    if (expDiv) {
+      const expRect = expDiv.getBoundingClientRect();
+      entryCoordsRef.current = {
+        pExp: {
+          x: expRect.left + expRect.width / 2 - cRect.left,
+          y: expRect.bottom - cRect.top,
+        },
+        p0: { x: p0.x, y: p0.y },
+      };
+    } else {
+      entryCoordsRef.current = {
+        pExp: { x: p0.x, y: p0.y - 120 },
+        p0: { x: p0.x, y: p0.y },
+      };
+    }
+
+    // Increased size for the 360 loop (r ≈ 36px) with a perfectly rounded circular apex (kappa = r * 0.552)
+    const r = Math.min(38, Math.max(28, Math.abs(p1.x - p0.x) * 0.15));
+    const k = r * 0.552;
+
+    // Loop 1 (Card 0 [Left] -> Card 1 [Right])
+    const dx1 = p1.x - p0.x;
+    const dy1 = p1.y - p0.y;
+    const cx1 = p0.x + dx1 * 0.50;
+    const cy1 = p0.y + dy1 * 0.35;
+    const cross1_x = cx1;
+    const cross1_y = cy1 + r * 0.65;
+
+    const d1 = `M ${p0.x} ${p0.y} ` +
+      `C ${p0.x + dx1 * 0.25} ${p0.y + dy1 * 0.15}, ${cross1_x - r * 0.85} ${cross1_y + r * 0.75}, ${cross1_x} ${cross1_y} ` +
+      `C ${cross1_x + r * 0.85} ${cross1_y - r * 0.70}, ${cx1 + r} ${cy1 + r * 0.35}, ${cx1 + r} ${cy1} ` +
+      `C ${cx1 + r} ${cy1 - k}, ${cx1 + k} ${cy1 - r}, ${cx1} ${cy1 - r} ` +
+      `C ${cx1 - k} ${cy1 - r}, ${cx1 - r} ${cy1 - k}, ${cx1 - r} ${cy1} ` +
+      `C ${cx1 - r} ${cy1 + r * 0.35}, ${cross1_x - r * 0.85} ${cross1_y - r * 0.70}, ${cross1_x} ${cross1_y} ` +
+      `C ${cross1_x + r * 0.85} ${cross1_y + r * 0.75}, ${p1.x - dx1 * 0.25} ${p1.y - dy1 * 0.15}, ${p1.x} ${p1.y}`;
+
+    // Loop 2 (Card 1 [Right] -> Card 2 [Left])
+    const dx2 = p2.x - p1.x;
+    const dy2 = p2.y - p1.y;
+    const cx2 = p1.x + dx2 * 0.50;
+    const cy2 = p1.y + dy2 * 0.35;
+    const cross2_x = cx2;
+    const cross2_y = cy2 + r * 0.65;
+
+    const d2 = `C ${p1.x + dx2 * 0.25} ${p1.y + dy2 * 0.15}, ${cross2_x + r * 0.85} ${cross2_y + r * 0.75}, ${cross2_x} ${cross2_y} ` +
+      `C ${cross2_x - r * 0.85} ${cross2_y - r * 0.70}, ${cx2 - r} ${cy2 + r * 0.35}, ${cx2 - r} ${cy2} ` +
+      `C ${cx2 - r} ${cy2 - k}, ${cx2 - k} ${cy2 - r}, ${cx2} ${cy2 - r} ` +
+      `C ${cx2 + k} ${cy2 - r}, ${cx2 + r} ${cy2 - k}, ${cx2 + r} ${cy2} ` +
+      `C ${cx2 + r} ${cy2 + r * 0.35}, ${cross2_x + r * 0.85} ${cross2_y - r * 0.70}, ${cross2_x} ${cross2_y} ` +
+      `C ${cross2_x - r * 0.85} ${cross2_y + r * 0.75}, ${p2.x - dx2 * 0.25} ${p2.y - dy2 * 0.15}, ${p2.x} ${p2.y}`;
+
+    // NO connecting line drawn from above section! Only the Education timeline:
+    setPathD(`${d1} ${d2}`);
+  };
+
+  useEffect(() => {
+    updateSvgPath();
+    const timer1 = setTimeout(updateSvgPath, 150);
+    const timer2 = setTimeout(updateSvgPath, 600);
+
+    window.addEventListener("resize", updateSvgPath);
+    window.addEventListener("load", updateSvgPath);
+
+    let ro = null;
+    if (window.ResizeObserver && containerRef.current) {
+      ro = new ResizeObserver(() => updateSvgPath());
+      ro.observe(containerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      window.removeEventListener("resize", updateSvgPath);
+      window.removeEventListener("load", updateSvgPath);
+      if (ro) ro.disconnect();
+    };
+  }, []);
+
+  // Update total length and initial orb position when path string updates
+  useEffect(() => {
+    if (pathRef.current) {
+      try {
+        const len = pathRef.current.getTotalLength();
+        setTotalLength(len);
+        if (len > 0 && currentProgressRef.current >= 0) {
+          const pt = pathRef.current.getPointAtLength(currentProgressRef.current * len);
+          setOrbPos({ x: pt.x, y: pt.y });
+        }
+      } catch (e) {}
+    }
+  }, [pathD]);
+
+  // Smooth lerp animation loop for traveling blue indicator
+  useEffect(() => {
+    const loop = () => {
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.0008) {
+        currentProgressRef.current += diff * 0.085;
+        setProgress(currentProgressRef.current);
+
+        const p = currentProgressRef.current;
+
+        // If p < 0: Indicator travels smoothly through the air from Experience blue line down to B.Tech (without static line)
+        if (p < 0) {
+          const t = Math.max(0, Math.min(1, p + 1));
+          const { pExp, p0 } = entryCoordsRef.current;
+          if (pExp && p0) {
+            const dy = p0.y - pExp.y;
+            const c0 = { x: pExp.x, y: pExp.y + dy * 0.45 };
+            const c1 = { x: p0.x + 35, y: p0.y - dy * 0.20 };
+            const u = 1 - t;
+            const x = u*u*u * pExp.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * p0.x;
+            const y = u*u*u * pExp.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * p0.y;
+            setOrbPos({ x, y });
+          }
+        } else {
+          // Once at B.Tech or beyond, follow the Education path
+          if (pathRef.current && totalLength > 0) {
+            try {
+              const pt = pathRef.current.getPointAtLength(
+                Math.min(1, p) * totalLength
+              );
+              setOrbPos({ x: pt.x, y: pt.y });
+            } catch (e) {}
+          }
+        }
+      }
+
+      const p = currentProgressRef.current;
+      if (p < -0.05) {
+        setActiveStep(-1);
+      } else if (p < 0.35) {
+        setActiveStep(0); // B.Tech active
+      } else if (p < 0.85) {
+        setActiveStep(1); // 12th Grade active
+      } else {
+        setActiveStep(2); // 10th Grade active
+      }
+
+      rafIdRef.current = requestAnimationFrame(loop);
+    };
+
+    rafIdRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
+  }, [totalLength]);
+
+  // Scroll listener: directly tracks the 3 cards' viewport positions so movement is immediate and natural
+  useEffect(() => {
+    const wrapper = document.querySelector(".page-wrapper") || window;
+
+    const handleScroll = () => {
+      if (!cardRefs[0].current || !cardRefs[1].current || !cardRefs[2].current) return;
+      const r0 = cardRefs[0].current.getBoundingClientRect();
+      const r1 = cardRefs[1].current.getBoundingClientRect();
+      const r2 = cardRefs[2].current.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Center focus line in viewport
+      const focusY = vh * 0.52;
+
+      let p = 0;
+      if (r0.top > focusY) {
+        // Above B.Tech (coming down from Experience divider)
+        const dist = r0.top - focusY;
+        const maxDist = vh * 0.40;
+        const t = Math.max(0, Math.min(1, dist / maxDist));
+        p = -t;
+      } else if (r1.top > focusY) {
+        // Between B.Tech (p = 0.0) and 12th Grade (p = 0.5)
+        const span = Math.max(1, r1.top - r0.top);
+        const progressThrough = (focusY - r0.top) / span;
+        const t = Math.max(0, Math.min(1, progressThrough));
+        p = t * 0.5;
+      } else {
+        // Past 12th Grade: immediately starts moving to 10th Grade (p: 0.5 -> 1.0)
+        const span = Math.max(1, r2.top - r1.top);
+        const progressThrough = (focusY - r1.top) / span;
+        const t = Math.max(0, Math.min(1, progressThrough));
+        p = 0.5 + t * 0.5;
+      }
+
+      targetProgressRef.current = p;
+    };
+
+    wrapper.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      wrapper.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleCardClick = (stepIndex) => {
+    if (stepIndex === 0) targetProgressRef.current = 0;
+    else if (stepIndex === 1) targetProgressRef.current = 0.5;
+    else if (stepIndex === 2) targetProgressRef.current = 1.0;
+  };
+
+  return (
+    <div className="mc-edu-zigzag-container" ref={containerRef}>
+      {/* SVG Canvas for curved breaking line and traveling blue orb */}
+      <svg className="mc-edu-svg-canvas" aria-hidden="true">
+        {pathD && (
+          <>
+            {/* Background Breaking (dashed) Line with rounded wave crest */}
+            <path
+              d={pathD}
+              fill="none"
+              stroke="#cbd5e1"
+              strokeWidth="2.5"
+              strokeDasharray="6 6"
+              strokeLinecap="round"
+            />
+
+            {/* Glowing Active Royal Blue Trail */}
+            <path
+              ref={pathRef}
+              d={pathD}
+              fill="none"
+              stroke="#264df3"
+              strokeWidth="2.5"
+              strokeDasharray={totalLength || 1000}
+              strokeDashoffset={(totalLength || 1000) * (1 - Math.max(0, progress))}
+              strokeLinecap="round"
+            />
+
+            {/* Unique High-Tech Traveling Royal Blue Indicator */}
+            {(totalLength > 0 || progress < 0) && (
+              <g transform={`translate(${orbPos.x}, ${orbPos.y})`} className="mc-edu-indicator-group">
+                {/* Outer Ambient Pulse Aura */}
+                <circle r="22" fill="#264df3" opacity="0.12" className="mc-edu-orb-aura" />
+
+                {/* Glowing Energy Halo Ring */}
+                <circle
+                  r="13"
+                  fill="rgba(38, 77, 243, 0.16)"
+                  stroke="#264df3"
+                  strokeWidth="2.5"
+                  filter="drop-shadow(0 0 8px rgba(38, 77, 243, 0.7))"
+                />
+
+                {/* Dual Orbiting Satellite Accents */}
+                <g className="mc-edu-orb-satellites">
+                  <circle cx="0" cy="-13" r="2.2" fill="#38bdf8" />
+                  <circle cx="0" cy="13" r="2.2" fill="#38bdf8" />
+                </g>
+
+                {/* Royal Blue Donut Core (Matching Image 1) */}
+                <circle r="7.5" fill="#264df3" />
+
+                {/* Crisp White Aperture Spark (Matching Image 1) */}
+                <circle r="3.2" fill="#ffffff" />
+              </g>
+            )}
+          </>
+        )}
+      </svg>
+
+      {/* Alternating Zigzag Education Cards (without static edge dots) */}
+      {cards.map((card, idx) => (
+        <div
+          key={card.id}
+          className={`mc-edu-zigzag-item mc-edu-${card.side} ${activeStep === idx ? "is-active" : ""}`}
+          onClick={() => handleCardClick(idx)}
+        >
+          <div className="mc-edu-card-inner" ref={cardRefs[idx]}>
+            <div className="mc-edu-year">{card.year}</div>
+            <h3 className="mc-edu-degree">{card.degree}</h3>
+            <div className="mc-edu-institution">{card.institution}</div>
+            <div className="mc-edu-grade">{card.grade}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 function App() {
   const [visibleSkills, setVisibleSkills] = useState(false);
   const [modalVideo, setModalVideo] = useState(null);
@@ -1037,25 +1410,37 @@ function App() {
           </motion.div>
         </div>
 
-        {/* Sub-Hero Ticker / Divider Bar */}
+        {/* Sub-Hero Continuous Moving Ticker Bar */}
         <div className="mc-subhero-bar">
-          <div className="mc-subhero-container">
-            <div className="mc-subhero-roles">
+          <div className="mc-subhero-marquee">
+            <div className="mc-subhero-track">
               <span>DATA ANALYST</span>
-              <span className="mc-subhero-slash">/</span>
               <span>APP DEVELOPER</span>
-              <span className="mc-subhero-slash">/</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
               <span>UI/UX DESIGNER</span>
             </div>
-
-            <a
-              href="#about"
-              className="mc-subhero-scroll"
-              onClick={(e) => handleNavClick(e, 'about')}
-            >
-              <span>SCROLL TO DISCOVER</span>
-              <span className="mc-scroll-arrow">↓</span>
-            </a>
+            <div className="mc-subhero-track" aria-hidden="true">
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+              <span>DATA ANALYST</span>
+              <span>APP DEVELOPER</span>
+              <span>UI/UX DESIGNER</span>
+            </div>
           </div>
         </div>
       </header>
@@ -1098,7 +1483,7 @@ function App() {
               <div className="mc-stats-row">
                 <div className="mc-stat-item">
                   <div className="mc-stat-number">
-                    <AnimatedCounter value="8.1" isDecimal={true} />
+                    <AnimatedCounter value="8.3" isDecimal={true} />
                   </div>
                   <div className="mc-stat-label">CGPA</div>
                 </div>
@@ -1318,31 +1703,7 @@ function App() {
             </div>
           </div>
 
-          <div className="mc-education-grid">
-            <div className="mc-edu-card">
-              <div className="mc-edu-year">2022 — 2026</div>
-              <h3 className="mc-edu-degree">
-                B.Tech — Computer Science<br />
-                & Engineering
-              </h3>
-              <div className="mc-edu-institution">Alliance University</div>
-              <div className="mc-edu-grade">8.1 CGPA</div>
-            </div>
-
-            <div className="mc-edu-card">
-              <div className="mc-edu-year">2022</div>
-              <h3 className="mc-edu-degree">12th Grade</h3>
-              <div className="mc-edu-institution">Amaravathi Jr. College</div>
-              <div className="mc-edu-grade">76%</div>
-            </div>
-
-            <div className="mc-edu-card">
-              <div className="mc-edu-year">2020</div>
-              <h3 className="mc-edu-degree">10th Grade</h3>
-              <div className="mc-edu-institution">PCMR EM School</div>
-              <div className="mc-edu-grade">100%</div>
-            </div>
-          </div>
+          <EducationZigzagTimeline />
         </div>
       </section>
 

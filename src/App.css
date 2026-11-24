@@ -10738,59 +10738,57 @@ section {
   color: #64748b;
 }
 
-/* ===== 6. SUB-HERO TICKER ===== */
+/* ===== 6. SUB-HERO CONTINUOUS MARQUEE ===== */
 .mc-subhero-bar {
   width: 100%;
   border-top: 1px solid #e8ecf2 !important;
-  border-bottom: none !important;
-  padding: 20px 0 !important;
+  border-bottom: 1px solid #e8ecf2 !important;
+  padding: 16px 0 !important;
   margin-top: auto;
   background: #ffffff;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
 }
 
-.mc-subhero-container {
+.mc-subhero-marquee {
+  display: flex;
+  width: max-content;
+  overflow: hidden;
+  user-select: none;
+}
+
+.mc-subhero-track {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.mc-subhero-roles {
+  gap: 48px;
+  padding-right: 48px;
+  flex-shrink: 0;
+  animation: mcSubheroMarquee 24s linear infinite;
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  text-transform: uppercase;
 }
 
-.mc-subhero-slash {
-  color: #cbd5e1;
-  font-weight: 300;
-}
-
-.mc-subhero-scroll {
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #64748b;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.mc-subhero-track span {
+  display: inline-block;
   transition: color 0.2s ease;
 }
 
-.mc-subhero-scroll:hover {
+.mc-subhero-track span:hover {
   color: #264df3;
 }
 
-.mc-scroll-arrow {
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
+@keyframes mcSubheroMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* ===== 7. ABOUT SECTION ===== */
@@ -11113,9 +11111,25 @@ section {
 
 .mc-experience-divider {
   width: 2px;
-  background: #264df3;
+  background: linear-gradient(180deg, #264df3 0%, #38bdf8 50%, #264df3 100%);
+  background-size: 100% 200%;
+  animation: mcExpLineFlow 3s ease-in-out infinite;
   border-radius: 2px;
   align-self: stretch;
+  position: relative;
+  overflow: visible;
+}
+
+@keyframes mcExpLineFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 .mc-experience-right {
@@ -11191,19 +11205,110 @@ section {
   font-weight: 300;
 }
 
-/* ===== 12. EDUCATION SECTION ===== */
-.mc-education-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-}
-
-.mc-edu-card {
-  border-top: 1px solid #e8ecf2 !important;
-  padding-top: 26px;
+/* ===== 12. EDUCATION SECTION (ZIGZAG WITH CURVED CONNECTING LINE) ===== */
+.mc-edu-zigzag-container {
+  position: relative;
+  width: 100%;
+  margin-top: 36px;
   display: flex;
   flex-direction: column;
+  gap: 52px;
+  padding: 10px 0 20px 0;
+}
+
+.mc-edu-svg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+}
+
+.mc-edu-zigzag-item {
+  width: 100%;
+  display: flex;
+  position: relative;
+  z-index: 3;
+}
+
+.mc-edu-zigzag-item.mc-edu-left {
+  justify-content: flex-start;
+}
+
+.mc-edu-zigzag-item.mc-edu-right {
+  justify-content: flex-end;
+}
+
+.mc-edu-card-inner {
+  width: 440px;
+  max-width: 48%;
+  background: #ffffff;
+  border: 1px solid #e8ecf2;
+  border-radius: 16px;
+  padding: 28px 32px;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.03);
+  cursor: pointer;
   text-align: left;
+}
+
+.mc-edu-zigzag-item:hover .mc-edu-card-inner {
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06);
+}
+
+.mc-edu-zigzag-item.is-active .mc-edu-card-inner {
+  border-color: #93c5fd;
+  box-shadow: 0 12px 32px -4px rgba(38, 77, 243, 0.12), 0 0 0 1px rgba(38, 77, 243, 0.08);
+  transform: translateY(-2px);
+}
+
+@keyframes eduPulse {
+  0%, 100% {
+    r: 14px;
+    opacity: 0.24;
+  }
+  50% {
+    r: 18px;
+    opacity: 0.12;
+  }
+}
+
+.mc-edu-orb-glow {
+  animation: eduPulse 2s ease-in-out infinite;
+}
+
+@keyframes mcSpinOrb {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.mc-edu-orb-satellites {
+  transform-origin: 0 0;
+  animation: mcSpinOrb 3.6s linear infinite;
+}
+
+@keyframes mcAuraPulse {
+  0%, 100% {
+    r: 20px;
+    opacity: 0.16;
+  }
+  50% {
+    r: 27px;
+    opacity: 0.06;
+  }
+}
+
+.mc-edu-orb-aura {
+  animation: mcAuraPulse 2.2s ease-in-out infinite;
 }
 
 .mc-edu-year {
@@ -11212,7 +11317,7 @@ section {
   font-weight: 500;
   letter-spacing: 0.08em;
   color: #264df3;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .mc-edu-degree {
@@ -11221,7 +11326,7 @@ section {
   font-weight: 600;
   color: #0f172a;
   line-height: 1.35;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   letter-spacing: -0.02em;
 }
 
@@ -11230,7 +11335,7 @@ section {
   font-size: 13.5px;
   font-weight: 400;
   color: #64748b;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .mc-edu-grade {
@@ -11240,6 +11345,28 @@ section {
   color: #0f172a;
   letter-spacing: -0.02em;
   margin-top: auto;
+}
+
+/* Responsive adjustments for Zigzag Education */
+@media (max-width: 860px) {
+  .mc-edu-card-inner {
+    width: 380px;
+    max-width: 47%;
+    padding: 24px 26px;
+  }
+  .mc-edu-zigzag-container {
+    gap: 42px;
+  }
+}
+
+@media (max-width: 680px) {
+  .mc-edu-card-inner {
+    width: 84%;
+    max-width: 84%;
+  }
+  .mc-edu-zigzag-container {
+    gap: 36px;
+  }
 }
 
 /* ===== 13. CERTIFICATIONS SECTION ===== */

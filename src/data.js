@@ -38,7 +38,7 @@ export const servicesData = [
 ];
 
 export const educationData = [
-  { title: "B.Tech — Computer Science & Engineering", institution: "Alliance University, Bengaluru", year: "Sep 2022 - May 2026", details: "CGPA: 8.1" },
+  { title: "B.Tech — Computer Science & Engineering", institution: "Alliance University, Bengaluru", year: "Sep 2022 - May 2026", details: "CGPA: 8.3" },
   { title: "12th Grade (Intermediate)", institution: "Amaravathi jr. college, Anantapur", year: "June 2022", details: "Percentage: 76%" },
   { title: "10th Grade (SSC)", institution: "PCMR EM School, Nagaluru", year: "June 2020", details: "Percentage: 100%" }
 ];
