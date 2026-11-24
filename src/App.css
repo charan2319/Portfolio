@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-/* ===== Full-Page Scroll Snap ===== */
+/* ===== Full-Page Smooth Scroll (No Aggressive Snap) ===== */
 html,
 body {
   height: 100%;
@@ -14,11 +14,12 @@ body {
 
 .page-wrapper {
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  /* Prevent horizontal scroll globally */
-  scroll-snap-type: y mandatory;
+  /* Smooth natural scroll, no snapping */
+  scroll-snap-type: none !important;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -29,15 +30,16 @@ body {
 
 /* Every top-level section */
 .hero-section,
+.mc-hero-section,
 .bento-section,
+.mc-about-section,
 .skills-section,
 .pro-projects-section,
 .services-section,
 .bg-glass-section,
 .contact-section {
-  min-height: 100vh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
 }
 
 
@@ -1037,18 +1039,18 @@ section {
 }
 
 /* ===== Footer ===== */
-footer {
-  background: linear-gradient(135deg, #334155 0%, #475569 100%);
-  color: white;
-  text-align: center;
-  padding: 15px 10px;
-  /* Reduced padding */
-  margin-top: 30px;
-  /* Reduced margin */
-  font-weight: 500;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
-  font-size: 0.9rem;
-  /* Slightly smaller text */
+footer,
+.mc-footer {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #0f172a !important;
+  text-align: left;
+  padding: 80px 0 36px !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  border-top: 1px solid #e8ecf2 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* ===== Animations ===== */
@@ -9171,8 +9173,8 @@ section {
   background: radial-gradient(circle at 50% 50%, #0d1326 0%, #050811 100%);
   position: relative;
   overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
 }
 
 .achievements-section-premium::before {
@@ -9373,8 +9375,8 @@ section {
   text-align: center;
   position: relative;
   overflow: hidden;
-  scroll-snap-align: end;
-  scroll-snap-stop: always;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
   margin: 0;
 }
 
@@ -10314,3 +10316,1440 @@ section {
     font-size: 0.78rem !important;
   }
 }
+
+/* =============================================================
+   NEW EDITORIAL REDESIGN (MATCHING USER SPECIFICATION & MOCKUP)
+   ============================================================= */
+
+/* ===== 1. UNIVERSAL CONTAINER & SIDE SPACING ===== */
+.mc-container,
+.mc-navbar-container,
+.mc-hero-container,
+.mc-subhero-container,
+.mc-about-container,
+.mc-projects-container,
+.mc-services-container,
+.mc-toolkit-container,
+.mc-experience-container,
+.mc-education-container,
+.mc-certifications-container,
+.mc-achievements-container,
+.mc-contact-container,
+.mc-footer-container {
+  max-width: 1240px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 36px !important;
+  padding-right: 36px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .mc-container,
+  .mc-navbar-container,
+  .mc-hero-container,
+  .mc-subhero-container,
+  .mc-about-container,
+  .mc-projects-container,
+  .mc-services-container,
+  .mc-toolkit-container,
+  .mc-experience-container,
+  .mc-education-container,
+  .mc-certifications-container,
+  .mc-achievements-container,
+  .mc-contact-container,
+  .mc-footer-container {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+/* ===== 2. UNIVERSAL SECTION DIVIDER LINES & PADDING ===== */
+.mc-section {
+  width: 100% !important;
+  border-top: 1px solid #e8ecf2 !important;
+  background: #ffffff !important;
+  padding: 85px 0 95px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+.mc-about-section {
+  border-top: 1px solid #e8ecf2 !important;
+  background: #ffffff !important;
+  padding: 85px 0 95px !important;
+  min-height: auto !important;
+}
+
+/* ===== 3. SECTION HEADERS & KICKERS ===== */
+.mc-section-header {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  margin-bottom: 48px !important;
+  gap: 24px !important;
+}
+
+.mc-section-header-left {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+}
+
+.mc-section-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+  font-size: clamp(32px, 3.8vw, 44px) !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.025em !important;
+  margin: 0 !important;
+}
+
+.mc-section-header-right {
+  text-align: right !important;
+  padding-bottom: 4px !important;
+}
+
+.mc-section-subtitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+.mc-kicker,
+.mc-hero-kicker {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  line-height: 1.2 !important;
+  display: inline-block !important;
+}
+
+.mc-kicker {
+  color: #264df3 !important;
+  margin-bottom: 14px !important;
+}
+
+.mc-hero-kicker {
+  color: #64748b !important;
+  margin-bottom: 24px !important;
+}
+
+/* ===== 4. NAVBAR ===== */
+.mc-navbar {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #e8ecf2 !important;
+  z-index: 100;
+  padding: 18px 0;
+  transition: all 0.25s ease;
+}
+
+.mc-navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mc-logo-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mc-logo-symbol {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #264df3;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.mc-brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mc-brand-name {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: #0f172a;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.mc-brand-tagline {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.mc-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.mc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mc-nav-link {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.mc-nav-link:hover,
+.mc-nav-link.active {
+  color: #264df3;
+  font-weight: 600;
+}
+
+.mc-talk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #264df3;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(38, 77, 243, 0.22);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-talk-btn:hover {
+  background: #1b40d9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(38, 77, 243, 0.35);
+}
+
+.mc-btn-arrow {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-0.5px);
+}
+
+/* ===== 5. HERO SECTION ===== */
+.mc-hero-section {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100vh - 72px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.mc-hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  padding-top: 50px !important;
+  padding-bottom: 35px !important;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.mc-hero-left {
+  flex: 1.25;
+  max-width: 600px;
+  text-align: left;
+}
+
+.mc-hero-title {
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mc-hero-title-sans {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(40px, 5.2vw, 68px);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.mc-hero-title-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(48px, 6vw, 76px);
+  color: #264df3;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.mc-hero-desc {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.68;
+  color: #475569;
+  margin: 0 0 32px 0;
+  max-width: 480px;
+}
+
+.mc-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.mc-btn-primary {
+  background: #264df3;
+  color: #ffffff !important;
+  border: 1px solid #264df3;
+  box-shadow: 0 4px 14px rgba(38, 77, 243, 0.25);
+}
+
+.mc-btn-primary:hover {
+  background: #1b40d9;
+  border-color: #1b40d9;
+  box-shadow: 0 6px 18px rgba(38, 77, 243, 0.35);
+}
+
+.mc-btn-secondary {
+  background: #ffffff;
+  color: #0f172a !important;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.mc-btn-secondary:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.mc-hero-right {
+  flex: 0.95;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.mc-profile-card {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-profile-frame {
+  width: 100%;
+  height: 420px;
+  background: #f2f3f8;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.mc-profile-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.mc-profile-photo:hover {
+  transform: scale(1.02);
+}
+
+.mc-profile-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 2px 0;
+}
+
+.mc-caption-name {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.mc-caption-location {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* ===== 6. SUB-HERO TICKER ===== */
+.mc-subhero-bar {
+  width: 100%;
+  border-top: 1px solid #e8ecf2 !important;
+  border-bottom: none !important;
+  padding: 20px 0 !important;
+  margin-top: auto;
+  background: #ffffff;
+}
+
+.mc-subhero-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mc-subhero-roles {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mc-subhero-slash {
+  color: #cbd5e1;
+  font-weight: 300;
+}
+
+.mc-subhero-scroll {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.mc-subhero-scroll:hover {
+  color: #264df3;
+}
+
+.mc-scroll-arrow {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* ===== 7. ABOUT SECTION ===== */
+.mc-about-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 68px;
+  align-items: flex-start;
+}
+
+.mc-about-left {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-about-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(38px, 4.4vw, 54px);
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.15;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
+}
+
+.mc-about-subtitle {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.mc-about-right {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-about-narrative {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #475569;
+  margin: 0 0 40px 0;
+}
+
+.mc-stats-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+}
+
+.mc-stat-item {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-stat-number {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(34px, 3.8vw, 44px);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.mc-stat-label {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* ===== 8. PROJECTS SECTION ===== */
+.mc-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 56px 44px;
+}
+
+.mc-project-card {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  text-align: left;
+}
+
+.mc-project-media-box {
+  width: 100%;
+  height: 310px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.mc-project-card:hover .mc-project-media-box {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+}
+
+.mc-project-img {
+  max-width: 86%;
+  max-height: 84%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.mc-project-card:hover .mc-project-img {
+  transform: scale(1.03);
+}
+
+.has-video-trigger {
+  cursor: pointer;
+}
+
+.mc-project-play-badge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease;
+}
+
+.mc-project-play-badge:hover {
+  background: #264df3;
+}
+
+.mc-project-body {
+  padding: 24px 2px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.mc-project-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #264df3;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.mc-project-sep {
+  opacity: 0.6;
+}
+
+.mc-project-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(21px, 2.2vw, 24px);
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.mc-project-desc {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.62;
+  color: #475569;
+  margin: 0 0 18px 0;
+}
+
+.mc-project-tags {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #64748b;
+  margin-bottom: 22px;
+}
+
+.mc-project-visit-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: #264df3;
+  text-decoration: none;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding-top: 14px;
+  border-top: 1px solid #e8ecf2 !important;
+  margin-top: auto;
+  transition: all 0.2s ease;
+}
+
+.mc-project-visit-link:hover {
+  color: #1b40d9;
+}
+
+.mc-visit-arrow {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.mc-project-visit-link:hover .mc-visit-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* ===== 9. SERVICES SECTION (WHAT I BRING) ===== */
+.mc-services-section {
+  overflow: visible;
+}
+
+/* ===== 10. TOOLKIT SECTION ===== */
+.mc-toolkit-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+.mc-toolkit-card {
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  border-radius: 20px;
+  padding: 36px 16px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+
+.mc-toolkit-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  transform: translateY(-4px);
+  background: #ffffff;
+}
+
+.mc-toolkit-icon-wrap {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mc-toolkit-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.mc-toolkit-card:hover .mc-toolkit-icon {
+  transform: scale(1.08);
+}
+
+.mc-toolkit-name {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+/* ===== 11. EXPERIENCE SECTION ===== */
+.mc-experience-grid {
+  display: grid;
+  grid-template-columns: 340px 2px 1fr;
+  gap: 50px;
+  align-items: stretch;
+}
+
+.mc-experience-left {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-experience-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(40px, 4.8vw, 56px);
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.12;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.mc-experience-divider {
+  width: 2px;
+  background: #264df3;
+  border-radius: 2px;
+  align-self: stretch;
+}
+
+.mc-experience-right {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.mc-exp-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.mc-exp-date {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #264df3;
+  text-transform: uppercase;
+}
+
+.mc-exp-type {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #264df3;
+  text-transform: uppercase;
+}
+
+.mc-exp-role {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(24px, 2.5vw, 28px);
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.mc-exp-company {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14.5px;
+  font-weight: 400;
+  color: #64748b;
+  margin-bottom: 22px;
+}
+
+.mc-exp-desc {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+  margin: 0 0 26px 0;
+}
+
+.mc-exp-tags {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mc-tag-slash {
+  color: #cbd5e1;
+  font-weight: 300;
+}
+
+/* ===== 12. EDUCATION SECTION ===== */
+.mc-education-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.mc-edu-card {
+  border-top: 1px solid #e8ecf2 !important;
+  padding-top: 26px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-edu-year {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #264df3;
+  margin-bottom: 16px;
+}
+
+.mc-edu-degree {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(19px, 2vw, 22px);
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.35;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.mc-edu-institution {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.mc-edu-grade {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(24px, 2.8vw, 30px);
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin-top: auto;
+}
+
+/* ===== 13. CERTIFICATIONS SECTION ===== */
+.mc-certifications-count {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+}
+
+.mc-certifications-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 60px;
+}
+
+.mc-cert-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-cert-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8ecf2 !important;
+  padding: 22px 0 24px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mc-cert-item:hover .mc-cert-item-name {
+  color: #264df3;
+}
+
+.mc-cert-item:hover .mc-cert-arrow {
+  color: #264df3;
+  transform: translate(2px, -2px);
+}
+
+.mc-cert-item-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 6px;
+}
+
+.mc-cert-item-name {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+}
+
+.mc-cert-item-issuer {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.mc-cert-arrow {
+  font-size: 16px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-left: 16px;
+  transition: all 0.2s ease;
+}
+
+/* ===== 14. ACHIEVEMENTS SECTION ===== */
+.mc-achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.mc-achievement-card {
+  border-top: 1px solid #e8ecf2 !important;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-achievement-badge {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #264df3;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.mc-achievement-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 12px 0;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.mc-achievement-desc {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ===== 15. CONTACT SECTION ===== */
+.mc-contact-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 80px;
+  align-items: flex-start;
+}
+
+.mc-contact-left {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mc-contact-title {
+  margin: 0 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mc-contact-title-sans {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: clamp(38px, 4.6vw, 54px);
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.mc-contact-title-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(44px, 5.2vw, 62px);
+  font-weight: 600;
+  color: #264df3;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.mc-contact-desc {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.68;
+  color: #64748b;
+  margin: 0;
+  max-width: 440px;
+}
+
+.mc-contact-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8ecf2 !important;
+  padding: 24px 0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mc-contact-row:hover .mc-contact-val {
+  color: #264df3;
+}
+
+.mc-contact-row:hover .mc-contact-arrow {
+  color: #264df3;
+  transform: translate(2px, -2px);
+}
+
+.mc-contact-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.mc-contact-label {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.mc-contact-val {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.mc-contact-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+/* ===== 16. FOOTER ===== */
+.mc-footer,
+footer.mc-footer {
+  background: #ffffff !important;
+  background-image: none !important;
+  border-top: 1px solid #e8ecf2 !important;
+  padding: 80px 0 36px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.mc-footer-big-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 60px;
+}
+
+.mc-footer-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(64px, 11vw, 150px);
+  font-weight: 700;
+  color: #264df3;
+  letter-spacing: 0.05em;
+  line-height: 0.9;
+}
+
+@keyframes mcSpinStar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mc-footer-star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.mc-footer-star svg {
+  display: block;
+  animation: mcSpinStar 8s linear infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.mc-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8ecf2 !important;
+  padding-top: 26px;
+}
+
+.mc-footer-copy {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.mc-footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mc-footer-socials a {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  font-size: 15px;
+  text-decoration: none;
+  background: #ffffff;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.mc-footer-socials a:hover {
+  color: #ffffff;
+  background: #264df3;
+  border-color: #264df3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 77, 243, 0.28);
+}
+
+.mc-footer-tagline {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.mc-footer-back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #0f172a;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mc-footer-back-to-top:hover {
+  color: #264df3;
+}
+
+.mc-top-arrow {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* ===== 17. RESPONSIVE BREAKPOINTS ===== */
+@media (max-width: 1024px) {
+  .mc-toolkit-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 960px) {
+  .mc-hero-container {
+    flex-direction: column-reverse;
+    text-align: left;
+    gap: 36px;
+    padding: 30px 24px 20px !important;
+  }
+
+  .mc-hero-left {
+    max-width: 100%;
+  }
+
+  .mc-profile-card {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .mc-profile-frame {
+    height: 350px;
+  }
+
+  .mc-about-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .mc-subhero-container {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .mc-subhero-roles {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .mc-projects-grid {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .mc-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+
+  .mc-section-header-right {
+    text-align: left;
+  }
+
+  .mc-experience-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .mc-experience-divider {
+    width: 60px;
+    height: 2px;
+  }
+
+  .mc-experience-right {
+    padding-left: 0;
+  }
+
+  .mc-education-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .mc-certifications-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .mc-achievements-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .mc-contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .mc-footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .mc-nav-links {
+    display: none;
+  }
+
+  .mc-hero-container {
+    padding: 24px 18px 20px !important;
+  }
+
+  .mc-hero-title-sans {
+    font-size: 34px;
+  }
+
+  .mc-hero-title-serif {
+    font-size: 40px;
+  }
+
+  .mc-about-title {
+    font-size: 32px;
+  }
+
+  .mc-stats-row {
+    gap: 32px;
+  }
+
+  .mc-section {
+    padding: 60px 0 70px !important;
+  }
+
+  .mc-toolkit-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .mc-toolkit-card {
+    padding: 24px 10px 20px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .mc-toolkit-icon-wrap {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mc-toolkit-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .mc-toolkit-name {
+    font-size: 12.5px;
+  }
+
+  .mc-project-media-box {
+    height: 220px;
+  }
+
+  .mc-project-title {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mc-toolkit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

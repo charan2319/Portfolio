@@ -571,6 +571,50 @@ const Desktop3DServices = ({ services }) => {
   );
 };
 
+const modernProjectsList = [
+  {
+    num: "01",
+    category: "FEATURED PROJECT",
+    title: "Founder's Mart",
+    desc: "For the ones who build. A digital space for the entrepreneurship community at Alliance University.",
+    tags: "E-Cell × Alliance University",
+    image: "/hero.png",
+    link: "http://www.ecellstore.com",
+    bg: "#f3f4f6"
+  },
+  {
+    num: "02",
+    category: "APP DEVELOPMENT",
+    title: "Alliance Alumni Connect",
+    desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.",
+    tags: "Flutter  /  Firebase  /  Cloudinary",
+    image: "/Alumni.PNG",
+    link: null,
+    bg: "#fcfaf7"
+  },
+  {
+    num: "03",
+    category: "APP DEVELOPMENT",
+    title: "Mymedicare",
+    desc: "An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features.",
+    tags: "Swift  /  Firebase  /  Xcode",
+    image: "/unnamed-1.jpg",
+    video: "/VIDEO-2025-11-22-23-56-57.MP4",
+    link: null,
+    bg: "#f4f6f8"
+  },
+  {
+    num: "04",
+    category: "DATA ANALYTICS",
+    title: "Road Accident Analysis Dashboard",
+    desc: "A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety.",
+    tags: "Power BI",
+    image: "/IMG_6393.jpg",
+    link: "https://github.com/charan2319/Road-Accident-Analysis-Dashboard",
+    bg: "#fdf6f2"
+  }
+];
+
 const projectsList = [
   { title: "Founder's Mart", category: { name: 'E-Commerce', className: 'web-dev' }, desc: "A full-stack e-commerce platform built for efficient product management and an optimized shopping experience.", tech: ['React', 'Node.js', 'PostgreSQL'], image: "/hero.png", link: "http://www.ecellstore.com" },
   { title: "Alliance Alumni Connect", category: { name: 'App Development', className: 'app-dev' }, desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.", tech: ['Flutter', 'Firebase', 'Cloudinary'], image: "/Alumni.PNG" },
@@ -727,9 +771,7 @@ function App() {
       if (element) {
         const wrapperRect = wrapper.getBoundingClientRect();
         const elementRect = element.getBoundingClientRect();
-        // Determine header height offset based on responsive screen widths
-        const headerOffset = window.innerWidth <= 768 ? 60 : 0;
-        const targetScrollTop = wrapper.scrollTop + elementRect.top - wrapperRect.top - headerOffset;
+        const targetScrollTop = wrapper.scrollTop + elementRect.top - wrapperRect.top;
 
         wrapper.scrollTo({
           top: targetScrollTop,
@@ -744,26 +786,24 @@ function App() {
     if (!wrapper) return;
 
     const handleScroll = () => {
-      const sections = ['about', 'skills', 'projects', 'achievements', 'contact'];
+      const sections = ['about', 'projects', 'services', 'skills', 'experience', 'education', 'certifications', 'achievements', 'contact'];
       let current = 'home';
 
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 200) {
+          if (rect.top <= 250) {
             current = sections[i];
           }
         }
       }
 
-      if (wrapper.scrollTop < 150) {
+      if (wrapper.scrollTop < 120) {
         current = 'home';
       }
 
       setActiveSection(current);
-
-
     };
 
     wrapper.addEventListener('scroll', handleScroll);
@@ -855,167 +895,325 @@ function App() {
 
   return (
     <div className="page-wrapper">
-      {/* ===== Universal Top Header ===== */}
-      <nav className="desktop-header">
-        <div className="header-container">
-          <div className="logo-container desktop-only">
-            <span className="header-logo">MC</span>
-          </div>
-          <ul className="desktop-nav-menu">
-            {navItems.map((item) => (
-              <li key={item.id} className={`nav-item-wrapper ${item.id === 'about' || item.id === 'achievements' ? 'desktop-only' : ''}`}>
+      {/* ===== New Modern Header (Matching Design) ===== */}
+      <nav className="mc-navbar">
+        <div className="mc-navbar-container">
+          <a href="#" className="mc-logo-brand" onClick={(e) => handleNavClick(e, 'home')}>
+            <span className="mc-logo-symbol">mc.</span>
+            <div className="mc-brand-text">
+              <span className="mc-brand-name">MARUVENI CHARAN</span>
+              <span className="mc-brand-tagline">Design × Development × Data</span>
+            </div>
+          </a>
+
+          <div className="mc-nav-right">
+            <ul className="mc-nav-links">
+              <li>
                 <a
-                  href={item.id === 'home' ? '#' : `#${item.id}`}
-                  className={activeSection === item.id ? 'active-link' : 'inactive-link'}
-                  onClick={(e) => handleNavClick(e, item.id)}
+                  href="#projects"
+                  className={activeSection === 'projects' ? 'mc-nav-link active' : 'mc-nav-link'}
+                  onClick={(e) => handleNavClick(e, 'projects')}
                 >
-                  {activeSection === item.id && (
-                    <motion.div
-                      layoutId="desktop-pill"
-                      className="desktop-active-pill"
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                  <span className="nav-text">
-                    <i className={`${item.icon} header-item-icon`}></i>
-                    <span className="header-item-label">{item.label}</span>
-                  </span>
+                  Work
                 </a>
               </li>
-            ))}
-          </ul>
+              <li>
+                <a
+                  href="#about"
+                  className={activeSection === 'about' ? 'mc-nav-link active' : 'mc-nav-link'}
+                  onClick={(e) => handleNavClick(e, 'about')}
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#experience"
+                  className={activeSection === 'experience' ? 'mc-nav-link active' : 'mc-nav-link'}
+                  onClick={(e) => handleNavClick(e, 'experience')}
+                >
+                  Experience
+                </a>
+              </li>
+            </ul>
+
+            <a
+              href="#contact"
+              className="mc-talk-btn"
+              onClick={(e) => handleNavClick(e, 'contact')}
+            >
+              <span>Let's talk</span>
+              <span className="mc-btn-arrow">↗</span>
+            </a>
+          </div>
         </div>
       </nav>
 
-
-      {/* ===== Premium Split Hero Section ===== */}
-      <motion.header
-        className="hero-section custom-hero split-hero"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1 }}
-      >
-        <div className="hero-3d-bg">
-          <div className="clean-bg"></div>
-          <div className="subtle-glow">
-            <div className="glow-effect glow-1"></div>
-            <div className="glow-effect glow-2"></div>
-            <div className="glow-effect glow-3"></div>
-          </div>
-        </div>
-
-        <div className="hero-content-wrapper">
+      {/* ===== Redesigned Hero Section (Matching Image 1) ===== */}
+      <header className="mc-hero-section" id="home">
+        <div className="mc-hero-container">
+          {/* Left Column: Hero Text */}
           <motion.div
-            className="hero-left-image"
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+            className="mc-hero-left"
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <img src="/IMG_5281.jpg" alt="Maruveni Charan" className="profile-img-full" />
-          </motion.div>
+            <div className="mc-hero-kicker">HELLO, I'M CHARAN</div>
 
-          <motion.div className="hero-right-text" style={{ y: heroTextY }}>
-            <h1 className="hero-title" style={{ overflow: "hidden" }}>
-              <WordReveal text="Hi, I'm" delayOffset={0} /> <br className="mobile-break" />
-              <WordReveal text="Maruveni Charan" delayOffset={2} />
+            <h1 className="mc-hero-title">
+              <span className="mc-hero-title-sans">Design. Develop.</span>
+              <span className="mc-hero-title-serif">Decode.</span>
             </h1>
 
-            <h2 className="hero-subtitle" style={{ overflow: "hidden" }}>
-              <WordReveal text="Data Analyst | App Developer | UI/UX Designer" delayOffset={5} />
-            </h2>
+            <p className="mc-hero-desc">
+              Intuitive interfaces. Thoughtful apps. Actionable insights.<br />
+              I connect design, development and data to create<br />
+              digital experiences that make sense.
+            </p>
 
-            <motion.p
-              className="hero-desc"
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 1.4, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-            >
-              Passionate about crafting intuitive digital experiences — from designing elegant interfaces in Figma to building multi-platform apps and transforming data into actionable insights.
-            </motion.p>
-
-            <motion.div
-              className="hero-buttons"
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 1.6, type: "spring", stiffness: 100, damping: 15 }}
-            >
-              <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#contact" className="btn btn-outline">Contact Me</motion.a>
-              <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="/charan_app_developer.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-solid">
-                View Resume
+            <div className="mc-hero-actions">
+              <motion.a
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                href="#projects"
+                className="mc-btn mc-btn-primary"
+                onClick={(e) => handleNavClick(e, 'projects')}
+              >
+                <span>Explore my work</span>
+                <span className="mc-btn-arrow">↗</span>
               </motion.a>
+
+              <motion.a
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                href="/charan_app_developer.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-btn mc-btn-secondary"
+              >
+                <span>View resume</span>
+                <span className="mc-btn-arrow">↗</span>
+              </motion.a>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Hero Profile Card */}
+          <motion.div
+            className="mc-hero-right"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="mc-profile-card">
+              <div className="mc-profile-frame">
+                <img
+                  src="/IMG_5281.jpg"
+                  alt="Maruveni Charan"
+                  className="mc-profile-photo"
+                />
+              </div>
+              <div className="mc-profile-caption">
+                <span className="mc-caption-name">MARUVENI CHARAN</span>
+                <span className="mc-caption-location">Bengaluru, India</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Sub-Hero Ticker / Divider Bar */}
+        <div className="mc-subhero-bar">
+          <div className="mc-subhero-container">
+            <div className="mc-subhero-roles">
+              <span>DATA ANALYST</span>
+              <span className="mc-subhero-slash">/</span>
+              <span>APP DEVELOPER</span>
+              <span className="mc-subhero-slash">/</span>
+              <span>UI/UX DESIGNER</span>
+            </div>
+
+            <a
+              href="#about"
+              className="mc-subhero-scroll"
+              onClick={(e) => handleNavClick(e, 'about')}
+            >
+              <span>SCROLL TO DISCOVER</span>
+              <span className="mc-scroll-arrow">↓</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* ===== Redesigned About Section (Matching Image 1: A LITTLE ABOUT ME) ===== */}
+      <section className="mc-section mc-about-section" id="about">
+        <div className="mc-container">
+          <div className="mc-kicker">A LITTLE ABOUT ME</div>
+
+          <div className="mc-about-grid">
+            {/* Left Column: Headline */}
+            <motion.div
+              className="mc-about-left"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <h2 className="mc-about-title">
+                Curiosity is the<br />
+                common thread.
+              </h2>
+              <p className="mc-about-subtitle">
+                A designer's eye. A developer's mindset.
+              </p>
             </motion.div>
-          </motion.div>
+
+            {/* Right Column: Bio & Stats */}
+            <motion.div
+              className="mc-about-right"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <p className="mc-about-narrative">
+                I am a dedicated Computer Science graduate from Alliance University with a focus on iOS development and Data Analytics. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
+              </p>
+
+              <div className="mc-stats-row">
+                <div className="mc-stat-item">
+                  <div className="mc-stat-number">
+                    <AnimatedCounter value="8.1" isDecimal={true} />
+                  </div>
+                  <div className="mc-stat-label">CGPA</div>
+                </div>
+
+                <div className="mc-stat-item">
+                  <div className="mc-stat-number">
+                    <AnimatedCounter value="4" suffix="+" />
+                  </div>
+                  <div className="mc-stat-label">PROJECTS</div>
+                </div>
+
+                <div className="mc-stat-item">
+                  <div className="mc-stat-number">
+                    <AnimatedCounter value="10" suffix="+" />
+                  </div>
+                  <div className="mc-stat-label">TECH STACK</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-
-
-      </motion.header>
-
-      {/* ===== Bento Grid Section (About + Skills + Stats) ===== */}
-      <section className="bento-section" id="about">
-        <div className="bento-header">
-          <ScrollRevealTitle className="section-title">Overview</ScrollRevealTitle>
-        </div>
-
-        <motion.div
-          className="bento-grid"
-          variants={bentoContainerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-        >
-          {/* Bio Box */}
-          <motion.div className="bento-box bento-bio" variants={bentoItemVariants}>
-            <h3>About Me</h3>
-            <p>
-              I am a dedicated <strong>Computer Science graduate</strong> from Alliance University with a focus on <strong>iOS development</strong> and <strong>Data Analytics</strong>. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
-            </p>
-            <p>
-              By combining technical proficiency in Python and Swift with a strategic approach to data visualization in Power BI, I build applications that are as functional as they are intuitive.
-            </p>
-          </motion.div>
-
-          {/* Stats Boxes */}
-          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
-            <div className="stat-number">
-              <AnimatedCounter value="8.1" isDecimal={true} />
-            </div>
-            <div className="stat-label">CGPA</div>
-          </motion.div>
-          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
-            <div className="stat-number">
-              <AnimatedCounter value="4" suffix="+" />
-            </div>
-            <div className="stat-label">Projects</div>
-          </motion.div>
-          <motion.div className="bento-box bento-stat" variants={bentoItemVariants}>
-            <div className="stat-number">
-              <AnimatedCounter value="10" suffix="+" />
-            </div>
-            <div className="stat-label">Tech Stack</div>
-          </motion.div>
-        </motion.div>
       </section>
 
-
-      {/* ===== Premium Single-Row Skills Marquee Section ===== */}
-      <section className="skills-section premium-skills" id="skills" style={{ overflow: "hidden", padding: "25px 0 40px" }}>
-        {/* Large card wrapping all skills inside it */}
-        <motion.div
-          className="skills-outer-card"
-          initial={{ scale: 0.95, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-        >
-          <div className="section-header-center" style={{ marginBottom: "30px" }}>
-            <ScrollRevealTitle className="section-title">Technical Skills</ScrollRevealTitle>
+      {/* ===== Redesigned Projects Section (Matching New Design) ===== */}
+      <section className="mc-section mc-projects-section" id="projects">
+        <div className="mc-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">PROJECTS</span>
+              <h2 className="mc-section-title">Ideas, made real.</h2>
+            </div>
+            <div className="mc-section-header-right">
+              <p className="mc-section-subtitle">
+                Four projects. Different challenges.<br />
+                One thoughtful approach to building.
+              </p>
+            </div>
           </div>
-          {/* Professional Grid for Laptop View */}
-          <div className="skills-grid-desktop desktop-only">
+
+          <div className="mc-projects-grid">
+            {modernProjectsList.map((project, index) => (
+              <motion.div
+                key={index}
+                className="mc-project-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.6, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div
+                  className={`mc-project-media-box ${project.video ? 'has-video-trigger' : ''}`}
+                  style={{ backgroundColor: project.bg }}
+                  onClick={() => project.video && openVideoModal(project.video)}
+                >
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="mc-project-img"
+                  />
+                  {project.video && (
+                    <div className="mc-project-play-badge">
+                      <i className="fas fa-play"></i> Watch Demo
+                    </div>
+                  )}
+                </div>
+
+                <div className="mc-project-body">
+                  <div className="mc-project-meta">
+                    <span className="mc-project-num">{project.num}</span>
+                    <span className="mc-project-sep">/</span>
+                    <span className="mc-project-category">{project.category}</span>
+                  </div>
+
+                  <h3 className="mc-project-title">{project.title}</h3>
+                  <p className="mc-project-desc">{project.desc}</p>
+                  <div className="mc-project-tags">{project.tags}</div>
+
+                  {project.link && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mc-project-visit-link"
+                    >
+                      <span>Visit work</span>
+                      <span className="mc-visit-arrow">↗</span>
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Services / What I Bring Section (Matching New Design) ===== */}
+      <section className="mc-section mc-services-section" id="services">
+        <div className="mc-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">WHAT I BRING</span>
+              <h2 className="mc-section-title">One mind. Many possibilities.</h2>
+            </div>
+            <div className="mc-section-header-right">
+              <p className="mc-section-subtitle">From the first sketch to the final build.</p>
+            </div>
+          </div>
+        </div>
+        {/* Desktop View: 3D Coverflow */}
+        <Desktop3DServices services={servicesData} />
+
+        {/* Mobile View: Swipable Slider */}
+        <div className="mobile-only">
+          <ServiceSlider services={servicesData} />
+        </div>
+      </section>
+
+      {/* ===== Redesigned Toolkit Section (Matching New Design) ===== */}
+      <section className="mc-section mc-toolkit-section" id="skills">
+        <div className="mc-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">THE TOOLKIT</span>
+              <h2 className="mc-section-title">The tools behind the thinking.</h2>
+            </div>
+            <div className="mc-section-header-right">
+              <span className="mc-section-subtitle">10+ technologies. One connected approach.</span>
+            </div>
+          </div>
+
+          <div className="mc-toolkit-grid">
             {[
               { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
               { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
@@ -1032,231 +1230,219 @@ function App() {
             ].map((skill, index) => (
               <motion.div
                 key={index}
-                className="professional-skill-card"
-                whileHover={{ y: -5, scale: 1.03, boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}
+                className="mc-toolkit-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
               >
-                <img src={skill.src} alt={skill.name} className="professional-skill-icon" />
-                <span className="professional-skill-name">{skill.name}</span>
+                <div className="mc-toolkit-icon-wrap">
+                  <img src={skill.src} alt={skill.name} className="mc-toolkit-icon" />
+                </div>
+                <span className="mc-toolkit-name">{skill.name}</span>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Mobile Technical Skills Section */}
-          <div className="mobile-only mobile-skills-container">
-            <div className="skills-grid-mobile">
-              {[
-                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
-                { name: "Swift", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" },
-                { name: "Flutter", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
-                { name: "MySQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
-                { name: "Firebase", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" },
-                { name: "Power BI", src: "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg" },
-                { name: "Excel", src: "/Excel.jpg" },
-                { name: "GitHub", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
-                { name: "Figma", src: "/figma.png" },
-                { name: "Sketch", src: "/sketch.svg" },
-                { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
-                { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
-              ].map((skill, index) => (
-                <div
-                  key={index}
-                  className="mobile-skill-card"
-                >
-                  <div className="mobile-skill-icon-wrapper">
-                    <img src={skill.src} alt={skill.name} className="mobile-skill-icon" />
-                  </div>
-                  <span className="mobile-skill-name">{skill.name}</span>
-                </div>
-              ))}
+      {/* ===== Redesigned Experience Section (Matching Image 1) ===== */}
+      <section className="mc-section mc-experience-section" id="experience">
+        <div className="mc-container mc-experience-container">
+          <div className="mc-experience-grid">
+            {/* Left Column: Heading */}
+            <div className="mc-experience-left">
+              <span className="mc-kicker">EXPERIENCE</span>
+              <h2 className="mc-experience-title">
+                Learning by<br />
+                building.
+              </h2>
+            </div>
+
+            {/* Vertical Blue Line Divider */}
+            <div className="mc-experience-divider"></div>
+
+            {/* Right Column: Experience Details */}
+            <div className="mc-experience-right">
+              <div className="mc-exp-meta-bar">
+                <span className="mc-exp-date">FEB 2026 — APR 2026</span>
+                <span className="mc-exp-type">INTERNSHIP</span>
+              </div>
+
+              <h3 className="mc-exp-role">iOS App Development</h3>
+              <div className="mc-exp-company">Alliance University</div>
+
+              <p className="mc-exp-desc">
+                Completed hands-on training in iOS development using Swift and Xcode. Built mobile applications with UI/UX design principles, integrated Firebase for backend and real-time data handling, and developed functional prototypes with improved app performance.
+              </p>
+
+              <div className="mc-exp-tags">
+                <span>SWIFT</span>
+                <span className="mc-tag-slash">/</span>
+                <span>FIREBASE</span>
+                <span className="mc-tag-slash">/</span>
+                <span>XCODE</span>
+              </div>
             </div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* ===== Projects Section ===== */}
-      <section className="projects-section pro-projects-section" id="projects">
-        <div className="section-header-center">
-          <ScrollRevealTitle className="pro-projects-title">Featured Work</ScrollRevealTitle>
-        </div>
-
-        <ProjectSlider onSelect={setSelectedProject} />
-      </section>
-
-      {/* ===== Services I Offer Section ===== */}
-      <section className="services-section" id="services">
-        <div className="section-header-center">
-          <ScrollRevealTitle className="section-title">Services I Offer</ScrollRevealTitle>
-        </div>
-        {/* Desktop View: 3D Coverflow */}
-        <Desktop3DServices services={servicesData} />
-
-        {/* Mobile View: Swipable Slider */}
-        <div className="mobile-only">
-          <ServiceSlider services={servicesData} />
         </div>
       </section>
 
-      {/* ===== Education Journey Section ===== */}
-      <section className="bg-glass-section" id="education">
-        <div className="section-header-center">
-          <ScrollRevealTitle className="section-title">Education Journey</ScrollRevealTitle>
-        </div>
-        <div className="ultra-premium-timeline">
-          {[
-            { year: '2022 – 2026', title: 'B.Tech — Computer Science & Engineering', sub: 'Alliance University', detail: 'CGPA: 8.1', icon: 'fas fa-graduation-cap' },
-            { year: '2022', title: '12th Grade', sub: 'Amaravathi Jr. College', detail: 'Percentage: 76%', icon: 'fas fa-school' },
-            { year: '2020', title: '10th Grade', sub: 'PCMR EM School', detail: 'Percentage: 100%', icon: 'fas fa-award' }
-          ].map((item, i) => (
-            <motion.div key={i} className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.12, ease: [0.25, 1, 0.5, 1] }}>
-              <div className="ultra-timeline-icon">
-                <i className={item.icon}></i>
-              </div>
-              <div className="ultra-timeline-content">
-                <div className="ultra-timeline-year">{item.year}</div>
-                <h3 className="ultra-timeline-title">{item.title}</h3>
-                <div className="ultra-timeline-sub">{item.sub}</div>
-                <div className="ultra-timeline-desc">{item.detail}</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Internship Experience Section ===== */}
-      <section className="bg-glass-section" id="experience">
-        <div className="section-header-center">
-          <ScrollRevealTitle className="section-title">Internship Experience</ScrollRevealTitle>
-        </div>
-        <div className="ultra-premium-timeline">
-          <motion.div className="ultra-timeline-item" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}>
-            <div className="ultra-timeline-icon exp-icon">
-              <i className="fas fa-briefcase"></i>
+      {/* ===== Redesigned Education Section (Matching Image 2) ===== */}
+      <section className="mc-section mc-education-section" id="education">
+        <div className="mc-container mc-education-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">EDUCATION</span>
+              <h2 className="mc-section-title">A foundation for what’s next.</h2>
             </div>
-            <div className="ultra-timeline-content">
-              <div className="ultra-timeline-header">
-                <div>
-                  <div className="ultra-timeline-year">Feb 2026 – Apr 2026</div>
-                  <h3 className="ultra-timeline-title">iOS App Development</h3>
-                  <div className="ultra-timeline-sub">Alliance University &nbsp;·&nbsp; Internship</div>
-                </div>
-                <span className="ultra-type-badge">Internship</span>
-              </div>
-              <ul className="ultra-timeline-bullets">
-                <li>Completed hands-on training in iOS development using Swift and Xcode.</li>
-                <li>Built mobile applications with UI/UX design principles.</li>
-                <li>Integrated Firebase for backend and real-time data handling.</li>
-                <li>Developed functional prototypes and improved app performance.</li>
-              </ul>
-              <div className="pro-tech-tags" style={{ marginTop: '16px' }}>
-                <span>Swift</span><span>Firebase</span><span>Xcode</span>
-              </div>
+            <div className="mc-section-header-right">
+              <p className="mc-section-subtitle">The journey so far.</p>
             </div>
-          </motion.div>
+          </div>
+
+          <div className="mc-education-grid">
+            <div className="mc-edu-card">
+              <div className="mc-edu-year">2022 — 2026</div>
+              <h3 className="mc-edu-degree">
+                B.Tech — Computer Science<br />
+                & Engineering
+              </h3>
+              <div className="mc-edu-institution">Alliance University</div>
+              <div className="mc-edu-grade">8.1 CGPA</div>
+            </div>
+
+            <div className="mc-edu-card">
+              <div className="mc-edu-year">2022</div>
+              <h3 className="mc-edu-degree">12th Grade</h3>
+              <div className="mc-edu-institution">Amaravathi Jr. College</div>
+              <div className="mc-edu-grade">76%</div>
+            </div>
+
+            <div className="mc-edu-card">
+              <div className="mc-edu-year">2020</div>
+              <h3 className="mc-edu-degree">10th Grade</h3>
+              <div className="mc-edu-institution">PCMR EM School</div>
+              <div className="mc-edu-grade">100%</div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ===== Certifications Section ===== */}
-      <section className="bg-glass-section" id="certifications">
-        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '24px' }}>
-          <ScrollRevealTitle className="section-title">Certifications</ScrollRevealTitle>
-        </div>
-        <motion.div
-          className="cert-bento-grid"
-          variants={certContainerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.15 }}
-        >
-          {certificationsData.map((cert, i) => (
-            <motion.div
-              key={i}
-              className={`cert-bento-item cert-bento-item-${i}`}
-              variants={i === 0 ? certLeftCardVariants : certRightCardVariants}
-              whileHover={{ 
-                y: -4, 
-                boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
-                transition: { type: 'spring', stiffness: 300, damping: 25 }
-              }}
-            >
-              <div className="cert-bento-media-wrap">
-                <img src={cert.image} alt={cert.name} className="cert-bento-img" />
-              </div>
-              <div className="cert-bento-body">
-                <h3 className="cert-bento-title">{cert.name}</h3>
-                <div className="cert-bento-meta">
-                  <span className="cert-bento-issuer">{cert.issuer}</span>
-                  <span className="cert-bento-year">{cert.year}</span>
+      {/* ===== Redesigned Certifications Section (Matching Image) ===== */}
+      <section className="mc-section mc-certifications-section" id="certifications">
+        <div className="mc-container mc-certifications-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">CERTIFICATIONS</span>
+              <h2 className="mc-section-title">Always a student.</h2>
+            </div>
+            <div className="mc-section-header-right">
+              <span className="mc-certifications-count">04 CREDENTIALS</span>
+            </div>
+          </div>
+
+          <div className="mc-certifications-grid">
+            <div className="mc-cert-col">
+              <a
+                href="/iOS_certification.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-cert-item"
+              >
+                <div className="mc-cert-item-text">
+                  <h3 className="mc-cert-item-name">App Development with Swift Certified User</h3>
+                  <span className="mc-cert-item-issuer">Apple / 2025</span>
                 </div>
-                <motion.button
-                  className="cert-bento-btn"
-                  onClick={() => window.open(cert.pdf, '_blank')}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  View Certificate →
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+                <span className="mc-cert-arrow">↗</span>
+              </a>
 
-      {/* ===== Achievements Section ===== */}
-      <section className="bg-glass-section" id="achievements">
-        <div className="section-header-center" style={{ position: 'relative', zIndex: 10, marginBottom: '20px' }}>
-          <ScrollRevealTitle className="section-title">Achievements</ScrollRevealTitle>
+              <a
+                href="/python.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-cert-item"
+              >
+                <div className="mc-cert-item-text">
+                  <h3 className="mc-cert-item-name">Data Analysis with Python</h3>
+                  <span className="mc-cert-item-issuer">Coursera / 2024</span>
+                </div>
+                <span className="mc-cert-arrow">↗</span>
+              </a>
+            </div>
+
+            <div className="mc-cert-col">
+              <a
+                href="/Excel.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-cert-item"
+              >
+                <div className="mc-cert-item-text">
+                  <h3 className="mc-cert-item-name">Excel</h3>
+                  <span className="mc-cert-item-issuer">Infosys / 2025</span>
+                </div>
+                <span className="mc-cert-arrow">↗</span>
+              </a>
+
+              <a
+                href="/powerbi.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-cert-item"
+              >
+                <div className="mc-cert-item-text">
+                  <h3 className="mc-cert-item-name">Power BI for Business Professionals</h3>
+                  <span className="mc-cert-item-issuer">Infosys / 2025</span>
+                </div>
+                <span className="mc-cert-arrow">↗</span>
+              </a>
+            </div>
+          </div>
         </div>
-        <motion.div
-          className="unified-premium-grid"
-          variants={achievementContainerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-        >
-          {[
-            {
-              badge: "Winner",
-              title: "Application Hackathon — E-Cell",
-              org: "Alliance University · 2025",
-              desc: 'Developed "Stady", a dynamic web application providing educational resources and collaboration tools for students.'
-            },
-            {
-              badge: "Winner",
-              title: "Tackathon — Smart India Hackathon",
-              org: "Alliance University · 2025",
-              desc: "Developed an AI-Based Internship Recommendation Engine for PM Internship Scheme to match students with internships."
-            },
-            {
-              badge: "Runner-up",
-              title: "Runner-up in Cultural Events",
-              org: "Alliance University · 2025",
-              desc: "Achieved 2nd place in Alliance 2.0 cultural competitions for teamwork and creativity."
-            }
-          ].map((ach, i) => (
-            <motion.div
-              key={i}
-              className="unified-card"
-              variants={achievementCardVariants}
-              whileHover={{ 
-                y: -6, 
-                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.08)",
-                transition: { type: "spring", stiffness: 300, damping: 25 }
-              }}
-            >
-              <div className="unified-card-top">
-                <span className="unified-badge highlight-badge">
-                  <i className="fas fa-trophy" style={{ marginRight: '6px' }}></i> {ach.badge}
-                </span>
-              </div>
-              <h3 className="unified-title">{ach.title}</h3>
-              <div className="unified-subtitle">{ach.org}</div>
-              <div className="unified-desc">{ach.desc}</div>
-            </motion.div>
-          ))}
-        </motion.div>
       </section>
 
+      {/* ===== Redesigned Achievements Section (Matching Image) ===== */}
+      <section className="mc-section mc-achievements-section" id="achievements">
+        <div className="mc-container mc-achievements-container">
+          <div className="mc-section-header">
+            <div className="mc-section-header-left">
+              <span className="mc-kicker">ACHIEVEMENTS</span>
+              <h2 className="mc-section-title">Small wins. Lasting momentum.</h2>
+            </div>
+            <div className="mc-section-header-right">
+              <p className="mc-section-subtitle">Alliance University · 2025</p>
+            </div>
+          </div>
 
+          <div className="mc-achievements-grid">
+            <div className="mc-achievement-card">
+              <span className="mc-achievement-badge">WINNER</span>
+              <h3 className="mc-achievement-title">Application Hackathon — E-Cell</h3>
+              <p className="mc-achievement-desc">
+                Developed "Stady", a dynamic web application providing educational resources and collaboration tools for students.
+              </p>
+            </div>
+
+            <div className="mc-achievement-card">
+              <span className="mc-achievement-badge">WINNER</span>
+              <h3 className="mc-achievement-title">Tackathon — Smart India Hackathon</h3>
+              <p className="mc-achievement-desc">
+                Developed an AI-based Internship Recommendation Engine for the PM Internship Scheme to match students with internships.
+              </p>
+            </div>
+
+            <div className="mc-achievement-card">
+              <span className="mc-achievement-badge">RUNNER-UP</span>
+              <h3 className="mc-achievement-title">Cultural Events</h3>
+              <p className="mc-achievement-desc">
+                Achieved 2nd place in Alliance 2.0 cultural competitions for teamwork and creativity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ===== Video Modal ===== */}
       <div id="video-modal" className="video-modal" onClick={closeVideoModal}>
@@ -1271,142 +1457,103 @@ function App() {
         </div>
       </div>
 
-      {/* ===== Contact Section ===== */}
-      <section className="contact-section custom-contact-section fade-in" id="contact" style={{ overflow: "hidden" }}>
-        <div className="contact-grid">
-          {/* Left Column: Text & Headers */}
-          <motion.div
-            className="contact-left-text"
-            variants={contactLeftVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <ScrollRevealTitle className="contact-heading">Get In Touch</ScrollRevealTitle>
-            <div className="contact-divider"></div>
-            <p className="contact-subtitle">
-              I'm always open to discussing new opportunities, creative UI/UX design projects, or mobile app development ventures.
-            </p>
-            <p className="contact-desc-detail">
-              Whether you're looking for a skilled UI/UX Designer or an App Developer to bring your product ideas to life, interested in collaborating on a creative venture, or just want to connect, I'd love to hear from you.
-            </p>
-          </motion.div>
+      {/* ===== Redesigned Contact Section (Matching Image) ===== */}
+      <section className="mc-section mc-contact-section" id="contact">
+        <div className="mc-container mc-contact-container">
+          <span className="mc-kicker">LET'S CONNECT</span>
 
-          {/* Right Column: Card with Info */}
-          <motion.div
-            className="contact-right-card"
-            variants={contactContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="contact-info-cards">
-              <motion.div className="contact-info-card" variants={contactCardVariants}>
-                <span className="contact-info-icon email-icon">📧</span>
-                <div>
-                  <div className="contact-info-label">Email</div>
-                  <div className="contact-info-value">charanm2319@gmail.com</div>
-                </div>
-              </motion.div>
-              <motion.div className="contact-info-card" variants={contactCardVariants}>
-                <span className="contact-info-icon phone-icon">📞</span>
-                <div>
-                  <div className="contact-info-label">Phone</div>
-                  <div className="contact-info-value">+91 8639839229</div>
-                </div>
-              </motion.div>
-              <motion.div className="contact-info-card" variants={contactCardVariants}>
-                <span className="contact-info-icon location-icon">📍</span>
-                <div>
-                  <div className="contact-info-label">Location</div>
-                  <div className="contact-info-value">Bengaluru, Karnataka, India</div>
-                </div>
-              </motion.div>
+          <div className="mc-contact-grid">
+            <div className="mc-contact-left">
+              <h2 className="mc-contact-title">
+                <span className="mc-contact-title-sans">Have an idea?</span>
+                <span className="mc-contact-title-serif">Let’s make it real.</span>
+              </h2>
+              <p className="mc-contact-desc">
+                I'm always open to new opportunities, creative UI/UX design projects, mobile app development, or a good conversation.
+              </p>
             </div>
 
-          </motion.div>
+            <div className="mc-contact-right">
+              <a href="mailto:charanm2319@gmail.com" className="mc-contact-row">
+                <div className="mc-contact-row-info">
+                  <span className="mc-contact-label">EMAIL</span>
+                  <span className="mc-contact-val">charanm2319@gmail.com</span>
+                </div>
+                <span className="mc-contact-arrow">↗</span>
+              </a>
+
+              <a href="tel:+918639839229" className="mc-contact-row">
+                <div className="mc-contact-row-info">
+                  <span className="mc-contact-label">PHONE</span>
+                  <span className="mc-contact-val">+91 8639839229</span>
+                </div>
+                <span className="mc-contact-arrow">↗</span>
+              </a>
+
+              <div className="mc-contact-row">
+                <div className="mc-contact-row-info">
+                  <span className="mc-contact-label">BASED IN</span>
+                  <span className="mc-contact-val">Bengaluru, Karnataka, India</span>
+                </div>
+                <span className="mc-contact-arrow">↗</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ===== Premium Mega Footer ===== */}
-      <footer className="mega-footer">
-        <motion.div
-          className="mega-footer-inner"
-          variants={footerContainerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.01 }}
-        >
-          {/* Giant Name */}
-          <motion.div className="mega-footer-name-wrap" variants={footerNameWrapVariants}>
-            <h2 className="mega-footer-name">
-              {["C", "H", "A", "R", "A", "N"].map((letter, index) => (
-                <motion.span
-                  key={index}
-                  custom={index}
-                  variants={letterVariants}
-                  whileHover={{
-                    y: -15,
-                    scale: 1.1,
-                    rotate: 5,
-                    transition: { type: "spring", stiffness: 300, damping: 10 }
-                  }}
-                  style={{ display: "inline-block", cursor: "pointer" }}
-                >
-                  {letter}
-                </motion.span>
-              ))}
-            </h2>
-          </motion.div>
-
-          {/* Tagline */}
-          <motion.p
-            className="mega-footer-tagline"
-            variants={footerItemVariants}
-          >
-            Data Analyst · App Developer · UI/UX Designer
-          </motion.p>
-
-          {/* Navigation Links */}
-          <motion.div
-            className="mega-footer-nav"
-            variants={footerItemVariants}
-          >
-            <a href="#" onClick={(e) => handleNavClick(e, 'home')}>Home</a>
-            <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>About</a>
-            <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')}>Skills</a>
-            <a href="#projects" onClick={(e) => handleNavClick(e, 'projects')}>Projects</a>
-            <a href="#achievements" onClick={(e) => handleNavClick(e, 'achievements')}>Achievements</a>
-            <a href="#contact" onClick={(e) => handleNavClick(e, 'contact')}>Contact</a>
-          </motion.div>
-
-          {/* Social Icons */}
-          <motion.div
-            className="mega-footer-socials"
-            variants={footerItemVariants}
-          >
-            <a href="https://linkedin.com/in/maruveni-charan-631766281" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <i className="fab fa-linkedin-in"></i>
-            </a>
-            <a href="https://github.com/charan2319" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-              <i className="fab fa-github"></i>
-            </a>
-            <a href="https://www.hackerrank.com/profile/charanm2319" target="_blank" rel="noopener noreferrer" aria-label="HackerRank">
-              <i className="fab fa-hackerrank"></i>
-            </a>
-            <a href="mailto:charanm2319@gmail.com" aria-label="Email">
-              <i className="fas fa-envelope"></i>
-            </a>
-          </motion.div>
-
-          {/* Divider */}
-          <div className="mega-footer-divider"></div>
-
-          {/* Copyright Bar */}
-          <div className="mega-footer-bottom">
-            <p>© {new Date().getFullYear()} Maruveni Charan. All rights reserved.</p>
+      {/* ===== Redesigned Footer (Matching Image) ===== */}
+      <footer className="mc-footer">
+        <div className="mc-container mc-footer-container">
+          <div className="mc-footer-big-brand">
+            <span className="mc-footer-name">CHARAN</span>
+            <div className="mc-footer-star">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="#264df3">
+                <path d="M12 0c.7 0 1.3.6 1.3 1.3v6.4l4.5-4.5c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8L15.1 9.5h6.4c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3h-6.4l4.5 4.5c.5.5.5 1.3 0 1.8s-1.3.5-1.8 0L13.3 14v6.4c0 .7-.6 1.3-1.3 1.3s-1.3-.6-1.3-1.3V14l-4.5 4.5c-.5.5-1.3.5-1.8 0s-.5-1.3 0-1.8l4.5-4.5H2.5C1.8 12.2 1.2 11.6 1.2 10.9s.6-1.3 1.3-1.3h6.4L4.4 5.1c-.5-.5-.5-1.3 0-1.8s1.3-.5 1.8 0l4.5 4.5V1.3C10.7.6 11.3 0 12 0z"/>
+              </svg>
+            </div>
           </div>
-        </motion.div>
+
+          <div className="mc-footer-bottom">
+            <div className="mc-footer-copy">© 2026 Maruveni Charan. All rights reserved.</div>
+            <div className="mc-footer-socials">
+              <a
+                href="https://linkedin.com/in/maruveni-charan-631766281"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
+                <i className="fab fa-linkedin-in"></i>
+              </a>
+              <a
+                href="https://github.com/charan2319"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <i className="fab fa-github"></i>
+              </a>
+              <a
+                href="https://www.hackerrank.com/profile/charanm2319"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="HackerRank"
+              >
+                <i className="fab fa-hackerrank"></i>
+              </a>
+              <a
+                href="mailto:charanm2319@gmail.com"
+                aria-label="Email"
+              >
+                <i className="fas fa-envelope"></i>
+              </a>
+            </div>
+            <a href="#" className="mc-footer-back-to-top" onClick={(e) => handleNavClick(e, 'home')}>
+              <span>BACK TO TOP</span>
+              <span className="mc-top-arrow">↑</span>
+            </a>
+          </div>
+        </div>
       </footer>
 
       {/* ===== Project Detail Modal ===== */}
