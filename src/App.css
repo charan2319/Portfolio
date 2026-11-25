@@ -10719,7 +10719,8 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center bottom;
+  object-position: center bottom !important;
+  transform-origin: center bottom !important;
   display: block;
   transition: transform 0.4s ease;
 }
@@ -11487,11 +11488,18 @@ section {
 }
 
 .mc-cert-arrow {
-  font-size: 16px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #94a3b8;
   margin-left: 16px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-cert-arrow svg {
+  display: block;
+  width: 14px;
+  height: 14px;
 }
 
 /* ===== 14. ACHIEVEMENTS SECTION ===== */
@@ -11713,11 +11721,17 @@ section {
 }
 
 .mc-contact-arrow {
-  font-size: 18px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #94a3b8;
   transition: color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  display: inline-block;
+}
+
+.mc-contact-arrow svg {
+  display: block;
+  width: 15px;
+  height: 15px;
 }
 
 /* ===== 16. FOOTER ===== */
@@ -12269,6 +12283,11 @@ footer.mc-footer {
     padding: 18px 0 !important;
   }
 
+  .mc-cert-arrow svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
   .mc-cert-item-name {
     font-size: 14px !important;
   }
@@ -12290,6 +12309,11 @@ footer.mc-footer {
   .mc-contact-grid {
     grid-template-columns: 1fr !important;
     gap: 28px !important;
+  }
+
+  .mc-contact-arrow svg {
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .mc-contact-val {

@@ -162,6 +162,28 @@ const DOT_GLYPHS = {
   ]
 };
 
+/* ===== Sleek Diagonal Arrow Component (Renders sharp vector across mobile & laptop) ===== */
+const ArrowUpRight = ({ className = "" }) => (
+  <svg
+    className={`mc-editorial-arrow ${className}`}
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    style={{ display: "inline-block", verticalAlign: "middle" }}
+  >
+    <path
+      d="M3 11L11 3M11 3H5.5M11 3V8.5"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 /* ===== Playful Dot-Matrix Number Component ===== */
 const PlayfulDotNumber = ({ text, width = 140, height = 78 }) => {
   const canvasRef = useRef(null);
@@ -2406,9 +2428,9 @@ function App() {
           {/* Right Column: Hero Profile Card */}
           <motion.div
             className="mc-hero-right"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="mc-profile-card">
               <div className="mc-profile-frame">
@@ -2416,6 +2438,16 @@ function App() {
                   src="/IMG_5281.jpg"
                   alt="Maruveni Charan"
                   className="mc-profile-photo"
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority="high"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center bottom",
+                    transformOrigin: "center bottom",
+                  }}
                 />
               </div>
               <div className="mc-profile-caption">
@@ -2751,7 +2783,7 @@ function App() {
                   <h3 className="mc-cert-item-name">App Development with Swift Certified User</h3>
                   <span className="mc-cert-item-issuer">Apple / 2025</span>
                 </div>
-                <span className="mc-cert-arrow">↗</span>
+                <span className="mc-cert-arrow"><ArrowUpRight /></span>
               </a>
 
               <a
@@ -2764,7 +2796,7 @@ function App() {
                   <h3 className="mc-cert-item-name">Data Analysis with Python</h3>
                   <span className="mc-cert-item-issuer">Coursera / 2024</span>
                 </div>
-                <span className="mc-cert-arrow">↗</span>
+                <span className="mc-cert-arrow"><ArrowUpRight /></span>
               </a>
             </div>
 
@@ -2779,7 +2811,7 @@ function App() {
                   <h3 className="mc-cert-item-name">Excel</h3>
                   <span className="mc-cert-item-issuer">Infosys / 2025</span>
                 </div>
-                <span className="mc-cert-arrow">↗</span>
+                <span className="mc-cert-arrow"><ArrowUpRight /></span>
               </a>
 
               <a
@@ -2792,7 +2824,7 @@ function App() {
                   <h3 className="mc-cert-item-name">Power BI for Business Professionals</h3>
                   <span className="mc-cert-item-issuer">Infosys / 2025</span>
                 </div>
-                <span className="mc-cert-arrow">↗</span>
+                <span className="mc-cert-arrow"><ArrowUpRight /></span>
               </a>
             </div>
           </div>
@@ -2920,7 +2952,7 @@ function App() {
                   <span className="mc-contact-label">EMAIL</span>
                   <span className="mc-contact-val">charanm2319@gmail.com</span>
                 </div>
-                <span className="mc-contact-arrow">↗</span>
+                <span className="mc-contact-arrow"><ArrowUpRight /></span>
               </motion.a>
 
               <motion.a
@@ -2935,7 +2967,7 @@ function App() {
                   <span className="mc-contact-label">PHONE</span>
                   <span className="mc-contact-val">+91 8639839229</span>
                 </div>
-                <span className="mc-contact-arrow">↗</span>
+                <span className="mc-contact-arrow"><ArrowUpRight /></span>
               </motion.a>
 
               <motion.div
@@ -2949,7 +2981,7 @@ function App() {
                   <span className="mc-contact-label">BASED IN</span>
                   <span className="mc-contact-val">Bengaluru, Karnataka, India</span>
                 </div>
-                <span className="mc-contact-arrow">↗</span>
+                <span className="mc-contact-arrow"><ArrowUpRight /></span>
               </motion.div>
             </div>
           </div>

@@ -13,6 +13,18 @@
     rel="stylesheet">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Preload hero photo for instantaneous rendering on mobile -->
+  <link rel="preload" as="image" href="/IMG_5281.jpg" fetchpriority="high" />
+  <style>
+    .mc-profile-photo {
+      object-fit: cover !important;
+      object-position: center bottom !important;
+      transform-origin: center bottom !important;
+    }
+    .mc-profile-frame {
+      overflow: hidden !important;
+    }
+  </style>
   <!-- EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
