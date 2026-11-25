@@ -11396,6 +11396,10 @@ section {
   display: inline-block;
 }
 
+.mc-cert-student-word {
+  display: inline-block;
+}
+
 .mc-cert-student-s {
   display: inline-block;
 }
@@ -11493,14 +11497,38 @@ section {
 }
 
 .mc-achievement-card {
+  position: relative;
   border-top: 1px solid #e8ecf2 !important;
   padding-top: 24px;
   display: flex;
   flex-direction: column;
   text-align: left;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-achievement-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #264df3, #38bdf8);
+  box-shadow: 0 0 10px rgba(38, 77, 243, 0.4);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-achievement-card:hover {
+  transform: translateY(-5px);
+}
+
+.mc-achievement-card:hover::before {
+  width: 100%;
 }
 
 .mc-achievement-badge {
+  display: inline-flex;
+  align-items: center;
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -11518,6 +11546,11 @@ section {
   margin: 0 0 12px 0;
   line-height: 1.35;
   letter-spacing: -0.015em;
+  transition: color 0.25s ease;
+}
+
+.mc-achievement-card:hover .mc-achievement-title {
+  color: #264df3;
 }
 
 .mc-achievement-desc {
@@ -11529,11 +11562,31 @@ section {
 }
 
 /* ===== 15. CONTACT SECTION ===== */
+.mc-contact-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.mc-contact-section::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  right: -60px;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(38, 77, 243, 0.045) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .mc-contact-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: 80px;
   align-items: flex-start;
+  position: relative;
+  z-index: 1;
 }
 
 .mc-contact-left {
@@ -11563,9 +11616,22 @@ section {
   font-style: italic;
   font-size: clamp(44px, 5.2vw, 62px);
   font-weight: 600;
-  color: #264df3;
   line-height: 1.1;
   letter-spacing: -0.01em;
+  background: linear-gradient(120deg, #264df3 0%, #38bdf8 30%, #264df3 60%, #1d4ed8 100%);
+  background-size: 240% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: mcContactShine 5.5s ease-in-out infinite;
+}
+
+@keyframes mcContactShine {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .mc-contact-desc {
@@ -11587,18 +11653,27 @@ section {
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid #e8ecf2 !important;
-  padding: 24px 0;
+  padding: 24px 14px;
+  border-radius: 10px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.mc-contact-row:hover {
+  background: rgba(38, 77, 243, 0.038);
+  padding-left: 20px;
+  padding-right: 12px;
 }
 
 .mc-contact-row:hover .mc-contact-val {
   color: #264df3;
+  transform: translateX(3px);
 }
 
 .mc-contact-row:hover .mc-contact-arrow {
   color: #264df3;
-  transform: translate(2px, -2px);
+  transform: translate(4px, -4px);
 }
 
 .mc-contact-row-info {
@@ -11615,6 +11690,11 @@ section {
   letter-spacing: 0.1em;
   color: #94a3b8;
   text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.mc-contact-row:hover .mc-contact-label {
+  color: #64748b;
 }
 
 .mc-contact-val {
@@ -11623,14 +11703,16 @@ section {
   font-weight: 600;
   color: #0f172a;
   letter-spacing: -0.01em;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease, transform 0.25s ease;
+  display: inline-block;
 }
 
 .mc-contact-arrow {
   font-size: 18px;
   font-weight: 700;
   color: #94a3b8;
-  transition: all 0.2s ease;
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
 }
 
 /* ===== 16. FOOTER ===== */

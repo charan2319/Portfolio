@@ -54,6 +54,12 @@ export const experienceData = [
 
 export const projectsData = [
   {
+    title: "Shivohara Technologies",
+    description: "Designed and developed the corporate web platform for Shivohara Technologies, showcasing enterprise software engineering and cybersecurity solutions.",
+    tech: ["Web Development", "UI/UX Design", "React", "Frontend"],
+    link: "https://www.shivoharatechnologies.com/"
+  },
+  {
     title: "Mymedicare",
     description: "Developed a healthcare mobile application with medication reminders and remote consultation features. Integrated Firebase for user authentication and real-time data storage.",
     tech: ["Swift", "Firebase", "Cloudinary"]

@@ -124,6 +124,15 @@ const DOT_GLYPHS = {
     "   1 ",
     "   1 "
   ],
+  "5": [
+    "11111",
+    "1    ",
+    "1111 ",
+    "    1",
+    "    1",
+    "1   1",
+    " 111 "
+  ],
   "+": [
     "     ",
     "  1  ",
@@ -893,6 +902,16 @@ const modernProjectsList = [
   },
   {
     num: "02",
+    category: "WEB DEVELOPMENT & DESIGN",
+    title: "Shivohara Technologies",
+    desc: "Designed and developed the corporate web platform for Shivohara Technologies, showcasing enterprise software engineering and cybersecurity solutions.",
+    tags: "Web Design  /  UI/UX  /  Frontend",
+    image: "/shivohara.png",
+    link: "https://www.shivoharatechnologies.com/",
+    bg: "#ffffff"
+  },
+  {
+    num: "03",
     category: "APP DEVELOPMENT",
     title: "Alliance Alumni Connect",
     desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.",
@@ -902,7 +921,7 @@ const modernProjectsList = [
     bg: "#fcfaf7"
   },
   {
-    num: "03",
+    num: "04",
     category: "APP DEVELOPMENT",
     title: "Mymedicare",
     desc: "An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features.",
@@ -913,7 +932,7 @@ const modernProjectsList = [
     bg: "#f4f6f8"
   },
   {
-    num: "04",
+    num: "05",
     category: "DATA ANALYTICS",
     title: "Road Accident Analysis Dashboard",
     desc: "A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety.",
@@ -926,6 +945,7 @@ const modernProjectsList = [
 
 const projectsList = [
   { title: "Founder's Mart", category: { name: 'E-Commerce', className: 'web-dev' }, desc: "A full-stack e-commerce platform built for efficient product management and an optimized shopping experience.", tech: ['React', 'Node.js', 'PostgreSQL'], image: "/hero.png", link: "http://www.ecellstore.com" },
+  { title: "Shivohara Technologies", category: { name: 'Web Development', className: 'web-dev' }, desc: "Designed and developed the corporate web platform for Shivohara Technologies, showcasing enterprise software engineering and cybersecurity solutions.", tech: ['Web Design', 'UI/UX', 'React', 'Frontend'], image: "/shivohara.png", link: "https://www.shivoharatechnologies.com/" },
   { title: "Alliance Alumni Connect", category: { name: 'App Development', className: 'app-dev' }, desc: "A Flutter app bridging the gap between alumni, students, and the university to foster a thriving community network.", tech: ['Flutter', 'Firebase', 'Cloudinary'], image: "/Alumni.PNG" },
   { title: "Mymedicare", category: { name: 'App Development', className: 'app-dev' }, desc: "An iOS application that sends timely medication reminders to users, helping them maintain their health routines with smart notification features.", tech: ['Swift', 'Firebase', 'Xcode'], image: "/unnamed-1.jpg", video: "/VIDEO-2025-11-22-23-56-57.MP4" },
   { title: "Road Accident Analysis Dashboard", category: { name: 'Data Analytics', className: 'data-analytics' }, desc: "A comprehensive Power BI dashboard analyzing road accident trends, patterns, and contributing factors to provide actionable insights for traffic safety.", tech: ['Power BI'], image: "/IMG_6393.jpg", link: "https://github.com/charan2319/Road-Accident-Analysis-Dashboard" }
@@ -1069,6 +1089,8 @@ const EducationZigzagTimeline = () => {
   const [orbPos, setOrbPos] = useState({ x: 0, y: 0 });
   const [orbOpacity, setOrbOpacity] = useState(1);
   const [orbScale, setOrbScale] = useState(1);
+  const [orbAngle, setOrbAngle] = useState(0);
+  const [isAirplane, setIsAirplane] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [totalLength, setTotalLength] = useState(0);
@@ -1142,8 +1164,14 @@ const EducationZigzagTimeline = () => {
     // Store Experience divider and Certifications target coordinates
     const expDiv = document.querySelector(".mc-experience-divider");
     const kickerEl = document.querySelector(".mc-cert-kicker-c");
+    const studentWordEl = document.querySelector(".mc-cert-student-word");
     const sEl = document.querySelector(".mc-cert-student-s");
     const dotEl = document.querySelector(".mc-cert-dot");
+    const eduEl = document.getElementById("education");
+    const certEl = document.getElementById("certifications");
+
+    const yLine1 = eduEl ? eduEl.getBoundingClientRect().top - cRect.top : -160;
+    const yLine2 = certEl ? certEl.getBoundingClientRect().top - cRect.top : cRect.height + 70;
 
     let pExpTop = { x: p0.x, y: p0.y - 240 };
     let pExpBottom = { x: p0.x, y: p0.y - 100 };
@@ -1162,13 +1190,18 @@ const EducationZigzagTimeline = () => {
 
     const pCertKicker = kickerEl ? {
       x: kickerEl.getBoundingClientRect().left + kickerEl.getBoundingClientRect().width / 2 - cRect.left,
-      y: kickerEl.getBoundingClientRect().top + kickerEl.getBoundingClientRect().height / 2 - cRect.top,
-    } : { x: 50, y: cRect.height + 120 };
+      y: kickerEl.getBoundingClientRect().top - cRect.top - 14,
+    } : { x: 50, y: cRect.height + 100 };
 
     const pCertS = sEl ? {
       x: sEl.getBoundingClientRect().left + sEl.getBoundingClientRect().width / 2 - cRect.left,
-      y: sEl.getBoundingClientRect().top + sEl.getBoundingClientRect().height / 2 - cRect.top,
-    } : { x: 180, y: cRect.height + 165 };
+      y: (studentWordEl ? studentWordEl.getBoundingClientRect().top : sEl.getBoundingClientRect().top) - cRect.top - 14,
+    } : { x: 180, y: cRect.height + 140 };
+
+    const pCertStudentEnd = studentWordEl ? {
+      x: studentWordEl.getBoundingClientRect().right - cRect.left - 4,
+      y: studentWordEl.getBoundingClientRect().top - cRect.top - 14,
+    } : { x: 280, y: cRect.height + 140 };
 
     const pCertDot = dotEl ? {
       x: dotEl.getBoundingClientRect().left + dotEl.getBoundingClientRect().width / 2 - cRect.left,
@@ -1182,7 +1215,10 @@ const EducationZigzagTimeline = () => {
       p2: { x: p2.x, y: p2.y },
       pCertKicker,
       pCertS,
+      pCertStudentEnd,
       pCertDot,
+      yLine1,
+      yLine2,
     };
 
     if (currentProgressRef.current <= -1.0) {
@@ -1193,43 +1229,99 @@ const EducationZigzagTimeline = () => {
       });
     }
 
-    // Increased size for the 360 loop (r ≈ 36px) with a perfectly rounded circular apex (kappa = r * 0.552)
-    const r = Math.min(38, Math.max(28, Math.abs(p1.x - p0.x) * 0.15));
-    const k = r * 0.552;
+    // Smooth, aerodynamic ribbon loop with continuous circular arc and smooth banked turns
+    const R = Math.min(38, Math.max(30, Math.abs(p1.x - p0.x) * 0.14));
 
-    // Loop 1 (Card 0 [Left] -> Card 1 [Right])
-    const dx1 = p1.x - p0.x;
-    const dy1 = p1.y - p0.y;
-    const cx1 = p0.x + dx1 * 0.50;
-    const cy1 = p0.y + dy1 * 0.35;
-    const cross1_x = cx1;
-    const cross1_y = cy1 + r * 0.65;
+    const buildFlightSegment = (start, end, radius, flip = -1, isFirst = true) => {
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 10) return isFirst ? `M ${start.x} ${start.y} L ${end.x} ${end.y}` : `L ${end.x} ${end.y}`;
 
-    const d1 = `M ${p0.x} ${p0.y} ` +
-      `C ${p0.x + dx1 * 0.25} ${p0.y + dy1 * 0.15}, ${cross1_x - r * 0.85} ${cross1_y + r * 0.75}, ${cross1_x} ${cross1_y} ` +
-      `C ${cross1_x + r * 0.85} ${cross1_y - r * 0.70}, ${cx1 + r} ${cy1 + r * 0.35}, ${cx1 + r} ${cy1} ` +
-      `C ${cx1 + r} ${cy1 - k}, ${cx1 + k} ${cy1 - r}, ${cx1} ${cy1 - r} ` +
-      `C ${cx1 - k} ${cy1 - r}, ${cx1 - r} ${cy1 - k}, ${cx1 - r} ${cy1} ` +
-      `C ${cx1 - r} ${cy1 + r * 0.35}, ${cross1_x - r * 0.85} ${cross1_y - r * 0.70}, ${cross1_x} ${cross1_y} ` +
-      `C ${cross1_x + r * 0.85} ${cross1_y + r * 0.75}, ${p1.x - dx1 * 0.25} ${p1.y - dy1 * 0.15}, ${p1.x} ${p1.y}`;
+      const ux = dx / dist;
+      const uy = dy / dist;
+      const nx = -uy * flip;
+      const ny = ux * flip;
 
-    // Loop 2 (Card 1 [Right] -> Card 2 [Left])
-    const dx2 = p2.x - p1.x;
-    const dy2 = p2.y - p1.y;
-    const cx2 = p1.x + dx2 * 0.50;
-    const cy2 = p1.y + dy2 * 0.35;
-    const cross2_x = cx2;
-    const cross2_y = cy2 + r * 0.65;
+      const W = (u, n) => ({
+        x: Number((start.x + u * ux + n * nx).toFixed(2)),
+        y: Number((start.y + u * uy + n * ny).toFixed(2)),
+      });
 
-    const d2 = `C ${p1.x + dx2 * 0.25} ${p1.y + dy2 * 0.15}, ${cross2_x + r * 0.85} ${cross2_y + r * 0.75}, ${cross2_x} ${cross2_y} ` +
-      `C ${cross2_x - r * 0.85} ${cross2_y - r * 0.70}, ${cx2 - r} ${cy2 + r * 0.35}, ${cx2 - r} ${cy2} ` +
-      `C ${cx2 - r} ${cy2 - k}, ${cx2 - k} ${cy2 - r}, ${cx2} ${cy2 - r} ` +
-      `C ${cx2 + k} ${cy2 - r}, ${cx2 + r} ${cy2 - k}, ${cx2 + r} ${cy2} ` +
-      `C ${cx2 + r} ${cy2 + r * 0.35}, ${cross2_x + r * 0.85} ${cross2_y - r * 0.70}, ${cross2_x} ${cross2_y} ` +
-      `C ${cross2_x - r * 0.85} ${cross2_y + r * 0.75}, ${p2.x - dx2 * 0.25} ${p2.y - dy2 * 0.15}, ${p2.x} ${p2.y}`;
+      const uMid = dist * 0.48;
+      const nCenter = radius * 1.30;
+      const k = radius * 0.55228;
 
-    // NO connecting line drawn from above section! Only the Education timeline:
-    setPathD(`${d1} ${d2}`);
+      const uIn = Math.max(0, uMid - radius * 2.0);
+      const uOut = Math.min(dist, uMid + radius * 2.0);
+
+      const pIn = W(uIn, 0);
+      const cp1 = W(uMid - radius * 0.8, 0);
+      const cp2 = W(uMid + radius, nCenter - radius * 0.6);
+      const pRight = W(uMid + radius, nCenter);
+
+      const pTop = W(uMid, nCenter + radius);
+      const cpTop1 = W(uMid + radius, nCenter + k);
+      const cpTop2 = W(uMid + k, nCenter + radius);
+
+      const pLeft = W(uMid - radius, nCenter);
+      const cpLeft1 = W(uMid - k, nCenter + radius);
+      const cpLeft2 = W(uMid - radius, nCenter + k);
+
+      const pOut = W(uOut, 0);
+      const cp3 = W(uMid - radius, nCenter - radius * 0.6);
+      const cp4 = W(uMid + radius * 0.8, 0);
+
+      const prefix = isFirst ? `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} ` : "";
+      return (
+        `${prefix}` +
+        `L ${pIn.x} ${pIn.y} ` +
+        `C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${pRight.x} ${pRight.y} ` +
+        `C ${cpTop1.x} ${cpTop1.y}, ${cpTop2.x} ${cpTop2.y}, ${pTop.x} ${pTop.y} ` +
+        `C ${cpLeft1.x} ${cpLeft1.y}, ${cpLeft2.x} ${cpLeft2.y}, ${pLeft.x} ${pLeft.y} ` +
+        `C ${cp3.x} ${cp3.y}, ${cp4.x} ${cp4.y}, ${pOut.x} ${pOut.y} ` +
+        `L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`
+      );
+    };
+
+    // Aerodynamic rounded corner (banked turn) around Card 1
+    const d1x = p1.x - p0.x;
+    const d1y = p1.y - p0.y;
+    const len1 = Math.hypot(d1x, d1y);
+    const u1x = d1x / len1;
+    const u1y = d1y / len1;
+
+    const d2x = p2.x - p1.x;
+    const d2y = p2.y - p1.y;
+    const len2 = Math.hypot(d2x, d2y);
+    const u2x = d2x / len2;
+    const u2y = d2y / len2;
+
+    const filletR = Math.min(55, len1 * 0.15, len2 * 0.15);
+    const p1In = {
+      x: p1.x - u1x * filletR,
+      y: p1.y - u1y * filletR,
+    };
+    const p1Out = {
+      x: p1.x + u2x * filletR,
+      y: p1.y + u2y * filletR,
+    };
+
+    const cpCorner1 = {
+      x: Number((p1In.x + u1x * (filletR * 0.55)).toFixed(2)),
+      y: Number((p1In.y + u1y * (filletR * 0.55)).toFixed(2)),
+    };
+    const cpCorner2 = {
+      x: Number((p1Out.x - u2x * (filletR * 0.55)).toFixed(2)),
+      y: Number((p1Out.y - u2y * (filletR * 0.55)).toFixed(2)),
+    };
+
+    const seg1 = buildFlightSegment(p0, p1In, R, -1, true);
+    const cornerD = `C ${cpCorner1.x} ${cpCorner1.y}, ${cpCorner2.x} ${cpCorner2.y}, ${p1Out.x.toFixed(2)} ${p1Out.y.toFixed(2)}`;
+    const seg2 = buildFlightSegment(p1Out, p2, R, 1, false);
+
+    // Continuous, smooth aerodynamic timeline path with zero sharp vertices:
+    setPathD(`${seg1} ${cornerD} ${seg2}`);
   };
 
   useEffect(() => {
@@ -1262,8 +1354,14 @@ const EducationZigzagTimeline = () => {
         const len = pathRef.current.getTotalLength();
         setTotalLength(len);
         if (len > 0 && currentProgressRef.current >= 0) {
-          const pt = pathRef.current.getPointAtLength(currentProgressRef.current * len);
+          const d = Math.max(0, Math.min(1, currentProgressRef.current)) * len;
+          const pt = pathRef.current.getPointAtLength(d);
           setOrbPos({ x: pt.x, y: pt.y });
+          const d1 = Math.max(0, d - 3);
+          const d2 = Math.min(len, d + 3);
+          const pA = pathRef.current.getPointAtLength(d1);
+          const pB = pathRef.current.getPointAtLength(d2);
+          setOrbAngle(Math.atan2(pB.y - pA.y, pB.x - pA.x) * (180 / Math.PI));
         }
       } catch (e) {}
     }
@@ -1289,6 +1387,7 @@ const EducationZigzagTimeline = () => {
 
         // 1. If p < -1.0: indicator travels straight down along the Experience vertical blue line
         if (p < -1.0) {
+          setIsAirplane(false);
           const t = Math.max(0, Math.min(1, p + 2.0));
           const { pExpTop, pExpBottom } = entryCoordsRef.current;
           if (pExpTop && pExpBottom) {
@@ -1301,7 +1400,7 @@ const EducationZigzagTimeline = () => {
         } else if (p < 0) {
           // 2. If -1.0 <= p < 0: Indicator travels smoothly through the air from bottom of Experience blue line down to B.Tech
           const t = Math.max(0, Math.min(1, p + 1.0));
-          const { pExpBottom, p0 } = entryCoordsRef.current;
+          const { pExpBottom, p0, yLine1 = -160, yLine2 = 1200 } = entryCoordsRef.current;
           if (pExpBottom && p0) {
             const dy = p0.y - pExpBottom.y;
             const c0 = { x: pExpBottom.x, y: pExpBottom.y + dy * 0.45 };
@@ -1311,15 +1410,31 @@ const EducationZigzagTimeline = () => {
             const y = u*u*u * pExpBottom.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * p0.y;
             setOrbPos({ x, y });
             setOrbScale(1.0);
+
+            // Compute tangent angle for aeroplane flight heading
+            const vx = 3*u*u * (c0.x - pExpBottom.x) + 6*u*t * (c1.x - c0.x) + 3*t*t * (p0.x - c1.x);
+            const vy = 3*u*u * (c0.y - pExpBottom.y) + 6*u*t * (c1.y - c0.y) + 3*t*t * (p0.y - c1.y);
+            setOrbAngle(Math.atan2(vy, vx) * (180 / Math.PI));
+
+            // Becomes aeroplane once crossing the top section line entering Education
+            setIsAirplane(y >= yLine1 && y <= yLine2);
           }
         } else if (p <= 1.0) {
-          // 3. Once at B.Tech or beyond, follow the Education path
+          // 3. Once at B.Tech or beyond, follow the Education path with Aeroplane
+          setIsAirplane(true);
           if (pathRef.current && totalLength > 0) {
             try {
-              const pt = pathRef.current.getPointAtLength(
-                Math.min(1, p) * totalLength
-              );
+              const d = Math.max(0, Math.min(1, p)) * totalLength;
+              const pt = pathRef.current.getPointAtLength(d);
               setOrbPos({ x: pt.x, y: pt.y });
+
+              // Tangent angle for aeroplane flight rotation
+              const d1 = Math.max(0, d - 3);
+              const d2 = Math.min(totalLength, d + 3);
+              const pA = pathRef.current.getPointAtLength(d1);
+              const pB = pathRef.current.getPointAtLength(d2);
+              const ang = Math.atan2(pB.y - pA.y, pB.x - pA.x) * (180 / Math.PI);
+              setOrbAngle(ang);
             } catch (e) {}
           }
           setOrbScale(1.0);
@@ -1328,17 +1443,19 @@ const EducationZigzagTimeline = () => {
           if (dotEl) dotEl.classList.remove("is-infused");
         } else {
           // 4. Past 10th Grade (p > 1.0): Traveling into Certifications section!
-          const { p2, pCertKicker, pCertS, pCertDot } = entryCoordsRef.current;
+          const { p2, pCertKicker, pCertS, pCertStudentEnd, pCertDot, yLine1 = -160, yLine2 = 1200 } = entryCoordsRef.current;
           const dotEl = document.querySelector(".mc-cert-dot");
 
           if (p2 && pCertKicker && pCertS && pCertDot) {
-            if (p <= 1.4) {
-              // 1.0 -> 1.4: Swooping down through the air onto 'C' in CERTIFICATIONS
-              const t = (p - 1.0) / 0.4;
+            const pEnd = pCertStudentEnd || { x: pCertDot.x - 12, y: pCertS.y };
+
+            if (p <= 1.35) {
+              // 1.0 -> 1.35: Swooping down through the air onto the top of 'C' in CERTIFICATIONS (above letter)
+              const t = (p - 1.0) / 0.35;
               const dx = pCertKicker.x - p2.x;
               const dy = pCertKicker.y - p2.y;
-              const c0 = { x: p2.x + dx * 0.15, y: p2.y + dy * 0.65 };
-              const c1 = { x: pCertKicker.x - dx * 0.25, y: pCertKicker.y - dy * 0.35 };
+              const c0 = { x: p2.x + dx * 0.20, y: p2.y + dy * 0.70 };
+              const c1 = { x: pCertKicker.x - dx * 0.20, y: pCertKicker.y - dy * 0.25 };
               const u = 1 - t;
               const x = u*u*u * p2.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertKicker.x;
               const y = u*u*u * p2.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertKicker.y;
@@ -1346,45 +1463,78 @@ const EducationZigzagTimeline = () => {
               setOrbScale(1.0);
               setOrbOpacity(1.0);
               if (dotEl) dotEl.classList.remove("is-infused");
-            } else if (p <= 1.7) {
-              // 1.4 -> 1.7: Roll off 'C' and fall down onto 's' in Always a student.
-              const t = (p - 1.4) / 0.3;
-              const dx = pCertS.x - pCertKicker.x;
-              const dy = pCertS.y - pCertKicker.y;
-              const c0 = { x: pCertKicker.x + dx * 0.35, y: pCertKicker.y - 14 };
-              const c1 = { x: pCertS.x - 14, y: pCertS.y - 16 };
-              const u = 1 - t;
-              const x = u*u*u * pCertKicker.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertS.x;
-              const y = u*u*u * pCertKicker.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertS.y;
+
+              // Compute dive angle for aeroplane
+              const vx = 3*u*u * (c0.x - p2.x) + 6*u*t * (c1.x - c0.x) + 3*t*t * (pCertKicker.x - c1.x);
+              const vy = 3*u*u * (c0.y - p2.y) + 6*u*t * (c1.y - c0.y) + 3*t*t * (pCertKicker.y - c1.y);
+              setOrbAngle(Math.atan2(vy, vx) * (180 / Math.PI));
+
+              // Remains an aeroplane until crossing the bottom section line into Certifications
+              setIsAirplane(y >= yLine1 && y <= yLine2);
+            } else if (p <= 1.45) {
+              setIsAirplane(false);
+              // 1.35 -> 1.45: Rolling slightly on top of 'C'
+              const t = (p - 1.35) / 0.10;
+              const x = pCertKicker.x + t * 16;
+              const y = pCertKicker.y;
               setOrbPos({ x, y });
               setOrbScale(1.0);
               setOrbOpacity(1.0);
               if (dotEl) dotEl.classList.remove("is-infused");
-            } else if (p <= 2.0) {
-              // 1.7 -> 2.0: Roll horizontally across "student" right into "." and dissolve/mix into it
-              const t = (p - 1.7) / 0.3;
-              const x = pCertS.x + t * (pCertDot.x - pCertS.x);
-              // subtle playful rolling hop across letters
-              const hop = Math.sin(t * Math.PI * 4) * 2.5;
-              const y = pCertS.y + t * (pCertDot.y - pCertS.y) - hop;
+            } else if (p <= 1.70) {
+              setIsAirplane(false);
+              // 1.45 -> 1.70: Roll off 'C' and fall down onto top of 's' in Always a student. (strictly above)
+              const t = (p - 1.45) / 0.25;
+              const startX = pCertKicker.x + 16;
+              const startY = pCertKicker.y;
+              const dx = pCertS.x - startX;
+              const dy = pCertS.y - startY;
+              const c0 = { x: startX + dx * 0.40, y: startY + dy * 0.10 };
+              const c1 = { x: pCertS.x - dx * 0.20, y: pCertS.y - dy * 0.40 };
+              const u = 1 - t;
+              const x = u*u*u * startX + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertS.x;
+              const y = u*u*u * startY + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertS.y;
+              setOrbPos({ x, y });
+              setOrbScale(1.0);
+              setOrbOpacity(1.0);
+              if (dotEl) dotEl.classList.remove("is-infused");
+            } else if (p <= 1.95) {
+              setIsAirplane(false);
+              // 1.70 -> 1.95: Roll horizontally along the roof (above) "student"
+              const t = (p - 1.70) / 0.25;
+              const x = pCertS.x + t * (pEnd.x - pCertS.x);
+              // Micro rolling hop on top edge of the letters
+              const hop = Math.sin(t * Math.PI * 4) * 1.5;
+              const y = pCertS.y - hop;
+              setOrbPos({ x, y });
+              setOrbScale(1.0);
+              setOrbOpacity(1.0);
+              if (dotEl) dotEl.classList.remove("is-infused");
+            } else if (p <= 2.05) {
+              setIsAirplane(false);
+              // 1.95 -> 2.05: Reached end of 'student' (above 't'), drop down into '.' and dissolve/mix
+              const t = (p - 1.95) / 0.10;
+              const dx = pCertDot.x - pEnd.x;
+              const dy = pCertDot.y - pCertS.y;
+              const u = 1 - t;
+              const c0 = { x: pEnd.x + dx * 0.5, y: pCertS.y + dy * 0.1 };
+              const c1 = { x: pCertDot.x, y: pCertS.y + dy * 0.7 };
+              const x = u*u*u * pEnd.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertDot.x;
+              const y = u*u*u * pCertS.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertDot.y;
               setOrbPos({ x, y });
 
-              if (t > 0.35) {
-                const mixT = (t - 0.35) / 0.65; // 0 -> 1
-                setOrbScale(Math.max(0.12, 1 - mixT * 0.88));
-                setOrbOpacity(Math.max(0, 1 - mixT));
-              } else {
-                setOrbScale(1.0);
-                setOrbOpacity(1.0);
-              }
+              const scale = Math.max(0.1, 1 - t * 0.9);
+              const opacity = Math.max(0, 1 - t);
+              setOrbScale(scale);
+              setOrbOpacity(opacity);
 
-              if (t >= 0.65) {
+              if (t >= 0.5) {
                 if (dotEl) dotEl.classList.add("is-infused");
               } else {
                 if (dotEl) dotEl.classList.remove("is-infused");
               }
             } else {
-              // p > 2.0: Absorbed and disappeared into the dot
+              // p > 2.05: Absorbed and disappeared into the dot
               setOrbPos(pCertDot);
               setOrbScale(0.1);
               setOrbOpacity(0);
@@ -1430,6 +1580,7 @@ const EducationZigzagTimeline = () => {
 
       // Keep entryCoordsRef updated with live target positions
       const kickerEl = document.querySelector(".mc-cert-kicker-c");
+      const studentWordEl = document.querySelector(".mc-cert-student-word");
       const sEl = document.querySelector(".mc-cert-student-s");
       const dotEl = document.querySelector(".mc-cert-dot");
       if (kickerEl && sEl && dotEl && containerRef.current) {
@@ -1437,13 +1588,18 @@ const EducationZigzagTimeline = () => {
         const kRect = kickerEl.getBoundingClientRect();
         const sRect = sEl.getBoundingClientRect();
         const dotRect = dotEl.getBoundingClientRect();
+        const wRect = studentWordEl ? studentWordEl.getBoundingClientRect() : sRect;
         entryCoordsRef.current.pCertKicker = {
           x: kRect.left + kRect.width / 2 - cRect.left,
-          y: kRect.top + kRect.height / 2 - cRect.top,
+          y: kRect.top - cRect.top - 14,
         };
         entryCoordsRef.current.pCertS = {
           x: sRect.left + sRect.width / 2 - cRect.left,
-          y: sRect.top + sRect.height / 2 - cRect.top,
+          y: wRect.top - cRect.top - 14,
+        };
+        entryCoordsRef.current.pCertStudentEnd = {
+          x: wRect.right - cRect.left - 4,
+          y: wRect.top - cRect.top - 14,
         };
         entryCoordsRef.current.pCertDot = {
           x: dotRect.left + dotRect.width / 2 - cRect.left,
@@ -1453,6 +1609,15 @@ const EducationZigzagTimeline = () => {
           x: r2.right - cRect.left,
           y: r2.top + r2.height / 2 - cRect.top,
         };
+
+        const eduEl = document.getElementById("education");
+        const certEl = document.getElementById("certifications");
+        if (eduEl) {
+          entryCoordsRef.current.yLine1 = eduEl.getBoundingClientRect().top - cRect.top;
+        }
+        if (certEl) {
+          entryCoordsRef.current.yLine2 = certEl.getBoundingClientRect().top - cRect.top;
+        }
       }
 
       let p = 0;
@@ -1567,37 +1732,62 @@ const EducationZigzagTimeline = () => {
               strokeLinecap="round"
             />
 
-            {/* Unique High-Tech Traveling Royal Blue Indicator */}
+            {/* Traveling indicator: Aeroplane while crossing between Education top line and Certifications top line */}
             {(totalLength > 0 || progress < 0 || progress > 1) && (
-              <g
-                transform={`translate(${orbPos.x}, ${orbPos.y}) scale(${orbScale})`}
-                className="mc-edu-indicator-group"
-                style={{ opacity: orbOpacity, transition: "opacity 0.15s ease" }}
-              >
-                {/* Outer Ambient Pulse Aura */}
-                <circle r="22" fill="#264df3" opacity="0.12" className="mc-edu-orb-aura" />
+              isAirplane ? (
+                <g
+                  transform={`translate(${orbPos.x}, ${orbPos.y}) rotate(${orbAngle}) scale(${orbScale})`}
+                  className="mc-edu-airplane-group"
+                  style={{ opacity: orbOpacity, transition: "opacity 0.15s ease" }}
+                >
+                  {/* Subtle speed trail glow */}
+                  <ellipse cx="-8" cy="0" rx="14" ry="5" fill="#38bdf8" opacity="0.4" />
+                  <ellipse cx="-4" cy="0" rx="20" ry="9" fill="#264df3" opacity="0.18" />
 
-                {/* Glowing Energy Halo Ring */}
-                <circle
-                  r="13"
-                  fill="rgba(38, 77, 243, 0.16)"
-                  stroke="#264df3"
-                  strokeWidth="2.5"
-                  filter="drop-shadow(0 0 8px rgba(38, 77, 243, 0.7))"
-                />
+                  {/* Aerodynamic Aeroplane Vector pointing forward along flight tangent */}
+                  <path
+                    d="M 18 0 C 13 -1.8, 6 -2.4, 3 -2.4 L -3 -16 C -3.8 -16.5, -5.5 -16, -5 -14.5 L -2 -2.4 L -11 -2.4 L -15 -7.5 C -15.6 -8.2, -17 -7.8, -16.5 -6.5 L -14.5 0 L -16.5 6.5 C -17 7.8, -15.6 8.2, -15 7.5 L -11 2.4 L -2 2.4 L -5 14.5 C -5.5 16, -3.8 16.5, -3 16 L 3 2.4 C 6 2.4, 13 1.8, 18 0 Z"
+                    fill="#264df3"
+                    stroke="#ffffff"
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                    filter="drop-shadow(0 2px 8px rgba(38, 77, 243, 0.65))"
+                  />
 
-                {/* Dual Orbiting Satellite Accents */}
-                <g className="mc-edu-orb-satellites">
-                  <circle cx="0" cy="-13" r="2.2" fill="#38bdf8" />
-                  <circle cx="0" cy="13" r="2.2" fill="#38bdf8" />
+                  {/* Cockpit spark */}
+                  <circle cx="7" cy="0" r="1.5" fill="#ffffff" />
                 </g>
+              ) : (
+                <g
+                  transform={`translate(${orbPos.x}, ${orbPos.y}) scale(${orbScale})`}
+                  className="mc-edu-indicator-group"
+                  style={{ opacity: orbOpacity, transition: "opacity 0.15s ease" }}
+                >
+                  {/* Outer Ambient Pulse Aura */}
+                  <circle r="22" fill="#264df3" opacity="0.12" className="mc-edu-orb-aura" />
 
-                {/* Royal Blue Donut Core (Matching Image 1) */}
-                <circle r="7.5" fill="#264df3" />
+                  {/* Glowing Energy Halo Ring */}
+                  <circle
+                    r="13"
+                    fill="rgba(38, 77, 243, 0.16)"
+                    stroke="#264df3"
+                    strokeWidth="2.5"
+                    filter="drop-shadow(0 0 8px rgba(38, 77, 243, 0.7))"
+                  />
 
-                {/* Crisp White Aperture Spark (Matching Image 1) */}
-                <circle r="3.2" fill="#ffffff" />
-              </g>
+                  {/* Dual Orbiting Satellite Accents */}
+                  <g className="mc-edu-orb-satellites">
+                    <circle cx="0" cy="-13" r="2.2" fill="#38bdf8" />
+                    <circle cx="0" cy="13" r="2.2" fill="#38bdf8" />
+                  </g>
+
+                  {/* Royal Blue Donut Core */}
+                  <circle r="7.5" fill="#264df3" />
+
+                  {/* Crisp White Aperture Spark */}
+                  <circle r="3.2" fill="#ffffff" />
+                </g>
+              )
             )}
           </>
         )}
@@ -1980,7 +2170,7 @@ function App() {
 
                 <div className="mc-stat-item">
                   <div className="mc-stat-number">
-                    <PlayfulDotNumber text="4+" width={126} height={78} />
+                    <PlayfulDotNumber text="5+" width={126} height={78} />
                   </div>
                   <div className="mc-stat-label">PROJECTS</div>
                 </div>
@@ -2007,7 +2197,7 @@ function App() {
             </div>
             <div className="mc-section-header-right">
               <p className="mc-section-subtitle">
-                Four projects. Different challenges.<br />
+                Five projects. Different challenges.<br />
                 One thoughtful approach to building.
               </p>
             </div>
@@ -2206,7 +2396,7 @@ function App() {
                 <span className="mc-cert-kicker-c">C</span>ERTIFICATIONS
               </span>
               <h2 className="mc-section-title">
-                Always a <span className="mc-cert-student-s">s</span>tudent<span className="mc-cert-dot">.</span>
+                Always a <span className="mc-cert-student-word"><span className="mc-cert-student-s">s</span>tudent</span><span className="mc-cert-dot">.</span>
               </h2>
             </div>
             <div className="mc-section-header-right">
@@ -2277,7 +2467,13 @@ function App() {
       {/* ===== Redesigned Achievements Section (Matching Image) ===== */}
       <section className="mc-section mc-achievements-section" id="achievements">
         <div className="mc-container mc-achievements-container">
-          <div className="mc-section-header">
+          <motion.div
+            className="mc-section-header"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
             <div className="mc-section-header-left">
               <span className="mc-kicker">ACHIEVEMENTS</span>
               <h2 className="mc-section-title">Small wins. Lasting momentum.</h2>
@@ -2285,32 +2481,50 @@ function App() {
             <div className="mc-section-header-right">
               <p className="mc-section-subtitle">Alliance University · 2025</p>
             </div>
-          </div>
+          </motion.div>
 
           <div className="mc-achievements-grid">
-            <div className="mc-achievement-card">
+            <motion.div
+              className="mc-achievement-card"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            >
               <span className="mc-achievement-badge">WINNER</span>
               <h3 className="mc-achievement-title">Application Hackathon — E-Cell</h3>
               <p className="mc-achievement-desc">
                 Developed "Stady", a dynamic web application providing educational resources and collaboration tools for students.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="mc-achievement-card">
+            <motion.div
+              className="mc-achievement-card"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.65, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            >
               <span className="mc-achievement-badge">WINNER</span>
               <h3 className="mc-achievement-title">Tackathon — Smart India Hackathon</h3>
               <p className="mc-achievement-desc">
                 Developed an AI-based Internship Recommendation Engine for the PM Internship Scheme to match students with internships.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="mc-achievement-card">
+            <motion.div
+              className="mc-achievement-card"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.65, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            >
               <span className="mc-achievement-badge">RUNNER-UP</span>
               <h3 className="mc-achievement-title">Cultural Events</h3>
               <p className="mc-achievement-desc">
                 Achieved 2nd place in Alliance 2.0 cultural competitions for teamwork and creativity.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -2331,10 +2545,24 @@ function App() {
       {/* ===== Redesigned Contact Section (Matching Image) ===== */}
       <section className="mc-section mc-contact-section" id="contact">
         <div className="mc-container mc-contact-container">
-          <span className="mc-kicker">LET'S CONNECT</span>
+          <motion.span
+            className="mc-kicker"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            LET'S CONNECT
+          </motion.span>
 
           <div className="mc-contact-grid">
-            <div className="mc-contact-left">
+            <motion.div
+              className="mc-contact-left"
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            >
               <h2 className="mc-contact-title">
                 <span className="mc-contact-title-sans">Have an idea?</span>
                 <span className="mc-contact-title-serif">Let’s make it real.</span>
@@ -2342,32 +2570,52 @@ function App() {
               <p className="mc-contact-desc">
                 I'm always open to new opportunities, creative UI/UX design projects, mobile app development, or a good conversation.
               </p>
-            </div>
+            </motion.div>
 
             <div className="mc-contact-right">
-              <a href="mailto:charanm2319@gmail.com" className="mc-contact-row">
+              <motion.a
+                href="mailto:charanm2319@gmail.com"
+                className="mc-contact-row"
+                initial={{ opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.55, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <div className="mc-contact-row-info">
                   <span className="mc-contact-label">EMAIL</span>
                   <span className="mc-contact-val">charanm2319@gmail.com</span>
                 </div>
                 <span className="mc-contact-arrow">↗</span>
-              </a>
+              </motion.a>
 
-              <a href="tel:+918639839229" className="mc-contact-row">
+              <motion.a
+                href="tel:+918639839229"
+                className="mc-contact-row"
+                initial={{ opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.55, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <div className="mc-contact-row-info">
                   <span className="mc-contact-label">PHONE</span>
                   <span className="mc-contact-val">+91 8639839229</span>
                 </div>
                 <span className="mc-contact-arrow">↗</span>
-              </a>
+              </motion.a>
 
-              <div className="mc-contact-row">
+              <motion.div
+                className="mc-contact-row"
+                initial={{ opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.55, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <div className="mc-contact-row-info">
                   <span className="mc-contact-label">BASED IN</span>
                   <span className="mc-contact-val">Bengaluru, Karnataka, India</span>
                 </div>
                 <span className="mc-contact-arrow">↗</span>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
