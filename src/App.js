@@ -1145,92 +1145,7 @@ const EducationZigzagTimeline = () => {
     const r1 = cardRefs[1].current.getBoundingClientRect();
     const r2 = cardRefs[2].current.getBoundingClientRect();
 
-    // Card 0 (Left): anchor at middle of right border
-    const p0 = {
-      x: r0.right - cRect.left,
-      y: r0.top + r0.height / 2 - cRect.top,
-    };
-    // Card 1 (Right): anchor at middle of left border
-    const p1 = {
-      x: r1.left - cRect.left,
-      y: r1.top + r1.height / 2 - cRect.top,
-    };
-    // Card 2 (Left): anchor at middle of right border
-    const p2 = {
-      x: r2.right - cRect.left,
-      y: r2.top + r2.height / 2 - cRect.top,
-    };
-
-    // Store Experience divider and Certifications target coordinates
-    const expDiv = document.querySelector(".mc-experience-divider");
-    const kickerEl = document.querySelector(".mc-cert-kicker-c");
-    const studentWordEl = document.querySelector(".mc-cert-student-word");
-    const sEl = document.querySelector(".mc-cert-student-s");
-    const dotEl = document.querySelector(".mc-cert-dot");
-    const eduEl = document.getElementById("education");
-    const certEl = document.getElementById("certifications");
-
-    const yLine1 = eduEl ? eduEl.getBoundingClientRect().top - cRect.top : -160;
-    const yLine2 = certEl ? certEl.getBoundingClientRect().top - cRect.top : cRect.height + 70;
-
-    let pExpTop = { x: p0.x, y: p0.y - 240 };
-    let pExpBottom = { x: p0.x, y: p0.y - 100 };
-
-    if (expDiv) {
-      const expRect = expDiv.getBoundingClientRect();
-      pExpTop = {
-        x: expRect.left + expRect.width / 2 - cRect.left,
-        y: expRect.top - cRect.top,
-      };
-      pExpBottom = {
-        x: expRect.left + expRect.width / 2 - cRect.left,
-        y: expRect.bottom - cRect.top,
-      };
-    }
-
-    const pCertKicker = kickerEl ? {
-      x: kickerEl.getBoundingClientRect().left + kickerEl.getBoundingClientRect().width / 2 - cRect.left,
-      y: kickerEl.getBoundingClientRect().top - cRect.top - 14,
-    } : { x: 50, y: cRect.height + 100 };
-
-    const pCertS = sEl ? {
-      x: sEl.getBoundingClientRect().left + sEl.getBoundingClientRect().width / 2 - cRect.left,
-      y: (studentWordEl ? studentWordEl.getBoundingClientRect().top : sEl.getBoundingClientRect().top) - cRect.top - 14,
-    } : { x: 180, y: cRect.height + 140 };
-
-    const pCertStudentEnd = studentWordEl ? {
-      x: studentWordEl.getBoundingClientRect().right - cRect.left - 4,
-      y: studentWordEl.getBoundingClientRect().top - cRect.top - 14,
-    } : { x: 280, y: cRect.height + 140 };
-
-    const pCertDot = dotEl ? {
-      x: dotEl.getBoundingClientRect().left + dotEl.getBoundingClientRect().width / 2 - cRect.left,
-      y: dotEl.getBoundingClientRect().top + dotEl.getBoundingClientRect().height / 2 - cRect.top,
-    } : { x: 310, y: cRect.height + 165 };
-
-    entryCoordsRef.current = {
-      pExpTop,
-      pExpBottom,
-      p0: { x: p0.x, y: p0.y },
-      p2: { x: p2.x, y: p2.y },
-      pCertKicker,
-      pCertS,
-      pCertStudentEnd,
-      pCertDot,
-      yLine1,
-      yLine2,
-    };
-
-    if (currentProgressRef.current <= -1.0) {
-      const t = Math.max(0, Math.min(1, currentProgressRef.current + 2.0));
-      setOrbPos({
-        x: pExpTop.x,
-        y: pExpTop.y + t * (pExpBottom.y - pExpTop.y),
-      });
-    }
-
-    // Smooth, aerodynamic ribbon loop with continuous circular arc and smooth banked turns
-    const R = Math.min(38, Math.max(30, Math.abs(p1.x - p0.x) * 0.14));
+    const isMobile = window.innerWidth <= 768;
 
     const buildFlightSegment = (start, end, radius, flip = -1, isFirst = true) => {
       const dx = end.x - start.x;
@@ -1284,40 +1199,160 @@ const EducationZigzagTimeline = () => {
       );
     };
 
-    // Aerodynamic rounded corner (banked turn) around Card 1
-    const d1x = p1.x - p0.x;
-    const d1y = p1.y - p0.y;
-    const len1 = Math.hypot(d1x, d1y);
-    const u1x = d1x / len1;
-    const u1y = d1y / len1;
+    let p0, p1, p2, p1In, p1Out, cornerD, R;
 
-    const d2x = p2.x - p1.x;
-    const d2y = p2.y - p1.y;
-    const len2 = Math.hypot(d2x, d2y);
-    const u2x = d2x / len2;
-    const u2y = d2y / len2;
+    if (!isMobile) {
+      // Desktop: anchor at middle of side borders
+      p0 = {
+        x: r0.right - cRect.left,
+        y: r0.top + r0.height / 2 - cRect.top,
+      };
+      p1 = {
+        x: r1.left - cRect.left,
+        y: r1.top + r1.height / 2 - cRect.top,
+      };
+      p2 = {
+        x: r2.right - cRect.left,
+        y: r2.top + r2.height / 2 - cRect.top,
+      };
 
-    const filletR = Math.min(55, len1 * 0.15, len2 * 0.15);
-    const p1In = {
-      x: p1.x - u1x * filletR,
-      y: p1.y - u1y * filletR,
-    };
-    const p1Out = {
-      x: p1.x + u2x * filletR,
-      y: p1.y + u2y * filletR,
+      R = Math.min(38, Math.max(30, Math.abs(p1.x - p0.x) * 0.14));
+
+      const d1x = p1.x - p0.x;
+      const d1y = p1.y - p0.y;
+      const len1 = Math.hypot(d1x, d1y);
+      const u1x = d1x / len1;
+      const u1y = d1y / len1;
+
+      const d2x = p2.x - p1.x;
+      const d2y = p2.y - p1.y;
+      const len2 = Math.hypot(d2x, d2y);
+      const u2x = d2x / len2;
+      const u2y = d2y / len2;
+
+      const filletR = Math.min(55, len1 * 0.15, len2 * 0.15);
+      p1In = {
+        x: p1.x - u1x * filletR,
+        y: p1.y - u1y * filletR,
+      };
+      p1Out = {
+        x: p1.x + u2x * filletR,
+        y: p1.y + u2y * filletR,
+      };
+
+      const cpCorner1 = {
+        x: Number((p1In.x + u1x * (filletR * 0.55)).toFixed(2)),
+        y: Number((p1In.y + u1y * (filletR * 0.55)).toFixed(2)),
+      };
+      const cpCorner2 = {
+        x: Number((p1Out.x - u2x * (filletR * 0.55)).toFixed(2)),
+        y: Number((p1Out.y - u2y * (filletR * 0.55)).toFixed(2)),
+      };
+      cornerD = `C ${cpCorner1.x} ${cpCorner1.y}, ${cpCorner2.x} ${cpCorner2.y}, ${p1Out.x.toFixed(2)} ${p1Out.y.toFixed(2)}`;
+    } else {
+      // Mobile calculation: loop radius scaled for mobile screen gap
+      R = 20;
+
+      // Card 0 (Left): exit from bottom-right border area
+      p0 = {
+        x: r0.right - cRect.left - 6,
+        y: r0.bottom - cRect.top - 12,
+      };
+
+      // Card 1 (Right): enter near top-left, sweep down along left border
+      p1In = {
+        x: r1.left - cRect.left + 4,
+        y: r1.top - cRect.top + 16,
+      };
+      p1Out = {
+        x: r1.left - cRect.left + 4,
+        y: r1.bottom - cRect.top - 16,
+      };
+
+      // Gentle curve along the left flank of Card 1
+      const cp1y = r1.top - cRect.top + r1.height * 0.35;
+      const cp2y = r1.top - cRect.top + r1.height * 0.65;
+      cornerD = `C ${p1In.x - 6} ${cp1y}, ${p1Out.x - 6} ${cp2y}, ${p1Out.x.toFixed(2)} ${p1Out.y.toFixed(2)}`;
+
+      // Card 2 (Left): enter near top-right
+      p2 = {
+        x: r2.right - cRect.left - 6,
+        y: r2.top - cRect.top + 16,
+      };
+    }
+
+    // Store Experience divider and Certifications target coordinates
+    const expDiv = document.querySelector(".mc-experience-divider");
+    const kickerEl = document.querySelector(".mc-cert-kicker-c");
+    const studentWordEl = document.querySelector(".mc-cert-student-word");
+    const sEl = document.querySelector(".mc-cert-student-s");
+    const dotEl = document.querySelector(".mc-cert-dot");
+    const eduEl = document.getElementById("education");
+    const certEl = document.getElementById("certifications");
+
+    const yLine1 = eduEl ? eduEl.getBoundingClientRect().top - cRect.top : -160;
+    const yLine2 = certEl ? certEl.getBoundingClientRect().top - cRect.top : cRect.height + 70;
+
+    let pExpTop = { x: p0.x, y: p0.y - 240 };
+    let pExpBottom = { x: p0.x, y: p0.y - 100 };
+
+    if (expDiv) {
+      const expRect = expDiv.getBoundingClientRect();
+      pExpTop = {
+        x: expRect.left + expRect.width / 2 - cRect.left,
+        y: expRect.top - cRect.top,
+      };
+      pExpBottom = {
+        x: expRect.left + expRect.width / 2 - cRect.left,
+        y: expRect.bottom - cRect.top,
+      };
+    }
+
+    const pCertKicker = kickerEl ? {
+      x: kickerEl.getBoundingClientRect().left + kickerEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: kickerEl.getBoundingClientRect().top - cRect.top - 14,
+    } : { x: 50, y: cRect.height + 100 };
+
+    const pCertS = sEl ? {
+      x: sEl.getBoundingClientRect().left + sEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: (studentWordEl ? studentWordEl.getBoundingClientRect().top : sEl.getBoundingClientRect().top) - cRect.top - 14,
+    } : { x: 180, y: cRect.height + 140 };
+
+    const pCertStudentEnd = studentWordEl ? {
+      x: studentWordEl.getBoundingClientRect().right - cRect.left - 4,
+      y: studentWordEl.getBoundingClientRect().top - cRect.top - 14,
+    } : { x: 280, y: cRect.height + 140 };
+
+    const pCertDot = dotEl ? {
+      x: dotEl.getBoundingClientRect().left + dotEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: dotEl.getBoundingClientRect().top + dotEl.getBoundingClientRect().height / 2 - cRect.top,
+    } : { x: 310, y: cRect.height + 165 };
+
+    entryCoordsRef.current = {
+      pExpTop,
+      pExpBottom,
+      p0: { x: p0.x, y: p0.y },
+      p2: {
+        x: isMobile ? (r2.right - cRect.left - 6) : p2.x,
+        y: isMobile ? (r2.bottom - cRect.top - 12) : p2.y
+      },
+      pCertKicker,
+      pCertS,
+      pCertStudentEnd,
+      pCertDot,
+      yLine1,
+      yLine2,
     };
 
-    const cpCorner1 = {
-      x: Number((p1In.x + u1x * (filletR * 0.55)).toFixed(2)),
-      y: Number((p1In.y + u1y * (filletR * 0.55)).toFixed(2)),
-    };
-    const cpCorner2 = {
-      x: Number((p1Out.x - u2x * (filletR * 0.55)).toFixed(2)),
-      y: Number((p1Out.y - u2y * (filletR * 0.55)).toFixed(2)),
-    };
+    if (currentProgressRef.current <= -1.0) {
+      const t = Math.max(0, Math.min(1, currentProgressRef.current + 2.0));
+      setOrbPos({
+        x: pExpTop.x,
+        y: pExpTop.y + t * (pExpBottom.y - pExpTop.y),
+      });
+    }
 
     const seg1 = buildFlightSegment(p0, p1In, R, -1, true);
-    const cornerD = `C ${cpCorner1.x} ${cpCorner1.y}, ${cpCorner2.x} ${cpCorner2.y}, ${p1Out.x.toFixed(2)} ${p1Out.y.toFixed(2)}`;
     const seg2 = buildFlightSegment(p1Out, p2, R, 1, false);
 
     // Continuous, smooth aerodynamic timeline path with zero sharp vertices:
@@ -1605,9 +1640,14 @@ const EducationZigzagTimeline = () => {
           x: dotRect.left + dotRect.width / 2 - cRect.left,
           y: dotRect.top + dotRect.height / 2 - cRect.top,
         };
+        const isMobile = window.innerWidth <= 768;
+        entryCoordsRef.current.p0 = {
+          x: r0.right - cRect.left - (isMobile ? 6 : 0),
+          y: isMobile ? (r0.bottom - cRect.top - 12) : (r0.top + r0.height / 2 - cRect.top),
+        };
         entryCoordsRef.current.p2 = {
-          x: r2.right - cRect.left,
-          y: r2.top + r2.height / 2 - cRect.top,
+          x: r2.right - cRect.left - (isMobile ? 6 : 0),
+          y: isMobile ? (r2.bottom - cRect.top - 12) : (r2.top + r2.height / 2 - cRect.top),
         };
 
         const eduEl = document.getElementById("education");
