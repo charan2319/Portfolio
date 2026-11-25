@@ -1812,6 +1812,292 @@ const EducationZigzagTimeline = () => {
   );
 };
 
+// Interactive Playful Blueprint Grid with Smooth Cursor Spotlight, Spark Trails & Light Waves
+const InteractiveHeroLines = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let animationId = null;
+    let isVisible = true;
+
+    // Smooth cursor interpolation
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      targetX: -1000,
+      targetY: -1000,
+      isActive: false,
+    };
+
+    // Expanding light waves on click
+    const lightWaves = [];
+
+    // Interactive glowing sparks on grid intersections touched by cursor
+    const sparks = new Map();
+
+    const GRID_SIZE = 54;
+    const SPOTLIGHT_RADIUS = 175;
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+
+      if (width === 0 || height === 0) return;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+
+    const parent = canvas.parentElement || canvas;
+
+    const handlePointerMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+
+      if (!mouse.isActive) {
+        mouse.x = currentX;
+        mouse.y = currentY;
+        mouse.isActive = true;
+      }
+
+      mouse.targetX = currentX;
+      mouse.targetY = currentY;
+    };
+
+    const handlePointerLeave = () => {
+      mouse.isActive = false;
+      mouse.targetX = -1000;
+      mouse.targetY = -1000;
+    };
+
+    const handlePointerDown = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      lightWaves.push({
+        x: clickX,
+        y: clickY,
+        radius: 0,
+        maxRadius: Math.max(width, height) * 0.75,
+        speed: 7.5,
+        life: 1.0,
+      });
+    };
+
+    parent.addEventListener("pointermove", handlePointerMove);
+    parent.addEventListener("pointerleave", handlePointerLeave);
+    parent.addEventListener("pointerdown", handlePointerDown);
+
+    let observer = null;
+    if (window.IntersectionObserver) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+          });
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(parent);
+    }
+
+    let resizeTimer = null;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    };
+    window.addEventListener("resize", handleResize);
+
+    const render = () => {
+      if (!isVisible) {
+        animationId = requestAnimationFrame(render);
+        return;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Smooth mouse lerp
+      if (mouse.isActive) {
+        mouse.x += (mouse.targetX - mouse.x) * 0.18;
+        mouse.y += (mouse.targetY - mouse.y) * 0.18;
+      }
+
+      // 1. Draw subtle base architectural grid (clean, stable, non-distracting)
+      ctx.strokeStyle = "rgba(15, 23, 42, 0.035)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+
+      // Vertical lines
+      for (let x = 0; x <= width; x += GRID_SIZE) {
+        ctx.moveTo(x + 0.5, 0);
+        ctx.lineTo(x + 0.5, height);
+      }
+
+      // Horizontal lines
+      for (let y = 0; y <= height; y += GRID_SIZE) {
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(width, y + 0.5);
+      }
+      ctx.stroke();
+
+      // 2. Update and render expanding light waves (from clicks)
+      for (let wIdx = lightWaves.length - 1; wIdx >= 0; wIdx--) {
+        const wave = lightWaves[wIdx];
+        wave.radius += wave.speed;
+        wave.life -= 0.018;
+
+        if (wave.life <= 0 || wave.radius > wave.maxRadius) {
+          lightWaves.splice(wIdx, 1);
+          continue;
+        }
+
+        const ringGrad = ctx.createRadialGradient(
+          wave.x, wave.y, Math.max(0, wave.radius - 28),
+          wave.x, wave.y, wave.radius + 28
+        );
+        ringGrad.addColorStop(0, "rgba(38, 77, 243, 0)");
+        ringGrad.addColorStop(0.5, `rgba(56, 189, 248, ${wave.life * 0.22})`);
+        ringGrad.addColorStop(1, "rgba(38, 77, 243, 0)");
+
+        ctx.strokeStyle = ringGrad;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 3. Interactive Cursor Spotlight (smooth illuminated grid lines near cursor)
+      if (mouse.isActive && mouse.x > -100 && mouse.y > -100) {
+        // Ambient soft spotlight glow
+        const glow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, SPOTLIGHT_RADIUS);
+        glow.addColorStop(0, "rgba(38, 77, 243, 0.055)");
+        glow.addColorStop(0.5, "rgba(56, 189, 248, 0.02)");
+        glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, width, height);
+
+        // Highlight grid lines within spotlight radius
+        const minX = Math.max(0, Math.floor((mouse.x - SPOTLIGHT_RADIUS) / GRID_SIZE) * GRID_SIZE);
+        const maxX = Math.min(width, Math.ceil((mouse.x + SPOTLIGHT_RADIUS) / GRID_SIZE) * GRID_SIZE);
+        const minY = Math.max(0, Math.floor((mouse.y - SPOTLIGHT_RADIUS) / GRID_SIZE) * GRID_SIZE);
+        const maxY = Math.min(height, Math.ceil((mouse.y + SPOTLIGHT_RADIUS) / GRID_SIZE) * GRID_SIZE);
+
+        // Vertical lines near cursor
+        for (let x = minX; x <= maxX; x += GRID_SIZE) {
+          const dx = Math.abs(x - mouse.x);
+          if (dx < SPOTLIGHT_RADIUS) {
+            const span = Math.sqrt(SPOTLIGHT_RADIUS * SPOTLIGHT_RADIUS - dx * dx);
+            const y1 = Math.max(0, mouse.y - span);
+            const y2 = Math.min(height, mouse.y + span);
+
+            const vGrad = ctx.createLinearGradient(0, y1, 0, y2);
+            vGrad.addColorStop(0, "rgba(38, 77, 243, 0)");
+            vGrad.addColorStop(0.5, `rgba(38, 77, 243, ${0.32 * Math.pow(1 - dx / SPOTLIGHT_RADIUS, 1.5)})`);
+            vGrad.addColorStop(1, "rgba(38, 77, 243, 0)");
+
+            ctx.strokeStyle = vGrad;
+            ctx.lineWidth = 1.35;
+            ctx.beginPath();
+            ctx.moveTo(x + 0.5, y1);
+            ctx.lineTo(x + 0.5, y2);
+            ctx.stroke();
+          }
+        }
+
+        // Horizontal lines near cursor
+        for (let y = minY; y <= maxY; y += GRID_SIZE) {
+          const dy = Math.abs(y - mouse.y);
+          if (dy < SPOTLIGHT_RADIUS) {
+            const span = Math.sqrt(SPOTLIGHT_RADIUS * SPOTLIGHT_RADIUS - dy * dy);
+            const x1 = Math.max(0, mouse.x - span);
+            const x2 = Math.min(width, mouse.x + span);
+
+            const hGrad = ctx.createLinearGradient(x1, 0, x2, 0);
+            hGrad.addColorStop(0, "rgba(38, 77, 243, 0)");
+            hGrad.addColorStop(0.5, `rgba(38, 77, 243, ${0.32 * Math.pow(1 - dy / SPOTLIGHT_RADIUS, 1.5)})`);
+            hGrad.addColorStop(1, "rgba(38, 77, 243, 0)");
+
+            ctx.strokeStyle = hGrad;
+            ctx.lineWidth = 1.35;
+            ctx.beginPath();
+            ctx.moveTo(x1, y + 0.5);
+            ctx.lineTo(x2, y + 0.5);
+            ctx.stroke();
+          }
+        }
+
+        // Activate intersection sparks near the cursor
+        for (let x = minX; x <= maxX; x += GRID_SIZE) {
+          for (let y = minY; y <= maxY; y += GRID_SIZE) {
+            const dist = Math.hypot(x - mouse.x, y - mouse.y);
+            if (dist < 42) {
+              const key = `${x}_${y}`;
+              sparks.set(key, { x, y, alpha: 1.0 });
+            }
+          }
+        }
+      }
+
+      // 4. Render and fade active intersection sparks (playful light trail)
+      sparks.forEach((spark, key) => {
+        spark.alpha -= 0.024;
+        if (spark.alpha <= 0) {
+          sparks.delete(key);
+          return;
+        }
+
+        const alpha = spark.alpha;
+        const size = 2.2 * alpha;
+
+        // Glowing center dot
+        ctx.fillStyle = `rgba(38, 77, 243, ${alpha * 0.75})`;
+        ctx.beginPath();
+        ctx.arc(spark.x + 0.5, spark.y + 0.5, size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Subtle micro-crosshair mark
+        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.6})`;
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(spark.x - 3.5, spark.y + 0.5);
+        ctx.lineTo(spark.x + 4.5, spark.y + 0.5);
+        ctx.moveTo(spark.x + 0.5, spark.y - 3.5);
+        ctx.lineTo(spark.x + 0.5, spark.y + 4.5);
+        ctx.stroke();
+      });
+
+      animationId = requestAnimationFrame(render);
+    };
+
+    animationId = requestAnimationFrame(render);
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+      parent.removeEventListener("pointermove", handlePointerMove);
+      parent.removeEventListener("pointerleave", handlePointerLeave);
+      parent.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("resize", handleResize);
+      if (observer) observer.disconnect();
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="mc-hero-interactive-canvas" />;
+};
+
 function App() {
   const [visibleSkills, setVisibleSkills] = useState(false);
   const [modalVideo, setModalVideo] = useState(null);
@@ -2021,6 +2307,7 @@ function App() {
 
       {/* ===== Redesigned Hero Section (Matching Image 1) ===== */}
       <header className="mc-hero-section" id="home">
+        <InteractiveHeroLines />
         <div className="mc-hero-container">
           {/* Left Column: Hero Text */}
           <motion.div
