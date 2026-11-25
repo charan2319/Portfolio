@@ -10489,12 +10489,12 @@ section {
 
 .mc-brand-name {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   color: #0f172a;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .mc-brand-tagline {
@@ -10795,8 +10795,8 @@ section {
 .mc-about-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
-  gap: 68px;
-  align-items: flex-start;
+  gap: 56px;
+  align-items: center;
 }
 
 .mc-about-left {
@@ -10819,9 +10819,18 @@ section {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   font-size: 16px;
   color: #64748b;
-  margin: 0;
+  margin: 0 0 24px 0;
   line-height: 1.5;
   font-weight: 500;
+}
+
+.mc-about-narrative {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #475569;
+  margin: 0;
+  max-width: 620px;
 }
 
 .mc-about-right {
@@ -10830,44 +10839,57 @@ section {
   text-align: left;
 }
 
-.mc-about-narrative {
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 15px;
-  line-height: 1.75;
-  color: #475569;
-  margin: 0 0 40px 0;
+.mc-about-stats-only {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .mc-stats-row {
   display: flex;
   align-items: flex-start;
-  gap: 56px;
+  gap: 32px;
+  flex-wrap: wrap;
 }
 
 .mc-stat-item {
   display: flex;
   flex-direction: column;
   text-align: left;
+  user-select: none;
 }
 
 .mc-stat-number {
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: clamp(34px, 3.8vw, 44px);
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1;
-  margin-bottom: 6px;
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
 }
 
 .mc-stat-label {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: 0.12em;
   color: #64748b;
   text-transform: uppercase;
+  margin-left: 6px;
+}
+
+.mc-playful-dot-wrap {
+  display: inline-block;
+  cursor: grab;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-playful-dot-wrap:active {
+  cursor: grabbing;
+}
+
+.mc-playful-dot-wrap:hover {
+  transform: translateY(-2px);
 }
 
 /* ===== 8. PROJECTS SECTION ===== */
@@ -11370,6 +11392,27 @@ section {
 }
 
 /* ===== 13. CERTIFICATIONS SECTION ===== */
+.mc-cert-kicker-c {
+  display: inline-block;
+}
+
+.mc-cert-student-s {
+  display: inline-block;
+}
+
+.mc-cert-dot {
+  display: inline-block;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              text-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mc-cert-dot.is-infused {
+  color: #264df3 !important;
+  text-shadow: 0 0 14px rgba(38, 77, 243, 0.9), 0 0 24px rgba(56, 189, 248, 0.7);
+  transform: scale(1.35);
+}
+
 .mc-certifications-count {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   font-size: 11.5px;

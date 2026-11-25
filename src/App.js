@@ -86,6 +86,288 @@ const AnimatedCounter = ({ value, duration = 1000, isDecimal = false, suffix = "
   );
 };
 
+/* ===== Clean High-Tech Dot-Matrix Glyphs ===== */
+const DOT_GLYPHS = {
+  "8": [
+    " 111 ",
+    "1   1",
+    "1   1",
+    " 111 ",
+    "1   1",
+    "1   1",
+    " 111 "
+  ],
+  ".": [
+    " ",
+    " ",
+    " ",
+    " ",
+    " ",
+    " ",
+    "1"
+  ],
+  "3": [
+    " 111 ",
+    "1   1",
+    "    1",
+    "  11 ",
+    "    1",
+    "1   1",
+    " 111 "
+  ],
+  "4": [
+    "   1 ",
+    "  11 ",
+    " 1 1 ",
+    "1  1 ",
+    "11111",
+    "   1 ",
+    "   1 "
+  ],
+  "+": [
+    "     ",
+    "  1  ",
+    "  1  ",
+    "11111",
+    "  1  ",
+    "  1  ",
+    "     "
+  ],
+  "1": [
+    " 1 ",
+    "11 ",
+    " 1 ",
+    " 1 ",
+    " 1 ",
+    " 1 ",
+    "111"
+  ],
+  "0": [
+    " 111 ",
+    "1   1",
+    "1   1",
+    "1   1",
+    "1   1",
+    "1   1",
+    " 111 "
+  ]
+};
+
+/* ===== Playful Dot-Matrix Number Component ===== */
+const PlayfulDotNumber = ({ text, width = 140, height = 78 }) => {
+  const canvasRef = useRef(null);
+  const dotsRef = useRef([]);
+  const mouseRef = useRef(null);
+  const animIdRef = useRef(null);
+
+  const initDots = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    const spacing = 9.2;
+    const dotRadius = 3.2;
+
+    // Calculate total character width in columns
+    let totalCols = 0;
+    const charDefs = [];
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const glyph = DOT_GLYPHS[ch];
+      if (!glyph) continue;
+      const cols = glyph[0].length;
+      charDefs.push({ glyph, cols });
+      totalCols += cols;
+      if (i < text.length - 1) {
+        totalCols += (ch === "." || text[i + 1] === ".") ? 1.2 : 2.0;
+      }
+    }
+
+    const totalWidthPx = (totalCols - 1) * spacing;
+    const startX = Math.max(dotRadius + 4, (width - totalWidthPx) / 2);
+    const startY = Math.max(dotRadius + 4, (height - (7 - 1) * spacing) / 2);
+
+    const newDots = [];
+    let currentCol = 0;
+
+    for (let i = 0; i < charDefs.length; i++) {
+      const { glyph, cols } = charDefs[i];
+
+      for (let r = 0; r < 7; r++) {
+        const rowStr = glyph[r];
+        for (let c = 0; c < cols; c++) {
+          if (rowStr[c] === "1") {
+            const hX = startX + (currentCol + c) * spacing;
+            const hY = startY + r * spacing;
+
+            const scatterAngle = Math.random() * Math.PI * 2;
+            const scatterDist = Math.random() * 14 + 3;
+
+            newDots.push({
+              homeX: hX,
+              homeY: hY,
+              x: hX + Math.cos(scatterAngle) * scatterDist,
+              y: hY + Math.sin(scatterAngle) * scatterDist,
+              vx: 0,
+              vy: 0,
+              baseRadius: dotRadius,
+              radius: dotRadius,
+            });
+          }
+        }
+      }
+
+      currentCol += cols;
+      if (i < charDefs.length - 1) {
+        currentCol += (text[i] === "." || text[i + 1] === ".") ? 1.2 : 2.0;
+      }
+    }
+
+    dotsRef.current = newDots;
+  };
+
+  useEffect(() => {
+    initDots();
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      const mouse = mouseRef.current;
+      const dots = dotsRef.current;
+
+      for (let i = 0; i < dots.length; i++) {
+        const dot = dots[i];
+
+        if (mouse) {
+          const dx = dot.x - mouse.x;
+          const dy = dot.y - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          const maxDist = 44;
+
+          if (dist < maxDist && dist > 0) {
+            const force = (1 - dist / maxDist);
+            const angle = Math.atan2(dy, dx);
+            const push = force * 4.6;
+            dot.vx += Math.cos(angle) * push;
+            dot.vy += Math.sin(angle) * push;
+            dot.radius = dot.baseRadius * (1 + force * 0.7);
+          }
+        }
+
+        const spring = 0.12;
+        const friction = 0.76;
+        dot.vx += (dot.homeX - dot.x) * spring;
+        dot.vy += (dot.homeY - dot.y) * spring;
+        dot.vx *= friction;
+        dot.vy *= friction;
+        dot.x += dot.vx;
+        dot.y += dot.vy;
+
+        dot.radius += (dot.baseRadius - dot.radius) * 0.12;
+
+        const displacement = Math.hypot(dot.x - dot.homeX, dot.y - dot.homeY);
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, Math.max(1, dot.radius), 0, Math.PI * 2);
+
+        if (displacement > 2.0) {
+          ctx.fillStyle = "#264df3";
+          ctx.shadowColor = "rgba(38, 77, 243, 0.75)";
+          ctx.shadowBlur = 7;
+        } else if (displacement > 0.8) {
+          ctx.fillStyle = "#3b82f6";
+          ctx.shadowBlur = 0;
+        } else {
+          ctx.fillStyle = "#0f172a";
+          ctx.shadowBlur = 0;
+        }
+
+        ctx.fill();
+      }
+
+      ctx.restore();
+      animIdRef.current = requestAnimationFrame(render);
+    };
+
+    animIdRef.current = requestAnimationFrame(render);
+
+    return () => {
+      if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
+    };
+  }, [text, width, height]);
+
+  const handleMouseMove = (e) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    mouseRef.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
+
+  const handleMouseLeave = () => {
+    mouseRef.current = null;
+  };
+
+  const handleClick = (e) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    dotsRef.current.forEach((dot) => {
+      const dx = dot.x - clickX;
+      const dy = dot.y - clickY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 56) {
+        const force = (1 - dist / 56) * 9.5;
+        const angle = Math.atan2(dy, dx);
+        dot.vx += Math.cos(angle) * force;
+        dot.vy += Math.sin(angle) * force;
+      }
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!canvasRef.current || e.touches.length === 0) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    mouseRef.current = {
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top,
+    };
+  };
+
+  const handleTouchEnd = () => {
+    mouseRef.current = null;
+  };
+
+  return (
+    <div
+      className="mc-playful-dot-wrap"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      title="Hover or click to play!"
+    >
+      <canvas ref={canvasRef} style={{ display: "block" }} />
+      <span className="sr-only">{text}</span>
+    </div>
+  );
+};
+
 const ScrollRevealTitle = ({ children, className, style }) => {
   const [isInView, setIsInView] = useState(false);
   const ref = useRef(null);
@@ -773,10 +1055,20 @@ const EducationZigzagTimeline = () => {
   const containerRef = useRef(null);
   const pathRef = useRef(null);
   const cardRefs = [useRef(null), useRef(null), useRef(null)];
-  const entryCoordsRef = useRef({ pExp: null, p0: null });
+  const entryCoordsRef = useRef({
+    pExpTop: null,
+    pExpBottom: null,
+    p0: null,
+    p2: null,
+    pCertKicker: null,
+    pCertS: null,
+    pCertDot: null,
+  });
 
   const [pathD, setPathD] = useState("");
   const [orbPos, setOrbPos] = useState({ x: 0, y: 0 });
+  const [orbOpacity, setOrbOpacity] = useState(1);
+  const [orbScale, setOrbScale] = useState(1);
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [totalLength, setTotalLength] = useState(0);
@@ -847,22 +1139,58 @@ const EducationZigzagTimeline = () => {
       y: r2.top + r2.height / 2 - cRect.top,
     };
 
-    // Store Experience divider coordinates for floating entrance without drawing a connecting line
+    // Store Experience divider and Certifications target coordinates
     const expDiv = document.querySelector(".mc-experience-divider");
+    const kickerEl = document.querySelector(".mc-cert-kicker-c");
+    const sEl = document.querySelector(".mc-cert-student-s");
+    const dotEl = document.querySelector(".mc-cert-dot");
+
+    let pExpTop = { x: p0.x, y: p0.y - 240 };
+    let pExpBottom = { x: p0.x, y: p0.y - 100 };
+
     if (expDiv) {
       const expRect = expDiv.getBoundingClientRect();
-      entryCoordsRef.current = {
-        pExp: {
-          x: expRect.left + expRect.width / 2 - cRect.left,
-          y: expRect.bottom - cRect.top,
-        },
-        p0: { x: p0.x, y: p0.y },
+      pExpTop = {
+        x: expRect.left + expRect.width / 2 - cRect.left,
+        y: expRect.top - cRect.top,
       };
-    } else {
-      entryCoordsRef.current = {
-        pExp: { x: p0.x, y: p0.y - 120 },
-        p0: { x: p0.x, y: p0.y },
+      pExpBottom = {
+        x: expRect.left + expRect.width / 2 - cRect.left,
+        y: expRect.bottom - cRect.top,
       };
+    }
+
+    const pCertKicker = kickerEl ? {
+      x: kickerEl.getBoundingClientRect().left + kickerEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: kickerEl.getBoundingClientRect().top + kickerEl.getBoundingClientRect().height / 2 - cRect.top,
+    } : { x: 50, y: cRect.height + 120 };
+
+    const pCertS = sEl ? {
+      x: sEl.getBoundingClientRect().left + sEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: sEl.getBoundingClientRect().top + sEl.getBoundingClientRect().height / 2 - cRect.top,
+    } : { x: 180, y: cRect.height + 165 };
+
+    const pCertDot = dotEl ? {
+      x: dotEl.getBoundingClientRect().left + dotEl.getBoundingClientRect().width / 2 - cRect.left,
+      y: dotEl.getBoundingClientRect().top + dotEl.getBoundingClientRect().height / 2 - cRect.top,
+    } : { x: 310, y: cRect.height + 165 };
+
+    entryCoordsRef.current = {
+      pExpTop,
+      pExpBottom,
+      p0: { x: p0.x, y: p0.y },
+      p2: { x: p2.x, y: p2.y },
+      pCertKicker,
+      pCertS,
+      pCertDot,
+    };
+
+    if (currentProgressRef.current <= -1.0) {
+      const t = Math.max(0, Math.min(1, currentProgressRef.current + 2.0));
+      setOrbPos({
+        x: pExpTop.x,
+        y: pExpTop.y + t * (pExpBottom.y - pExpTop.y),
+      });
     }
 
     // Increased size for the 360 loop (r ≈ 36px) with a perfectly rounded circular apex (kappa = r * 0.552)
@@ -951,21 +1279,41 @@ const EducationZigzagTimeline = () => {
 
         const p = currentProgressRef.current;
 
-        // If p < 0: Indicator travels smoothly through the air from Experience blue line down to B.Tech (without static line)
-        if (p < 0) {
-          const t = Math.max(0, Math.min(1, p + 1));
-          const { pExp, p0 } = entryCoordsRef.current;
-          if (pExp && p0) {
-            const dy = p0.y - pExp.y;
-            const c0 = { x: pExp.x, y: pExp.y + dy * 0.45 };
+        // Opacity: fade in smoothly when reaching Experience from above
+        if (p < -2.0) {
+          const op = Math.max(0, 1 - (-2.0 - p) * 3);
+          setOrbOpacity(op);
+        } else if (p <= 1.7) {
+          setOrbOpacity(1);
+        }
+
+        // 1. If p < -1.0: indicator travels straight down along the Experience vertical blue line
+        if (p < -1.0) {
+          const t = Math.max(0, Math.min(1, p + 2.0));
+          const { pExpTop, pExpBottom } = entryCoordsRef.current;
+          if (pExpTop && pExpBottom) {
+            setOrbPos({
+              x: pExpTop.x,
+              y: pExpTop.y + t * (pExpBottom.y - pExpTop.y),
+            });
+            setOrbScale(1.0);
+          }
+        } else if (p < 0) {
+          // 2. If -1.0 <= p < 0: Indicator travels smoothly through the air from bottom of Experience blue line down to B.Tech
+          const t = Math.max(0, Math.min(1, p + 1.0));
+          const { pExpBottom, p0 } = entryCoordsRef.current;
+          if (pExpBottom && p0) {
+            const dy = p0.y - pExpBottom.y;
+            const c0 = { x: pExpBottom.x, y: pExpBottom.y + dy * 0.45 };
             const c1 = { x: p0.x + 35, y: p0.y - dy * 0.20 };
             const u = 1 - t;
-            const x = u*u*u * pExp.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * p0.x;
-            const y = u*u*u * pExp.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * p0.y;
+            const x = u*u*u * pExpBottom.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * p0.x;
+            const y = u*u*u * pExpBottom.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * p0.y;
             setOrbPos({ x, y });
+            setOrbScale(1.0);
           }
-        } else {
-          // Once at B.Tech or beyond, follow the Education path
+        } else if (p <= 1.0) {
+          // 3. Once at B.Tech or beyond, follow the Education path
           if (pathRef.current && totalLength > 0) {
             try {
               const pt = pathRef.current.getPointAtLength(
@@ -973,6 +1321,75 @@ const EducationZigzagTimeline = () => {
               );
               setOrbPos({ x: pt.x, y: pt.y });
             } catch (e) {}
+          }
+          setOrbScale(1.0);
+          setOrbOpacity(1.0);
+          const dotEl = document.querySelector(".mc-cert-dot");
+          if (dotEl) dotEl.classList.remove("is-infused");
+        } else {
+          // 4. Past 10th Grade (p > 1.0): Traveling into Certifications section!
+          const { p2, pCertKicker, pCertS, pCertDot } = entryCoordsRef.current;
+          const dotEl = document.querySelector(".mc-cert-dot");
+
+          if (p2 && pCertKicker && pCertS && pCertDot) {
+            if (p <= 1.4) {
+              // 1.0 -> 1.4: Swooping down through the air onto 'C' in CERTIFICATIONS
+              const t = (p - 1.0) / 0.4;
+              const dx = pCertKicker.x - p2.x;
+              const dy = pCertKicker.y - p2.y;
+              const c0 = { x: p2.x + dx * 0.15, y: p2.y + dy * 0.65 };
+              const c1 = { x: pCertKicker.x - dx * 0.25, y: pCertKicker.y - dy * 0.35 };
+              const u = 1 - t;
+              const x = u*u*u * p2.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertKicker.x;
+              const y = u*u*u * p2.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertKicker.y;
+              setOrbPos({ x, y });
+              setOrbScale(1.0);
+              setOrbOpacity(1.0);
+              if (dotEl) dotEl.classList.remove("is-infused");
+            } else if (p <= 1.7) {
+              // 1.4 -> 1.7: Roll off 'C' and fall down onto 's' in Always a student.
+              const t = (p - 1.4) / 0.3;
+              const dx = pCertS.x - pCertKicker.x;
+              const dy = pCertS.y - pCertKicker.y;
+              const c0 = { x: pCertKicker.x + dx * 0.35, y: pCertKicker.y - 14 };
+              const c1 = { x: pCertS.x - 14, y: pCertS.y - 16 };
+              const u = 1 - t;
+              const x = u*u*u * pCertKicker.x + 3*u*u*t * c0.x + 3*u*t*t * c1.x + t*t*t * pCertS.x;
+              const y = u*u*u * pCertKicker.y + 3*u*u*t * c0.y + 3*u*t*t * c1.y + t*t*t * pCertS.y;
+              setOrbPos({ x, y });
+              setOrbScale(1.0);
+              setOrbOpacity(1.0);
+              if (dotEl) dotEl.classList.remove("is-infused");
+            } else if (p <= 2.0) {
+              // 1.7 -> 2.0: Roll horizontally across "student" right into "." and dissolve/mix into it
+              const t = (p - 1.7) / 0.3;
+              const x = pCertS.x + t * (pCertDot.x - pCertS.x);
+              // subtle playful rolling hop across letters
+              const hop = Math.sin(t * Math.PI * 4) * 2.5;
+              const y = pCertS.y + t * (pCertDot.y - pCertS.y) - hop;
+              setOrbPos({ x, y });
+
+              if (t > 0.35) {
+                const mixT = (t - 0.35) / 0.65; // 0 -> 1
+                setOrbScale(Math.max(0.12, 1 - mixT * 0.88));
+                setOrbOpacity(Math.max(0, 1 - mixT));
+              } else {
+                setOrbScale(1.0);
+                setOrbOpacity(1.0);
+              }
+
+              if (t >= 0.65) {
+                if (dotEl) dotEl.classList.add("is-infused");
+              } else {
+                if (dotEl) dotEl.classList.remove("is-infused");
+              }
+            } else {
+              // p > 2.0: Absorbed and disappeared into the dot
+              setOrbPos(pCertDot);
+              setOrbScale(0.1);
+              setOrbOpacity(0);
+              if (dotEl) dotEl.classList.add("is-infused");
+            }
           }
         }
       }
@@ -997,7 +1414,7 @@ const EducationZigzagTimeline = () => {
     };
   }, [totalLength]);
 
-  // Scroll listener: directly tracks the 3 cards' viewport positions so movement is immediate and natural
+  // Scroll listener: directly tracks the cards & Certifications section
   useEffect(() => {
     const wrapper = document.querySelector(".page-wrapper") || window;
 
@@ -1011,25 +1428,96 @@ const EducationZigzagTimeline = () => {
       // Center focus line in viewport
       const focusY = vh * 0.52;
 
+      // Keep entryCoordsRef updated with live target positions
+      const kickerEl = document.querySelector(".mc-cert-kicker-c");
+      const sEl = document.querySelector(".mc-cert-student-s");
+      const dotEl = document.querySelector(".mc-cert-dot");
+      if (kickerEl && sEl && dotEl && containerRef.current) {
+        const cRect = containerRef.current.getBoundingClientRect();
+        const kRect = kickerEl.getBoundingClientRect();
+        const sRect = sEl.getBoundingClientRect();
+        const dotRect = dotEl.getBoundingClientRect();
+        entryCoordsRef.current.pCertKicker = {
+          x: kRect.left + kRect.width / 2 - cRect.left,
+          y: kRect.top + kRect.height / 2 - cRect.top,
+        };
+        entryCoordsRef.current.pCertS = {
+          x: sRect.left + sRect.width / 2 - cRect.left,
+          y: sRect.top + sRect.height / 2 - cRect.top,
+        };
+        entryCoordsRef.current.pCertDot = {
+          x: dotRect.left + dotRect.width / 2 - cRect.left,
+          y: dotRect.top + dotRect.height / 2 - cRect.top,
+        };
+        entryCoordsRef.current.p2 = {
+          x: r2.right - cRect.left,
+          y: r2.top + r2.height / 2 - cRect.top,
+        };
+      }
+
       let p = 0;
-      if (r0.top > focusY) {
-        // Above B.Tech (coming down from Experience divider)
-        const dist = r0.top - focusY;
-        const maxDist = vh * 0.40;
-        const t = Math.max(0, Math.min(1, dist / maxDist));
-        p = -t;
-      } else if (r1.top > focusY) {
-        // Between B.Tech (p = 0.0) and 12th Grade (p = 0.5)
-        const span = Math.max(1, r1.top - r0.top);
-        const progressThrough = (focusY - r0.top) / span;
-        const t = Math.max(0, Math.min(1, progressThrough));
-        p = t * 0.5;
+      if (r0.top <= focusY) {
+        if (r1.top > focusY) {
+          // Between B.Tech (p = 0.0) and 12th Grade (p = 0.5)
+          const span = Math.max(1, r1.top - r0.top);
+          const progressThrough = (focusY - r0.top) / span;
+          const t = Math.max(0, Math.min(1, progressThrough));
+          p = t * 0.5;
+        } else if (r2.top > focusY) {
+          // Between 12th Grade (p = 0.5) and 10th Grade (p = 1.0)
+          const span = Math.max(1, r2.top - r1.top);
+          const progressThrough = (focusY - r1.top) / span;
+          const t = Math.max(0, Math.min(1, progressThrough));
+          p = 0.5 + t * 0.5;
+        } else {
+          // Past 10th Grade (r2.top <= focusY): Continuing towards CERTIFICATIONS!
+          const certHeader = document.querySelector(".mc-certifications-section .mc-section-header");
+          if (certHeader) {
+            const certRect = certHeader.getBoundingClientRect();
+            const spanToCert = Math.max(1, certRect.top - r2.top);
+            const distPastR2 = focusY - r2.top;
+            const certProgress = Math.max(0, distPastR2 / spanToCert);
+
+            if (certProgress <= 0.65) {
+              // 1.0 -> 1.4: Swoop down to 'C' in CERTIFICATIONS
+              const t = Math.min(1.0, certProgress / 0.65);
+              p = 1.0 + t * 0.4;
+            } else {
+              // 1.4 -> 2.0: Roll to 's' and merge into '.'
+              const headerProgress = Math.min(1.0, (certProgress - 0.65) / 0.55);
+              p = 1.4 + headerProgress * 0.6;
+            }
+          } else {
+            p = 1.0;
+          }
+        }
       } else {
-        // Past 12th Grade: immediately starts moving to 10th Grade (p: 0.5 -> 1.0)
-        const span = Math.max(1, r2.top - r1.top);
-        const progressThrough = (focusY - r1.top) / span;
-        const t = Math.max(0, Math.min(1, progressThrough));
-        p = 0.5 + t * 0.5;
+        // Above B.Tech (r0.top > focusY)
+        const expDiv = document.querySelector(".mc-experience-divider");
+        if (expDiv) {
+          const expRect = expDiv.getBoundingClientRect();
+          if (focusY >= expRect.bottom) {
+            // Between bottom of Experience divider and B.Tech: p is [-1.0, 0.0]
+            const span = Math.max(1, r0.top - expRect.bottom);
+            const t = Math.max(0, Math.min(1, (focusY - expRect.bottom) / span));
+            p = -1.0 + t * 1.0;
+          } else if (focusY >= expRect.top) {
+            // Moving down along the Experience divider: p is [-2.0, -1.0]
+            const span = Math.max(1, expRect.bottom - expRect.top);
+            const t = Math.max(0, Math.min(1, (focusY - expRect.top) / span));
+            p = -2.0 + t * 1.0;
+          } else {
+            // Above the top of the Experience divider
+            const distAbove = expRect.top - focusY;
+            const t = Math.min(1, distAbove / (vh * 0.35));
+            p = -2.0 - t * 0.5;
+          }
+        } else {
+          const dist = r0.top - focusY;
+          const maxDist = vh * 0.40;
+          const t = Math.max(0, Math.min(1, dist / maxDist));
+          p = -t;
+        }
       }
 
       targetProgressRef.current = p;
@@ -1075,13 +1563,17 @@ const EducationZigzagTimeline = () => {
               stroke="#264df3"
               strokeWidth="2.5"
               strokeDasharray={totalLength || 1000}
-              strokeDashoffset={(totalLength || 1000) * (1 - Math.max(0, progress))}
+              strokeDashoffset={(totalLength || 1000) * (1 - Math.max(0, Math.min(1, progress)))}
               strokeLinecap="round"
             />
 
             {/* Unique High-Tech Traveling Royal Blue Indicator */}
-            {(totalLength > 0 || progress < 0) && (
-              <g transform={`translate(${orbPos.x}, ${orbPos.y})`} className="mc-edu-indicator-group">
+            {(totalLength > 0 || progress < 0 || progress > 1) && (
+              <g
+                transform={`translate(${orbPos.x}, ${orbPos.y}) scale(${orbScale})`}
+                className="mc-edu-indicator-group"
+                style={{ opacity: orbOpacity, transition: "opacity 0.15s ease" }}
+              >
                 {/* Outer Ambient Pulse Aura */}
                 <circle r="22" fill="#264df3" opacity="0.12" className="mc-edu-orb-aura" />
 
@@ -1291,7 +1783,6 @@ function App() {
             <span className="mc-logo-symbol">mc.</span>
             <div className="mc-brand-text">
               <span className="mc-brand-name">MARUVENI CHARAN</span>
-              <span className="mc-brand-tagline">Design × Development × Data</span>
             </div>
           </a>
 
@@ -1404,7 +1895,6 @@ function App() {
               </div>
               <div className="mc-profile-caption">
                 <span className="mc-caption-name">MARUVENI CHARAN</span>
-                <span className="mc-caption-location">Bengaluru, India</span>
               </div>
             </div>
           </motion.div>
@@ -1445,13 +1935,11 @@ function App() {
         </div>
       </header>
 
-      {/* ===== Redesigned About Section (Matching Image 1: A LITTLE ABOUT ME) ===== */}
+      {/* ===== Redesigned About Section (Headline & Narrative on Left, Stats on Right) ===== */}
       <section className="mc-section mc-about-section" id="about">
         <div className="mc-container">
-          <div className="mc-kicker">A LITTLE ABOUT ME</div>
-
           <div className="mc-about-grid">
-            {/* Left Column: Headline */}
+            {/* Left Column: Heading, Subtitle & Narrative */}
             <motion.div
               className="mc-about-left"
               initial={{ opacity: 0, y: 30 }}
@@ -1459,6 +1947,8 @@ function App() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
+              <div className="mc-kicker">A LITTLE ABOUT ME</div>
+
               <h2 className="mc-about-title">
                 Curiosity is the<br />
                 common thread.
@@ -1466,38 +1956,38 @@ function App() {
               <p className="mc-about-subtitle">
                 A designer's eye. A developer's mindset.
               </p>
+
+              <p className="mc-about-narrative">
+                I am a dedicated Computer Science graduate from Alliance University with a focus on iOS development and Data Analytics. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
+              </p>
             </motion.div>
 
-            {/* Right Column: Bio & Stats */}
+            {/* Right Column: ONLY the Stats (Increased Size) */}
             <motion.div
-              className="mc-about-right"
+              className="mc-about-right mc-about-stats-only"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <p className="mc-about-narrative">
-                I am a dedicated Computer Science graduate from Alliance University with a focus on iOS development and Data Analytics. My passion lies in crafting seamless digital experiences and deriving powerful insights from data to solve real-world challenges.
-              </p>
-
               <div className="mc-stats-row">
                 <div className="mc-stat-item">
                   <div className="mc-stat-number">
-                    <AnimatedCounter value="8.3" isDecimal={true} />
+                    <PlayfulDotNumber text="8.3" width={140} height={78} />
                   </div>
                   <div className="mc-stat-label">CGPA</div>
                 </div>
 
                 <div className="mc-stat-item">
                   <div className="mc-stat-number">
-                    <AnimatedCounter value="4" suffix="+" />
+                    <PlayfulDotNumber text="4+" width={126} height={78} />
                   </div>
                   <div className="mc-stat-label">PROJECTS</div>
                 </div>
 
                 <div className="mc-stat-item">
                   <div className="mc-stat-number">
-                    <AnimatedCounter value="10" suffix="+" />
+                    <PlayfulDotNumber text="10+" width={172} height={78} />
                   </div>
                   <div className="mc-stat-label">TECH STACK</div>
                 </div>
@@ -1712,8 +2202,12 @@ function App() {
         <div className="mc-container mc-certifications-container">
           <div className="mc-section-header">
             <div className="mc-section-header-left">
-              <span className="mc-kicker">CERTIFICATIONS</span>
-              <h2 className="mc-section-title">Always a student.</h2>
+              <span className="mc-kicker">
+                <span className="mc-cert-kicker-c">C</span>ERTIFICATIONS
+              </span>
+              <h2 className="mc-section-title">
+                Always a <span className="mc-cert-student-s">s</span>tudent<span className="mc-cert-dot">.</span>
+              </h2>
             </div>
             <div className="mc-section-header-right">
               <span className="mc-certifications-count">04 CREDENTIALS</span>
