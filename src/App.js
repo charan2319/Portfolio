@@ -1898,9 +1898,16 @@ const InteractiveHeroLines = () => {
       });
     };
 
+    const handlePointerCancel = () => {
+      mouse.isActive = false;
+      mouse.targetX = -1000;
+      mouse.targetY = -1000;
+    };
+
     parent.addEventListener("pointermove", handlePointerMove);
     parent.addEventListener("pointerleave", handlePointerLeave);
     parent.addEventListener("pointerdown", handlePointerDown);
+    parent.addEventListener("pointercancel", handlePointerCancel);
 
     let observer = null;
     if (window.IntersectionObserver) {
@@ -2090,6 +2097,7 @@ const InteractiveHeroLines = () => {
       parent.removeEventListener("pointermove", handlePointerMove);
       parent.removeEventListener("pointerleave", handlePointerLeave);
       parent.removeEventListener("pointerdown", handlePointerDown);
+      parent.removeEventListener("pointercancel", handlePointerCancel);
       window.removeEventListener("resize", handleResize);
       if (observer) observer.disconnect();
     };
