@@ -2675,21 +2675,22 @@ function App() {
               { name: "Sketch", src: "/sketch.svg" },
               { name: "VS Code", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
               { name: "Xcode", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xcode/xcode-original.svg" }
-            ].map((skill, index) => (
-              <motion.div
-                key={index}
+            ].map((skill) => (
+              <div
+                key={skill.name}
                 className="mc-toolkit-card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.4, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
               >
                 <div className="mc-toolkit-icon-wrap">
-                  <img src={skill.src} alt={skill.name} className="mc-toolkit-icon" />
+                  <img
+                    src={skill.src}
+                    alt={skill.name}
+                    className="mc-toolkit-icon"
+                    loading="eager"
+                    decoding="async"
+                  />
                 </div>
                 <span className="mc-toolkit-name">{skill.name}</span>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
